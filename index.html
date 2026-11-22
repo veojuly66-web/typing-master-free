@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="classic">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Master Free - Premium Touch Typing Tutor for Everyone</title>
+    <!-- Tailwind CSS CDN for grid & utilities -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="antialiased">
+
+    <!-- Top Navbar -->
+    <header class="app-header">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-sky-400 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-500/30">
+                ⌨️
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-lg font-extrabold tracking-tight text-white">TYPING MASTER</h1>
+                    <span class="brand-badge">100% FREE</span>
+                </div>
+                <p class="text-[11px] text-slate-400">Master Touch-Typing with Interactive Finger Guides</p>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="flex items-center gap-1 bg-slate-900/60 p-1 rounded-xl border border-slate-800">
+            <button class="nav-tab-btn active" data-tab="lessons">
+                <span>📚</span> Lessons
+            </button>
+            <button class="nav-tab-btn" data-tab="speedtest">
+                <span>⏱️</span> Speed Test
+            </button>
+            <button class="nav-tab-btn" data-tab="games">
+                <span>🎮</span> Arcade Game
+            </button>
+            <button class="nav-tab-btn" data-tab="analytics">
+                <span>🎯</span> Problem Keys
+            </button>
+        </nav>
+
+        <!-- Right Side Settings & User -->
+        <div class="flex items-center gap-3">
+            <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700/60 text-xs">
+                <span id="header-user-avatar">🏆</span>
+                <span id="header-user-name" class="font-semibold text-slate-200">Typing Champion</span>
+            </div>
+            <button id="btn-open-settings" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 transition-colors" title="Settings & Sound">
+                ⚙️
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col">
+
+        <!-- TAB 1: LESSONS & COURSES -->
+        <section id="tab-lessons" class="tab-content active">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                <!-- Left Sidebar: Curriculum Accordion -->
+                <div class="lg:col-span-4 flex flex-col gap-4">
+                    <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4">
+                        <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-800">
+                            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300">Curriculum Units</h2>
+                            <span class="text-xs text-sky-400 font-semibold">24 Lessons (All Free)</span>
+                        </div>
+                        <div id="lesson-catalog-list" class="max-h-[600px] overflow-y-auto pr-1">
+                            <!-- Populated dynamically via app.js -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Main Stage: Typing Practice, Hands, Keyboard -->
+                <div class="lg:col-span-8 flex flex-col gap-5">
+
+                    <!-- Top Instruction & Live Stats Bar -->
+                    <div class="typing-stage">
+                        <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-800">
+                            <div>
+                                <h2 id="lesson-title-display" class="text-xl font-bold text-white">Lesson 1: Index Fingers (F and J)</h2>
+                                <p id="lesson-instruction-display" class="text-xs text-slate-400 mt-0.5">Locate the tactile bumps on F and J.</p>
+                            </div>
+                            <div class="flex items-center gap-4 text-center font-mono">
+                                <div class="px-3 py-1.5 bg-slate-800/80 rounded-lg border border-slate-700">
+                                    <div class="text-[10px] text-slate-400 uppercase">Speed</div>
+                                    <div class="text-lg font-bold text-sky-400"><span id="live-wpm">0</span> <span class="text-xs">WPM</span></div>
+                                </div>
+                                <div class="px-3 py-1.5 bg-slate-800/80 rounded-lg border border-slate-700">
+                                    <div class="text-[10px] text-slate-400 uppercase">Accuracy</div>
+                                    <div class="text-lg font-bold text-emerald-400" id="live-accuracy">100%</div>
+                                </div>
+                                <div class="px-3 py-1.5 bg-slate-800/80 rounded-lg border border-slate-700">
+                                    <div class="text-[10px] text-slate-400 uppercase">Progress</div>
+                                    <div class="text-lg font-bold text-amber-400" id="live-progress">0%</div>
+                                </div>
+                                <div class="px-3 py-1.5 bg-slate-800/80 rounded-lg border border-slate-700">
+                                    <div class="text-[10px] text-slate-400 uppercase">Time</div>
+                                    <div class="text-lg font-bold text-slate-300" id="live-timer">0:00</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Typing Stream Text Area -->
+                        <div class="text-stream-wrapper" id="lesson-text-display" tabindex="0">
+                            <!-- Populated with animated char boxes -->
+                        </div>
+
+                        <!-- Finger guide badges -->
+                        <div class="mt-3 flex items-center justify-between text-xs text-slate-400">
+                            <div class="flex items-center gap-2">
+                                <span>Fingers:</span>
+                                <div id="lesson-fingers-display"></div>
+                            </div>
+                            <div class="text-slate-500">Tip: Keep eyes on the screen, not your hands!</div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Hands Indicator -->
+                    <div id="virtual-hands">
+                        <!-- Rendered by keyboard.js -->
+                    </div>
+
+                    <!-- Virtual Keyboard Layout -->
+                    <div class="flex justify-center">
+                        <div id="virtual-keyboard">
+                            <!-- Rendered by keyboard.js -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: SPEED TEST & CERTIFICATE -->
+        <section id="tab-speedtest" class="tab-content">
+            <div class="max-w-5xl mx-auto space-y-6">
+
+                <!-- Test Setup Header -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
+                        <div>
+                            <h2 class="text-2xl font-bold text-white">Typing Speed Assessment</h2>
+                            <p class="text-sm text-slate-400 mt-1">Take a timed test under professional standards to earn your verified certificate.</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-400 uppercase font-semibold mr-1">Duration:</span>
+                            <button class="duration-btn active px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-700 bg-slate-800 text-white" data-seconds="60">1 Min</button>
+                            <button class="duration-btn px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-700 bg-slate-800 text-white" data-seconds="120">2 Min</button>
+                            <button class="duration-btn px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-700 bg-slate-800 text-white" data-seconds="180">3 Min</button>
+                            <button class="duration-btn px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-700 bg-slate-800 text-white" data-seconds="300">5 Min</button>
+                        </div>
+                    </div>
+
+                    <!-- Passage Selector & Live HUD -->
+                    <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                        <div class="flex items-center gap-2">
+                            <label class="text-xs font-semibold text-slate-300">Topic:</label>
+                            <select id="test-passage-select" class="bg-slate-800 text-slate-200 border border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none">
+                                <!-- Options from test.js -->
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-4 font-mono text-center">
+                            <div class="px-4 py-1.5 bg-slate-800/90 rounded-lg border border-slate-700">
+                                <div class="text-[10px] text-slate-400 uppercase">Time Left</div>
+                                <div class="text-xl font-extrabold text-amber-400" id="test-countdown">1:00</div>
+                            </div>
+                            <div class="px-4 py-1.5 bg-slate-800/90 rounded-lg border border-slate-700">
+                                <div class="text-[10px] text-slate-400 uppercase">Net Speed</div>
+                                <div class="text-xl font-extrabold text-sky-400"><span id="test-live-net">0</span> <span class="text-xs">WPM</span></div>
+                            </div>
+                            <div class="px-4 py-1.5 bg-slate-800/90 rounded-lg border border-slate-700">
+                                <div class="text-[10px] text-slate-400 uppercase">Accuracy</div>
+                                <div class="text-xl font-extrabold text-emerald-400" id="test-live-acc">100%</div>
+                            </div>
+                            <div class="px-4 py-1.5 bg-slate-800/90 rounded-lg border border-slate-700">
+                                <div class="text-[10px] text-slate-400 uppercase">Gross WPM</div>
+                                <div class="text-xl font-extrabold text-slate-300" id="test-live-wpm">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Test Text Display -->
+                    <div class="text-stream-wrapper" id="test-text-display">
+                        <!-- Dynamic char boxes -->
+                    </div>
+                </div>
+
+                <!-- Test History Section -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-white">Your Recent Test Records & Certificates</h3>
+                        <span class="text-xs text-slate-400">Stored safely on this device</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead>
+                                <tr class="text-xs uppercase text-slate-500 border-b border-slate-800">
+                                    <th class="py-2.5 px-4">Date & Time</th>
+                                    <th class="py-2.5 px-4">Test Type</th>
+                                    <th class="py-2.5 px-4">Net Speed</th>
+                                    <th class="py-2.5 px-4">Gross Speed</th>
+                                    <th class="py-2.5 px-4">Accuracy</th>
+                                    <th class="py-2.5 px-4">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="test-history-tbody">
+                                <!-- Populated dynamically by analytics.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 3: ARCADE GAME -->
+        <section id="tab-games" class="tab-content">
+            <div class="max-w-4xl mx-auto space-y-4">
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <span>🚀</span> Falling Words Arcade
+                        </h2>
+                        <p class="text-xs text-slate-400">Type the falling words before they hit the red laser line!</p>
+                    </div>
+                    <div class="flex items-center gap-6 font-mono text-sm">
+                        <div>Score: <span id="game-hud-score" class="font-bold text-amber-400">0</span></div>
+                        <div>Lives: <span id="game-hud-lives">❤️❤️❤️</span></div>
+                        <div>Level: <span id="game-hud-level" class="font-bold text-sky-400">Lvl 1</span></div>
+                        <div id="game-hud-combo" class="text-emerald-400 font-bold"></div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button id="btn-start-game" class="btn btn-primary text-xs px-3 py-2">Start Game</button>
+                        <button id="btn-pause-game" class="btn btn-secondary text-xs px-3 py-2">Pause</button>
+                    </div>
+                </div>
+
+                <!-- Canvas Game Viewport -->
+                <div class="game-viewport">
+                    <canvas id="game-canvas"></canvas>
+                    <div id="game-overlay">
+                        <div class="text-center p-6">
+                            <div class="text-5xl mb-4">👾</div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Word Drops Arcade</h3>
+                            <p class="text-sm text-slate-400 max-w-md mb-6">Test your real-time typing reaction speed under pressure. Just type the letters of falling words to blow them up!</p>
+                            <button onclick="window.fallingWordsGame.startGame()" class="btn btn-primary px-6 py-3 font-bold text-base shadow-lg shadow-sky-500/20">
+                                Launch Game
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: WEAK KEYS & HEATMAP -->
+        <section id="tab-analytics" class="tab-content">
+            <div class="max-w-5xl mx-auto space-y-6">
+
+                <!-- Heatmap Card -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                                <span>🔥</span> Key Accuracy Heatmap
+                            </h2>
+                            <p class="text-xs text-slate-400 mt-1">Real-time diagnosis of every key: Green = Mastered, Yellow = Needs Practice, Red = High Error Rate</p>
+                        </div>
+                        <div class="flex items-center gap-4 text-xs">
+                            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-emerald-600"></span> 96%+ Mastered</span>
+                            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-blue-600"></span> 90-95% Good</span>
+                            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-amber-600"></span> 80-89% Fair</span>
+                            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-rose-600"></span> &lt;80% Problem</span>
+                        </div>
+                    </div>
+
+                    <!-- Keyboard Heatmap Visual -->
+                    <div id="weak-keys-heatmap" class="p-4 bg-slate-950/60 rounded-xl border border-slate-800/80">
+                        <!-- Populated by analytics.js -->
+                    </div>
+                </div>
+
+                <!-- Problem Keys & Custom Drill Card -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                        <div>
+                            <h3 class="text-base font-bold text-white">Identified Weak Spots</h3>
+                            <p class="text-xs text-slate-400">Keys where you hesitate or press the wrong character</p>
+                        </div>
+                        <button id="btn-generate-weak-drill" class="btn btn-primary text-xs px-4 py-2 flex items-center gap-2">
+                            <span>✨</span> Practice Only My Weak Keys
+                        </button>
+                    </div>
+
+                    <div id="problem-keys-list" class="mt-4">
+                        <!-- Populated by analytics.js -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900/80 border-t border-slate-800 py-4 px-6 text-center text-xs text-slate-400">
+        <div class="flex flex-wrap items-center justify-between gap-2 max-w-7xl mx-auto">
+            <div>
+                <span class="font-bold text-slate-300">Typing Master Free</span> — 100% Free Touch Typing Tutor with Certificate Generator.
+            </div>
+            <div class="flex items-center gap-4">
+                <span>No Paywalls</span>
+                <span>•</span>
+                <span>No Sign-up Required</span>
+                <span>•</span>
+                <span>Works Offline</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: Lesson Completed -->
+    <div id="lesson-completion-modal" class="modal-backdrop">
+        <div class="modal-card text-center">
+            <div class="text-5xl mb-2">🎉</div>
+            <h2 class="text-2xl font-bold text-white mb-1">Lesson Completed!</h2>
+            <div id="modal-stars" class="text-3xl text-amber-400 mb-6">★★★</div>
+
+            <div class="grid grid-cols-3 gap-3 mb-6">
+                <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">Speed</div>
+                    <div class="text-2xl font-extrabold text-sky-400"><span id="modal-final-wpm">0</span> <span class="text-xs">WPM</span></div>
+                </div>
+                <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">Accuracy</div>
+                    <div class="text-2xl font-extrabold text-emerald-400" id="modal-final-acc">100%</div>
+                </div>
+                <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">Errors</div>
+                    <div class="text-2xl font-extrabold text-rose-400" id="modal-final-errors">0</div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-center gap-3">
+                <button id="modal-btn-retry" class="btn btn-secondary px-5 py-2.5">Retry Lesson</button>
+                <button id="modal-btn-next-lesson" class="btn btn-primary px-6 py-2.5 font-bold">Next Lesson ➔</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Speed Test Results -->
+    <div id="test-results-modal" class="modal-backdrop">
+        <div class="modal-card text-center">
+            <div class="text-4xl mb-2">🏆</div>
+            <h2 class="text-2xl font-bold text-white mb-1">Speed Test Complete!</h2>
+            <div id="res-rank-badge" class="badge badge-gold mb-6 text-sm py-1 px-4">Pro Typist</div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">Net WPM</div>
+                    <div class="text-2xl font-extrabold text-amber-400" id="res-net-wpm">0</div>
+                </div>
+                <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">Gross WPM</div>
+                    <div class="text-2xl font-extrabold text-sky-400" id="res-gross-wpm">0</div>
+                </div>
+                <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">Accuracy</div>
+                    <div class="text-2xl font-extrabold text-emerald-400" id="res-accuracy">100%</div>
+                </div>
+                <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">Errors</div>
+                    <div class="text-2xl font-extrabold text-rose-400" id="res-errors">0</div>
+                </div>
+            </div>
+
+            <div class="text-xs text-slate-400 mb-6">
+                Total Keystrokes: <span id="res-keystrokes" class="font-mono text-slate-200">0</span>
+            </div>
+
+            <div class="flex items-center justify-center gap-3">
+                <button id="modal-btn-retry-test" class="btn btn-secondary px-4 py-2.5">Try Again</button>
+                <button id="modal-btn-view-certificate" class="btn btn-primary px-6 py-2.5 font-bold shadow-lg shadow-sky-500/25">
+                    📜 Get Official Certificate
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Official Certificate -->
+    <div id="certificate-modal" class="modal-backdrop">
+        <div class="cert-card-wrap">
+            <div class="no-print flex items-center justify-between pb-4 mb-4 border-b border-slate-700">
+                <div class="flex items-center gap-2">
+                    <label class="text-xs text-slate-300 font-semibold">Your Name for Certificate:</label>
+                    <input type="text" id="cert-student-name-input" class="bg-slate-800 text-amber-300 px-3 py-1.5 text-sm rounded-lg border border-slate-700 outline-none font-bold" value="Typing Champion">
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="btn-download-certificate" class="btn btn-primary text-xs px-3 py-2">
+                        💾 Download PNG
+                    </button>
+                    <button id="btn-print-certificate" class="btn btn-secondary text-xs px-3 py-2">
+                        🖨️ Print / PDF
+                    </button>
+                    <button id="btn-close-certificate" class="p-1.5 text-slate-400 hover:text-white rounded-lg">
+                        ✕
+                    </button>
+                </div>
+            </div>
+
+            <!-- Certificate Inner Design -->
+            <div class="text-center py-6 px-4">
+                <div class="text-xs uppercase tracking-[0.3em] text-slate-400 font-semibold mb-2">TYPING MASTER FREE • STANDARDIZED CERTIFICATION</div>
+                <h1 class="text-3xl md:text-5xl font-serif font-bold text-white mb-2">Certificate of Achievement</h1>
+                <div class="text-xs uppercase tracking-widest text-sky-400 font-semibold mb-6">THIS IS PROUDLY CONFERRED UPON</div>
+
+                <div id="cert-student-name-display" class="text-3xl md:text-4xl font-serif font-bold text-amber-400 border-b-2 border-amber-500/50 inline-block px-8 pb-1 mb-6">
+                    Typing Champion
+                </div>
+
+                <p class="text-xs md:text-sm text-slate-300 max-w-lg mx-auto mb-8 leading-relaxed">
+                    for demonstrating high velocity and touch-typing proficiency with standardized standardized keyboard layout and zero-look touch technique.
+                </p>
+
+                <!-- Stat Boxes -->
+                <div class="flex items-center justify-center gap-6 mb-8">
+                    <div class="p-4 bg-slate-800/40 border border-amber-500/30 rounded-xl min-w-[140px]">
+                        <div id="cert-net-wpm" class="text-3xl font-extrabold text-white">45</div>
+                        <div class="text-[10px] uppercase tracking-wider text-amber-400 font-bold mt-1">NET SPEED (WPM)</div>
+                    </div>
+                    <div class="p-4 bg-slate-800/40 border border-amber-500/30 rounded-xl min-w-[140px]">
+                        <div id="cert-accuracy" class="text-3xl font-extrabold text-white">98%</div>
+                        <div class="text-[10px] uppercase tracking-wider text-emerald-400 font-bold mt-1">ACCURACY</div>
+                    </div>
+                    <div class="p-4 bg-slate-800/40 border border-amber-500/30 rounded-xl min-w-[140px]">
+                        <div id="cert-gross-wpm" class="text-3xl font-extrabold text-white">47</div>
+                        <div class="text-[10px] uppercase tracking-wider text-sky-400 font-bold mt-1">GROSS SPEED</div>
+                    </div>
+                </div>
+
+                <!-- Footer Signatures & Date -->
+                <div class="flex items-end justify-between pt-6 border-t border-slate-800 text-left text-xs font-mono text-slate-400">
+                    <div>
+                        <div>Issued: <span id="cert-date" class="text-slate-200">November 2026</span></div>
+                        <div class="text-[10px] text-slate-500 mt-1">ID: <span id="cert-serial-id">TMF-829104</span></div>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 rounded-full border-2 border-amber-400/80 flex items-center justify-center text-amber-400 font-bold text-[10px] mx-auto mb-1">
+                            OFFICIAL<br>VERIFIED
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-serif italic text-sm text-slate-200">Typing Master Free</div>
+                        <div class="text-[10px] text-slate-500 mt-1">Academic Touch-Typing Board</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: Settings & Options -->
+    <div id="settings-modal" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
+                <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span>⚙️</span> Tutor Settings
+                </h2>
+                <button id="btn-close-settings" class="text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
+            </div>
+
+            <div class="space-y-4 text-sm">
+                <!-- Theme Option -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="font-semibold text-slate-200">Color Theme</div>
+                        <div class="text-xs text-slate-400">Choose your favorite visual theme</div>
+                    </div>
+                    <select id="setting-theme" class="bg-slate-800 text-slate-200 border border-slate-700 rounded-lg px-3 py-1.5 outline-none">
+                        <option value="classic">Typing Master Classic Blue</option>
+                        <option value="cyberpunk">Cyberpunk Neon</option>
+                        <option value="emerald">Emerald Forest</option>
+                        <option value="retro-amber">Retro Amber Terminal</option>
+                    </select>
+                </div>
+
+                <!-- Keyboard Sound Option -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="font-semibold text-slate-200">Keyboard Switch Sound</div>
+                        <div class="text-xs text-slate-400">Real-time synthesized audio click</div>
+                    </div>
+                    <select id="setting-sound-type" class="bg-slate-800 text-slate-200 border border-slate-700 rounded-lg px-3 py-1.5 outline-none">
+                        <option value="mechanical">Cherry MX Blue (Clicky)</option>
+                        <option value="thock">Gateron Brown (Thock)</option>
+                        <option value="typewriter">Vintage Typewriter</option>
+                        <option value="off">Mute / Off</option>
+                    </select>
+                </div>
+
+                <!-- Sound Toggle -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="font-semibold text-slate-200">Enable Sound Effects</div>
+                        <div class="text-xs text-slate-400">Play clicks, errors and victory sounds</div>
+                    </div>
+                    <input type="checkbox" id="setting-toggle-sound" class="w-5 h-5 accent-blue-600 rounded" checked>
+                </div>
+
+                <!-- Show Hands Toggle -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="font-semibold text-slate-200">Show Hand Guides</div>
+                        <div class="text-xs text-slate-400">Display hands with active finger highlighting</div>
+                    </div>
+                    <input type="checkbox" id="setting-toggle-hands" class="w-5 h-5 accent-blue-600 rounded" checked>
+                </div>
+
+                <!-- Data Backup & Reset -->
+                <div class="pt-4 border-t border-slate-800 space-y-3">
+                    <div class="font-semibold text-slate-200">Backup & Progress</div>
+                    <div class="flex items-center gap-2">
+                        <button id="btn-export-data" class="btn btn-secondary text-xs px-3 py-2 flex-1">
+                            📥 Export Backup (JSON)
+                        </button>
+                        <label class="btn btn-secondary text-xs px-3 py-2 flex-1 cursor-pointer text-center">
+                            📤 Restore Backup
+                            <input type="file" id="import-file-input" class="hidden" accept=".json">
+                        </label>
+                    </div>
+                    <button id="btn-reset-data" class="w-full text-xs text-rose-400 hover:text-rose-300 py-1.5 text-center">
+                        Reset All Lessons & History
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Scripts -->
+    <script src="js/audio.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/lessons.js"></script>
+    <script src="js/keyboard.js"></script>
+    <script src="js/practice.js"></script>
+    <script src="js/test.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/certificate.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>
