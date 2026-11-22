@@ -243,6 +243,8 @@ class PracticeEngine {
         let stars = 1;
         if (window.storageManager) {
             stars = window.storageManager.recordLessonCompletion(this.currentLesson.id, wpm, accuracy, nextId);
+            if (typeof updateSummaryStats === 'function') updateSummaryStats();
+            if (typeof renderLessonCatalog === 'function') renderLessonCatalog();
         }
 
         // Show modal
