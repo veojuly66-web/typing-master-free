@@ -1,127 +1,86 @@
-# ⌨️ Typing Master Free (100% Free & Open Touch-Typing Platform)
+# 🇮🇳 हिंदी टाइपिंग मास्टर प्रो (Hindi Typing Master Pro)
+### 100% नि:शुल्क • प्रीमियम फीचर्स • केवल हिंदी टाइपिंग • नवीनतम टाइपिंग मास्टर डिज़ाइन
 
-A modern, full-featured touch-typing tutor inspired by classic **Typing Master Pro**, completely unlocked with **all premium features free for everyone**.
-
----
-
-## 🌟 Key Features
-
-### 1. 📚 Complete 6-Unit Touch Typing Curriculum (24 Structured Lessons)
-* **Unit 1: The Home Row** (Keys F, J, D, K, S, L, A, ;, G, H + Home Row mastery drills)
-* **Unit 2: The Top Row** (Keys R, U, E, I, W, O, Q, P, T, Y + Upper reach drills)
-* **Unit 3: The Bottom Row** (Keys V, M, C, Comma, X, Period, Z, Slash, B, N + Pangrams)
-* **Unit 4: Capital Letters & Shift Keys** (Opposite hand Shift rule & capitalization)
-* **Unit 5: Numbers & Common Symbols** (Number row 1-0, punctuation, and coding symbols)
-* **Unit 6: Speed & Professional Fluency** (Top 100 high-frequency words, workplace emails, grand graduation drill)
-
-### 2. 🖐️ Interactive Visual Hands & Animated Virtual Keyboard
-* **Dynamic Finger Visualizer**: Left & right SVG hand diagrams highlighting exactly which of the 10 fingers to use for each key.
-* **QWERTY Virtual Keyboard**: Color-coded keycaps mapped to respective fingers, with tactile nubs on `F` and `J`.
-* **Target Character Bubble**: Shows live upcoming character and finger instruction.
-
-### 3. 🔊 Realistic Keyboard Switch Audio Synthesizer (Web Audio API)
-* **Cherry MX Blue**: Crisp mechanical click switch.
-* **Gateron Brown**: Deep bassy "thock" sound.
-* **Vintage Typewriter**: Authentic metallic clack.
-* **Harmonic Success Chimes & Error Audio**: Zero external audio files required — synthesized in real-time.
-
-### 4. ⏱️ Standardized Speed Test & 📜 Official Certificate Generator
-* **Timed Tests**: 1-minute, 2-minute, 3-minute, and 5-minute timed assessments across multiple literature & tech topics.
-* **Real-time Metrics**: Gross WPM, Net WPM, Accuracy %, Keystroke count, and Errors.
-* **Authentic Certificate of Achievement**:
-  * Customizable student name.
-  * Verified Net WPM and Accuracy badges.
-  * Official seal, date, and unique certificate serial ID.
-  * **1-Click High-Res PNG Download** (1600x1100 rendered via HTML5 canvas).
-  * **1-Click Print / Save to PDF** with dedicated clean print styling.
-
-### 5. 🎮 Classic Arcade Game: "Word Drops / Falling Words"
-* Words float down from the sky toward a red laser defense line.
-* Type words before they hit the ground.
-* Combo multipliers, particle explosion effects, levels, and local high-score tracking.
-
-### 6. 🔥 Problem Keys Heatmap & AI Custom Drill Generator
-* **Key Accuracy Heatmap**: Visual overview of every single key (Green = Mastered, Yellow = Needs practice, Red = Problem keys).
-* **Identified Weak Spots**: Automatically tracks accuracy and hesitation for each key.
-* **"Practice Only My Weak Keys" Button**: Dynamically creates a customized exercise targeting your specific weak keys!
-
-### 7. 🎨 Themes & Customization
-* **Typing Master Classic Blue**
-* **Cyberpunk Neon**
-* **Emerald Forest**
-* **Retro Amber Terminal**
-
-### 8. 🔒 100% Client-Side & Privacy First
-* No sign-up or login required.
-* All progress, test history, and settings are saved automatically in browser `localStorage`.
-* Backup & Restore: 1-click **Export to JSON** and **Import from JSON**.
+**हिंदी टाइपिंग मास्टर प्रो** एक आधुनिक, इंटरएक्टिव और पूर्णतः नि:शुल्क वेब एप्लिकेशन है जिसे नवीनतम टाइपिंग मास्टर (Typing Master 11/12) के तर्ज पर विशेष रूप से **केवल हिंदी टाइपिंग** सीखने एवं अभ्यास करने हेतु बनाया गया है।
 
 ---
 
-## 🚀 How to Run Locally
+## 🌟 प्रमुख विशेषताएँ (Key Features)
 
-You don't need any complex installation. You can run it immediately using any of the following:
+1. **दो प्रमुख मानक कीबोर्ड लेआउट्स (Dual Official Layouts)**:
+   - **इनस्क्रिप्ट (Inscript / Mangal)**: भारत सरकार एवं यूनिकोड का आधिकारिक मानक लेआउट।
+   - **रेमिंगटन गेल (Remington Gail / Krutidev)**: एसएससी (SSC), उच्च न्यायालय (High Court), पुलिस एवं अन्य सरकारी परीक्षाओं का सर्वाधिक लोकप्रिय लेआउट।
 
-### Option 1: Direct File Open
-Simply double-click `index.html` in your file explorer to open it in Chrome, Edge, Safari, or Firefox.
+2. **स्मार्ट कीबोर्ड एम्युलेटर (Smart Hardware Keyboard Emulation)**:
+   - उपयोगकर्ता को अपने कंप्यूटर में बिना कोई हिंदी फॉन्ट या IME सेटिंग्स बदले सामान्य अंग्रेजी कीबोर्ड पर टाइप करने की सुविधा।
+   - कीबोर्ड की `k`, `j`, `s`, `d` कीज दबाने पर स्वचालित रूप से चुनी हुई हिंदी लेआउट के अनुसार अक्षर टाइप होते हैं।
+   - साथ ही, उन यूज़र्स के लिए **"नेटिव IME मोड"** भी उपलब्ध है जिनके पास पहले से हिंदी कीबोर्ड सक्रिय है।
 
-### Option 2: Python Local Server
+3. **इंटरएक्टिव आभासी कीबोर्ड और हाथ-उंगली गाइड (Hands & Finger Guide)**:
+   - उंगलियों के अनुसार 9 अलग-अलग रंगों में विभाजित कीबोर्ड।
+   - अगला अक्षर दबाने के लिए सही उंगली (तर्जनी, मध्यमा, अनामिका, कनिष्ठिका या अंगूठा) स्क्रीन पर एनिमेटेड रूप से मार्गदर्शित होती है।
+   - शिफ्ट (Shift) की आवश्यकता होने पर शिफ्ट कीज़ स्वतः नीले रंग में चमकती हैं।
+
+4. **संरचित पाठ्यक्रम (Structured Lessons Curriculum)**:
+   - **मॉड्यूल 1**: होम रो (Home Row) कीज़, मात्राएँ और प्राथमिक शब्द।
+   - **मॉड्यूल 2**: अपर रो (Upper Row) स्वर एवं दीर्घ मात्राएँ।
+   - **मॉड्यूल 3**: बॉटम रो (Bottom Row) व्यंजन, अनुस्वार एवं पूर्णविराम।
+   - **मॉड्यूल 4**: शिफ्ट कीज़ (Shift Keys) एवं जटिल संयुक्त वर्ण (आधे अक्षर/हलंत)।
+   - **मॉड्यूल 5**: गति वर्धक 100 अति-प्रचलित शब्द एवं कानूनी/प्रशासनिक शब्दावली।
+
+5. **आधिकारिक परीक्षा स्पीड टेस्ट (Exam Standard Speed Tests)**:
+   - 1 मिनट, 2 मिनट, 5 मिनट एवं 10 मिनट के आधिकारिक परीक्षा स्तर के गद्यांश (SSC / High Court Model Passages)।
+   - सकल गति (Gross WPM), शुद्ध गति (Net WPM), सटीकता (Accuracy %) और गलतियों की रीयल-टाइम गणना।
+
+6. **ऑडियो प्रभाव (Realistic Web Audio Synthesizer)**:
+   - मैकेनिकल कीबोर्ड (Blue switch click) ध्वनि।
+   - स्पेसबार थंप और गलती होने पर एरर बजर।
+   - अभ्यास पूर्ण होने पर विजयी संगीत (Fanfare chime)।
+   - शून्य बाह्य ऑडियो फाइल (Zero external dependency)।
+
+7. **आधिकारिक प्रमाण पत्र (Downloadable Certificate of Proficiency)**:
+   - टेस्ट पूरा करने पर छात्र के नाम, शुद्ध गति, सटीकता और दिनांक के साथ उच्च-रिज़ॉल्यूशन आधिकारिक डिप्लोमा प्रमाण पत्र जनरेट होता है, जिसे एक क्लिक में PNG के रूप में डाउनलोड किया जा सकता है।
+
+8. **शब्द वर्षा गेम (Word Rain Typing Game)**:
+   - गिरते हुए हिंदी शब्दों को नष्ट करने वाला मनोरंजक टाइपिंग गेम।
+
+9. **कस्टम अभ्यास (Custom Text Practice)**:
+   - अपनी पसंद का कोई भी हिंदी निबंध, समाचार या कहानी पेस्ट करके अभ्यास करने की सुविधा।
+
+---
+
+## 🚀 तुरंत कैसे चलाएं (How to Run Locally)
+
+यह प्रोजेक्ट बिना किसी जटिल सेटअप के किसी भी वेब ब्राउज़र में तुरंत चलता है:
+
+### विकल्प 1: पाइथन सर्वर द्वारा (अनुशंसित)
 ```bash
-cd /Users/pankaj/.gemini/antigravity/scratch/typing-master-free
-python3 -m http.server 8080
+cd /Users/pankaj/.gemini/antigravity/scratch/hindi-typing-master
+python3 -m http.server 3000
 ```
-Then open [http://localhost:8080](http://localhost:8080) in your browser.
+ब्राउज़र में खोलें: `http://localhost:3000`
 
-### Option 3: Node / npx
+### विकल्प 2: Node.js / npx serve द्वारा
 ```bash
-npx serve .
+cd /Users/pankaj/.gemini/antigravity/scratch/hindi-typing-master
+npm start
 ```
+
+### विकल्प 3: सीधा ब्राउज़र में
+`index.html` फाइल पर डबल-क्लिक करके सीधे अपने Chrome / Safari / Edge ब्राउज़र में खोल सकते हैं।
 
 ---
 
-## 🌐 How to Host Online for Free Forever
-
-You can publish this website online for free in under 2 minutes:
-
-### Method A: GitHub Pages (Recommended)
-1. Create a new GitHub repository named `typing-master-free`.
-2. Push the files in this folder to the repository:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit of Typing Master Free"
-   git branch -M main
-   git remote add origin https://github.com/<your-username>/typing-master-free.git
-   git push -u origin main
-   ```
-3. In your GitHub repository, go to **Settings** > **Pages**.
-4. Under **Branch**, select `main` and `/ (root)`, then click **Save**.
-5. Your website will be live at `https://<your-username>.github.io/typing-master-free/`!
-
-### Method B: Vercel or Netlify (Drag & Drop)
-1. Go to [vercel.com](https://vercel.com) or [netlify.com](https://netlify.com).
-2. Simply drag and drop the `typing-master-free` folder into the dashboard.
-3. Your site gets deployed instantly with a free HTTPS custom domain!
-
----
-
-## 📁 Project Structure
+## 📂 फ़ाइल संरचना (Project Structure)
 
 ```
-typing-master-free/
-├── index.html            # Main Single Page App shell
-├── css/
-│   └── styles.css        # Complete custom styling, 3D keys, certificate print styles
-├── js/
-│   ├── audio.js          # Web Audio API switch sound synthesizer
-│   ├── storage.js        # LocalStorage persistence, backup & restore
-│   ├── lessons.js        # 24-lesson comprehensive typing curriculum
-│   ├── keyboard.js       # Virtual keyboard layout, finger map, SVG hand visualizer
-│   ├── practice.js       # Character-by-character typing practice engine
-│   ├── test.js           # Timed speed test runner & scoring
-│   ├── game.js           # Falling words arcade canvas game
-│   ├── analytics.js      # Key heatmap, weak key detection & drill generator
-│   ├── certificate.js    # Canvas certificate renderer & PNG exporter
-│   └── app.js            # App initialization, tabs, settings & themes
-└── README.md             # Documentation
+hindi-typing-master/
+├── index.html            # मुख्य यूआई एवं लेआउट
+├── styles.css            # आधुनिक डार्क/लाइट ग्लासमोर्फिज्म सीएसएस
+├── app.js                # टाइपिंग इंजन, एम्युलेटर और गेम कंट्रोलर
+├── keyboard-layouts.js   # इनस्क्रिप्ट एवं रेमिंगटन गेल कीबोर्ड मैपिंग
+├── lessons-data.js       # हिंदी पाठ, परीक्षा गद्यांश एवं शब्दावली
+├── sound-effects.js      # वेब ऑडियो एपीआई मैकेनिकल साउंड्स
+├── package.json          # एनपीएम स्क्रिप्ट्स
+└── README.md             # संपूर्ण मार्गदर्शिका
 ```
