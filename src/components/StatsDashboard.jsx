@@ -3,7 +3,7 @@ import { Award, Zap, Target, BookOpen, Clock, Flame, Crown, BarChart2, CheckCirc
 
 export default function StatsDashboard({ completedLessons = {}, onSelectLesson }) {
   const [testHistory, setTestHistory] = useState([]);
-  const [userName, setUserName] = useState(() => localStorage.getItem('tm_user_name') || 'Master Typist');
+  const [userName, setUserName] = useState(() => localStorage.getItem('tm_user_name') || 'Pankaj');
   const [isEditingName, setIsEditingName] = useState(false);
 
   useEffect(() => {
@@ -196,7 +196,7 @@ export default function StatsDashboard({ completedLessons = {}, onSelectLesson }
       <div className="bg-slate-950/60 rounded-3xl border border-slate-800 p-6">
         <h4 className="text-base font-bold text-white mb-3 flex items-center gap-2">
           <Flame className="w-4 h-4 text-amber-500" />
-          <span>Typing Master Pro Tips for Fast Mastery</span>
+          <span>Pankaj Typing Pro Tips for Fast Mastery</span>
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-400 leading-relaxed">
           <div className="bg-slate-900/60 p-4 rounded-2xl border border-slate-800">

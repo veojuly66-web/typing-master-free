@@ -341,7 +341,7 @@ export const TYPING_TESTS = [
     title: '5-Minute Official Certification Exam',
     duration: 300,
     difficulty: 'Master',
-    description: 'The rigorous 5-minute examination required for the official Typing Master Gold Certificate.',
+    description: 'The rigorous 5-minute examination required for the official Pankaj Typing Gold Certificate.',
     text: 'Patience and consistency are the cornerstones of all genuine mastery. When beginners start learning to touch type, their fingers often feel clumsy and slow. They are tempted to glance down at the keys to speed up temporarily. However, resisting that urge is the single greatest breakthrough in the entire journey. By forcing your mind to rely solely on muscle memory, neural connections form between the concept of each letter and the precise movement of the corresponding finger. Within weeks, words flow seamlessly through your fingertips without friction.'
   }
 ];

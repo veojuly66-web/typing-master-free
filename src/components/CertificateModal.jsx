@@ -78,7 +78,7 @@ export default function CertificateModal({
           <div className="text-center relative z-10">
             <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-800 text-xs font-bold uppercase tracking-widest mb-3">
               <ShieldCheck className="w-4 h-4 text-amber-600" />
-              <span>Typing Master Verified Certificate</span>
+              <span>Pankaj Typing Verified Certificate</span>
             </div>
 
             <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 uppercase font-serif">
@@ -96,7 +96,7 @@ export default function CertificateModal({
               {name || 'Typist'}
             </div>
             <p className="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto mt-4 leading-relaxed">
-              for successfully completing the official Typing Master speed and accuracy assessment benchmark under touch-typing standards.
+              for successfully completing the official Pankaj Typing speed and accuracy assessment benchmark under touch-typing standards.
             </p>
           </div>
 
@@ -149,7 +149,7 @@ export default function CertificateModal({
 
             <div className="text-right text-xs text-slate-600">
               <div className="font-serif italic text-base text-slate-800 border-b border-slate-400 pb-0.5">
-                Typing Master Academy
+                Pankaj Typing Academy
               </div>
               <div className="text-[10px] text-slate-500 mt-0.5">Automated Proctor System</div>
               <div className="text-[10px] text-emerald-700 font-semibold mt-1">Verified 100% Free Lifetime</div>

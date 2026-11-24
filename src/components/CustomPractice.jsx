@@ -58,7 +58,7 @@ export default function CustomPractice({ onStartCustom }) {
           Custom Typing Practice
         </h1>
         <p className="text-sm text-slate-300 mt-2 max-w-xl">
-          Paste your own text, homework, code snippets, or articles to practice with the full Typing Master engine.
+          Paste your own text, homework, code snippets, or articles to practice with the full Pankaj Typing engine.
         </p>
       </div>
 

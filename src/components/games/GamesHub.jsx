@@ -46,13 +46,13 @@ export default function GamesHub() {
       <div className="bg-gradient-to-r from-purple-900/40 via-indigo-900/40 to-slate-900 p-8 rounded-3xl border border-purple-500/20 shadow-2xl mb-8 text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-bold uppercase tracking-wider mb-3 border border-purple-500/30">
           <Gamepad2 className="w-4 h-4 text-purple-400" />
-          <span>Typing Master Classic Arcade</span>
+          <span>Pankaj Typing Classic Arcade</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
           Learn While Playing
         </h1>
         <p className="text-sm sm:text-base text-slate-300 mt-2 max-w-xl mx-auto">
-          Sharpen your touch typing reflexes, reaction speed, and peripheral letter recognition with classic Typing Master mini-games.
+          Sharpen your touch typing reflexes, reaction speed, and peripheral letter recognition with classic Pankaj Typing mini-games.
         </p>
       </div>
 

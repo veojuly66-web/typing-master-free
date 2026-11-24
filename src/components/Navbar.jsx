@@ -42,13 +42,13 @@ export default function Navbar({ activeTab, setActiveTab }) {
           <div>
             <div className="flex items-center gap-2">
               <span className="font-black text-lg text-white tracking-tight">
-                Typing<span className="text-blue-400">Master</span>
+                Pankaj<span className="text-blue-400">Typing</span>
               </span>
               <span className="px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[9px] font-black uppercase tracking-wider shadow-sm">
                 PRO 100% FREE
               </span>
             </div>
-            <div className="text-[10px] text-slate-400 font-medium">Touch Typing Learning Studio</div>
+            <div className="text-[10px] text-slate-400 font-medium">Touch Typing Professional Academy</div>
           </div>
         </div>
 

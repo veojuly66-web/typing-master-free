@@ -160,7 +160,7 @@ export default function App() {
       <footer className="bg-slate-950 border-t border-slate-800 py-8 px-4 text-center text-xs text-slate-500">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-300">Typing Master Pro Next-Gen</span>
+            <span className="font-bold text-slate-300">Pankaj Typing Pro</span>
             <span>•</span>
             <span className="text-amber-400 font-medium">100% Free Lifetime Touch Typing Academy</span>
           </div>

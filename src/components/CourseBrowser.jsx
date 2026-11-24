@@ -17,7 +17,7 @@ export default function CourseBrowser({ completedLessons = {}, onStartLesson }) 
             <span>Structured Touch Typing Curriculum</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-            Typing Master Step-by-Step Courses
+            Pankaj Typing Step-by-Step Courses
           </h1>
           <p className="text-sm sm:text-base text-slate-300 mt-2 max-w-xl">
             From complete beginner on the Home Row to 80+ WPM typing virtuoso. Every lesson is interactive with real-time finger placement guidance.
