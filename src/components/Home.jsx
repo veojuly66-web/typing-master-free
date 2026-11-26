@@ -199,7 +199,7 @@ export default function Home({ completedLessons = {} }) {
                   return (
                     <span
                       key={k + kIdx}
-                      className={`keycap h-8 flex-1 text-xs transition-colors ${
+                      className={`keycap h-8 flex-1 text-xs ${
                         isActive
                           ? '!bg-accent !text-white !border-accent-hover'
                           : 'text-text-muted'

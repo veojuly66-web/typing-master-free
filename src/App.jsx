@@ -427,7 +427,7 @@ function MainApp() {
         {routeInfo.page === 'practice' && (
           <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading adaptive practice studio...</div>}>
             <AdaptivePractice
-              onStartDrill={(drill) => {
+              onStartCustom={(drill) => {
                 handleStartLesson(drill);
               }}
               onFocusChange={setIsTypingFocused}
@@ -494,12 +494,66 @@ function MainApp() {
   );
 }
 
+class AppErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+
+  componentDidCatch(error, info) {
+    console.error('App ErrorBoundary caught:', error, info);
+  }
+
+  handleRecover = async () => {
+    try {
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map((r) => r.unregister()));
+      }
+      if ('caches' in window) {
+        const names = await caches.keys();
+        await Promise.all(names.map((n) => caches.delete(n)));
+      }
+    } catch (e) {}
+    window.location.reload();
+  };
+
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-bg text-text px-4">
+          <div className="max-w-md w-full p-6 rounded-card bg-surface border border-border shadow-subtle text-center">
+            <h1 className="text-lg font-semibold text-text mb-2">Something interrupted rendering</h1>
+            <p className="text-xs text-text-muted mb-4 leading-relaxed">
+              Clear cached app files and reload to load the latest version cleanly.
+            </p>
+            <button
+              type="button"
+              onClick={this.handleRecover}
+              className="inline-flex items-center justify-center px-4 h-9 rounded-btn bg-accent text-white text-xs font-medium"
+            >
+              Reset cache &amp; reload
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
   return (
-    <AuthProvider>
-      <I18nProvider>
-        <MainApp />
-      </I18nProvider>
-    </AuthProvider>
+    <AppErrorBoundary>
+      <AuthProvider>
+        <I18nProvider>
+          <MainApp />
+        </I18nProvider>
+      </AuthProvider>
+    </AppErrorBoundary>
   );
 }
