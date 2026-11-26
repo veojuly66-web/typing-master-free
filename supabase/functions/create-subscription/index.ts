@@ -1,5 +1,5 @@
 // Supabase Edge Function: create-subscription
-// Creates a Razorpay recurring subscription for logged in user (Monthly or Yearly)
+// Creates a Razorpay recurring subscription for logged-in user (pro_monthly or pro_yearly)
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -24,23 +24,29 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Verify JWT
     const token = authHeader.replace('Bearer ', '');
     const { data: { user }, error: userError } = await supabase.auth.getUser(token);
     if (userError || !user) {
       return new Response(JSON.stringify({ error: 'Unauthorized user' }), { status: 401, headers: corsHeaders });
     }
 
-    const { planId, totalCount = 12 } = await req.json();
+    const { plan = 'pro_monthly' } = await req.json();
+    if (plan !== 'pro_monthly' && plan !== 'pro_yearly') {
+      return new Response(JSON.stringify({ error: 'Subscriptions are only supported for pro_monthly and pro_yearly' }), { status: 400, headers: corsHeaders });
+    }
 
+    const razorpayPlanId = plan === 'pro_yearly'
+      ? Deno.env.get('RAZORPAY_PLAN_ID_YEARLY')
+      : Deno.env.get('RAZORPAY_PLAN_ID_MONTHLY');
+
+    const totalCount = plan === 'pro_yearly' ? 10 : 120; // up to 10 years
     const razorpayKeyId = Deno.env.get('RAZORPAY_KEY_ID') || Deno.env.get('VITE_RAZORPAY_KEY_ID');
     const razorpayKeySecret = Deno.env.get('RAZORPAY_KEY_SECRET');
 
-    if (!razorpayKeyId || !razorpayKeySecret) {
-      return new Response(JSON.stringify({ error: 'Razorpay keys not configured on server' }), { status: 500, headers: corsHeaders });
+    if (!razorpayKeyId || !razorpayKeySecret || !razorpayPlanId) {
+      return new Response(JSON.stringify({ error: 'Razorpay subscription plans not configured on server' }), { status: 500, headers: corsHeaders });
     }
 
-    // Call Razorpay API to create subscription
     const basicAuth = btoa(`${razorpayKeyId}:${razorpayKeySecret}`);
     const rzpRes = await fetch('https://api.razorpay.com/v1/subscriptions', {
       method: 'POST',
@@ -49,13 +55,14 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        plan_id: planId,
+        plan_id: razorpayPlanId,
         total_count: totalCount,
         quantity: 1,
         customer_notify: 1,
         notes: {
           user_id: user.id,
-          user_email: user.email
+          user_email: user.email,
+          plan
         }
       })
     });

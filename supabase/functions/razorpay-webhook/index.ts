@@ -57,18 +57,27 @@ serve(async (req) => {
       const subEntity = payload.subscription.entity;
       const notes = subEntity.notes || {};
       const userId = notes.user_id;
+      const plan = notes.plan || 'pro_monthly';
 
       if (userId) {
-        const periodEnd = new Date(subEntity.current_end * 1000);
+        const now = new Date();
+        const fallbackEnd = new Date(now);
+        if (plan === 'pro_yearly') fallbackEnd.setFullYear(now.getFullYear() + 1);
+        else fallbackEnd.setMonth(now.getMonth() + 1);
+
+        const periodEnd = subEntity.current_end ? new Date(subEntity.current_end * 1000) : fallbackEnd;
         await supabase
           .from('subscriptions')
-          .update({
+          .upsert({
+            user_id: userId,
+            plan,
             status: 'active',
             razorpay_subscription_id: subEntity.id,
+            current_period_start: now.toISOString(),
             current_period_end: periodEnd.toISOString(),
-            updated_at: new Date().toISOString()
-          })
-          .eq('user_id', userId);
+            cancel_at_period_end: false,
+            updated_at: now.toISOString()
+          }, { onConflict: 'user_id' });
       }
     }
 

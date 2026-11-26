@@ -96,12 +96,23 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Could not verify payment with Razorpay' }), { status: 400, headers: corsHeaders });
     }
 
-    const verifiedPlan = paymentData.notes?.plan || requestedPlan;
+    let authoritativeNotes = paymentData.notes || {};
+    if (razorpay_subscription_id && !authoritativeNotes.user_id) {
+      const subRes = await fetch(`https://api.razorpay.com/v1/subscriptions/${encodeURIComponent(razorpay_subscription_id)}`, {
+        headers: { 'Authorization': `Basic ${basicAuth}` }
+      });
+      if (subRes.ok) {
+        const subData = await subRes.json();
+        authoritativeNotes = subData.notes || authoritativeNotes;
+      }
+    }
+
+    const verifiedPlan = authoritativeNotes.plan || requestedPlan;
     const expectedAmount = PLAN_PRICES_PAISE[verifiedPlan];
     if (!expectedAmount || paymentData.amount < expectedAmount || paymentData.currency !== 'INR') {
       return new Response(JSON.stringify({ error: 'Payment amount does not match selected plan' }), { status: 400, headers: corsHeaders });
     }
-    if (paymentData.notes?.user_id && paymentData.notes.user_id !== user.id) {
+    if (authoritativeNotes.user_id && authoritativeNotes.user_id !== user.id) {
       return new Response(JSON.stringify({ error: 'Payment ownership mismatch' }), { status: 403, headers: corsHeaders });
     }
     if (paymentData.status !== 'captured' && paymentData.status !== 'authorized') {

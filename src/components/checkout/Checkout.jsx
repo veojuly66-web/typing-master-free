@@ -50,24 +50,41 @@ export default function Checkout() {
         return;
       }
 
-      // Create server-side Razorpay Order so signature & amount are verified end-to-end
-      const { data: orderData, error: orderError } = await supabase.functions.invoke('create-order', {
-        body: { plan: planKey }
-      });
+      let checkoutOrderOrSub = {};
 
-      if (orderError || !orderData?.id) {
-        throw new Error(orderError?.message || orderData?.error || 'Could not create Razorpay order');
+      // Use recurring Razorpay Subscriptions for monthly/yearly when subscription plans exist on server;
+      // fall back to one-time order automatically (or always use order for examPack)
+      if (planKey === 'pro_monthly' || planKey === 'pro_yearly') {
+        const { data: subData, error: subErr } = await supabase.functions.invoke('create-subscription', {
+          body: { plan: planKey }
+        });
+        if (!subErr && subData?.id) {
+          checkoutOrderOrSub = { subscription_id: subData.id };
+        }
+      }
+
+      if (!checkoutOrderOrSub.subscription_id) {
+        const { data: orderData, error: orderError } = await supabase.functions.invoke('create-order', {
+          body: { plan: planKey }
+        });
+
+        if (orderError || !orderData?.id) {
+          throw new Error(orderError?.message || orderData?.error || 'Could not create Razorpay order');
+        }
+        checkoutOrderOrSub = {
+          order_id: orderData.id,
+          amount: orderData.amount,
+          currency: orderData.currency || 'INR'
+        };
       }
 
       // Live Razorpay options
       const options = {
         key: razorpayKey,
-        order_id: orderData.id,
-        amount: orderData.amount,
-        currency: orderData.currency || 'INR',
+        ...checkoutOrderOrSub,
         name: BRAND.name,
         description: `${plan.name} Subscription`,
-        image: `${window.location.origin}/icon.png`,
+        image: new URL('icon.png', window.location.href).href,
         prefill: {
           name: profile?.full_name || '',
           email: user?.email || '',
@@ -81,7 +98,8 @@ export default function Checkout() {
             const { error } = await supabase.functions.invoke('verify-payment', {
               body: {
                 razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_order_id: response.razorpay_order_id,
+                razorpay_order_id: response.razorpay_order_id || null,
+                razorpay_subscription_id: response.razorpay_subscription_id || null,
                 razorpay_signature: response.razorpay_signature,
                 plan: planKey
               }
