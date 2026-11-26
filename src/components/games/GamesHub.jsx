@@ -1,22 +1,25 @@
 import React, { useState } from 'react';
 import WordBubblesGame from './WordBubblesGame';
 import WordAttackGame from './WordAttackGame';
+import SpeedRaceGame from './SpeedRaceGame';
+import { Card, Button, Badge } from '../ui';
 import { ArrowLeft, Play } from 'lucide-react';
 
 export default function GamesHub() {
-  const [activeGame, setActiveGame] = useState(null); // 'bubbles' | 'attack' | null
+  const [activeGame, setActiveGame] = useState(null); // 'bubbles' | 'attack' | 'race' | null
 
   if (activeGame === 'bubbles') {
     return (
       <div className="max-w-content mx-auto py-6 px-4">
-        <button
-          type="button"
+        <Button
+          size="sm"
+          variant="secondary"
+          className="mb-4"
           onClick={() => setActiveGame(null)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-paper-border text-ink-muted hover:text-ink text-xs font-medium transition-colors mb-4"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Games</span>
-        </button>
+        </Button>
         <WordBubblesGame onBack={() => setActiveGame(null)} />
       </div>
     );
@@ -25,15 +28,33 @@ export default function GamesHub() {
   if (activeGame === 'attack') {
     return (
       <div className="max-w-content mx-auto py-6 px-4">
-        <button
-          type="button"
+        <Button
+          size="sm"
+          variant="secondary"
+          className="mb-4"
           onClick={() => setActiveGame(null)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-paper-border text-ink-muted hover:text-ink text-xs font-medium transition-colors mb-4"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Games</span>
-        </button>
+        </Button>
         <WordAttackGame onBack={() => setActiveGame(null)} />
+      </div>
+    );
+  }
+
+  if (activeGame === 'race') {
+    return (
+      <div className="max-w-content mx-auto py-6 px-4">
+        <Button
+          size="sm"
+          variant="secondary"
+          className="mb-4"
+          onClick={() => setActiveGame(null)}
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Back to Games</span>
+        </Button>
+        <SpeedRaceGame onBack={() => setActiveGame(null)} />
       </div>
     );
   }
@@ -42,117 +63,129 @@ export default function GamesHub() {
     <div className="max-w-content mx-auto py-8 md:py-12 px-4">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-semibold text-ink tracking-tight mb-2">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-text tracking-tight mb-2">
           Typing Games
         </h1>
-        <p className="text-sm sm:text-base text-ink-muted max-w-2xl">
+        <p className="text-sm sm:text-base text-text-muted max-w-2xl">
           Sharpen reaction time, peripheral letter recognition, and word-burst speed through interactive typing practice.
         </p>
       </div>
 
-      {/* 2 Game Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* 3 Game Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Game 1: Word Bubbles */}
-        <div className="bg-paper-surface border border-paper-border rounded-card p-6 shadow-subtle flex flex-col justify-between">
+        <Card className="flex flex-col justify-between" hover>
           <div>
-            {/* Visual Preview / Thumbnail */}
-            <div className="h-36 rounded-card bg-paper border border-paper-border flex flex-col items-center justify-center p-4 mb-5 relative overflow-hidden select-none">
+            <div className="h-32 rounded-btn bg-surface-2 border border-border flex flex-col items-center justify-center p-4 mb-4 select-none relative">
               <div className="flex gap-2 mb-2">
-                <span className="px-3 py-1 rounded-full bg-paper-surface border border-paper-border font-mono text-xs text-ink shadow-subtle">
+                <span className="px-2.5 py-0.5 rounded-full bg-surface border border-border font-mono text-xs text-text shadow-subtle">
                   cloud
                 </span>
-                <span className="px-3 py-1 rounded-full bg-accent-soft text-accent border border-accent/30 font-mono text-xs font-semibold">
+                <span className="px-2.5 py-0.5 rounded-full bg-accent-soft text-accent border border-accent/20 font-mono text-xs font-semibold">
                   swift
                 </span>
               </div>
-              <div className="flex gap-2">
-                <span className="px-3 py-1 rounded-full bg-paper-surface border border-paper-border font-mono text-xs text-ink shadow-subtle">
-                  stream
-                </span>
-              </div>
-              <div className="absolute bottom-2 text-[10px] text-ink-muted font-mono">
-                Type words before they touch the bottom
-              </div>
+              <span className="text-2xs text-text-muted font-mono mt-1">Pop words before they drop</span>
             </div>
 
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] px-2 py-0.5 rounded bg-paper border border-paper-border text-ink-muted font-medium">
-                Reaction &amp; Rhythm
-              </span>
-              <span className="text-xs text-ink-muted font-mono">
-                High score: {localStorage.getItem('tm_bubbles_high') || 0}
+              <Badge variant="default">Rhythm &amp; Reflexes</Badge>
+              <span className="text-2xs text-text-muted font-mono">
+                Best: {localStorage.getItem('tm_bubbles_high') || 0}
               </span>
             </div>
 
-            <h2 className="text-lg font-semibold text-ink mb-1.5">
+            <h2 className="text-base font-semibold text-text mb-1">
               Word Bubbles
             </h2>
-            <p className="text-xs sm:text-sm text-ink-muted leading-relaxed">
+            <p className="text-xs text-text-muted leading-relaxed">
               Words descend at increasing velocities. Type matching words accurately to pop bubbles before they hit the base line.
             </p>
           </div>
 
-          <div className="pt-6 mt-6 border-t border-paper-border flex items-center justify-between">
-            <span className="text-xs text-ink-muted">Difficulty: Progressive</span>
-            <button
-              type="button"
-              onClick={() => setActiveGame('bubbles')}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-btn bg-accent hover:bg-accent-hover text-white text-xs font-medium transition-colors shadow-subtle"
-            >
+          <div className="pt-4 mt-4 border-t border-border flex items-center justify-between">
+            <span className="text-2xs text-text-muted">Difficulty: Progressive</span>
+            <Button size="sm" variant="primary" onClick={() => setActiveGame('bubbles')}>
               <Play className="w-3.5 h-3.5" />
-              <span>Play Bubbles</span>
-            </button>
+              <span>Play</span>
+            </Button>
           </div>
-        </div>
+        </Card>
 
         {/* Game 2: Word Attack */}
-        <div className="bg-paper-surface border border-paper-border rounded-card p-6 shadow-subtle flex flex-col justify-between">
+        <Card className="flex flex-col justify-between" hover>
           <div>
-            {/* Visual Preview / Thumbnail */}
-            <div className="h-36 rounded-card bg-paper border border-paper-border flex flex-col items-center justify-center p-4 mb-5 relative overflow-hidden select-none">
-              <div className="flex gap-3 mb-3">
-                <span className="px-2.5 py-1 rounded-btn bg-paper-surface border border-paper-border font-mono text-xs text-ink">
-                  laser
+            <div className="h-32 rounded-btn bg-surface-2 border border-border flex flex-col items-center justify-center p-4 mb-4 select-none relative">
+              <div className="flex gap-2 mb-2">
+                <span className="px-2.5 py-0.5 rounded-btn bg-surface border border-border font-mono text-xs text-text">
+                  vector
                 </span>
-                <span className="px-2.5 py-1 rounded-btn bg-paper-surface border border-type-error font-mono text-xs text-type-error">
+                <span className="px-2.5 py-0.5 rounded-btn bg-surface border border-error font-mono text-xs text-error">
                   pulse
                 </span>
               </div>
-              <div className="w-48 h-0.5 bg-accent/40 rounded-full" />
-              <div className="absolute bottom-2 text-[10px] text-ink-muted font-mono">
-                Defend the core shield
-              </div>
+              <span className="text-2xs text-text-muted font-mono mt-1">Defend shield integrity</span>
             </div>
 
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] px-2 py-0.5 rounded bg-paper border border-paper-border text-ink-muted font-medium">
-                Speed Defense
-              </span>
-              <span className="text-xs text-ink-muted font-mono">
-                High score: {localStorage.getItem('tm_attack_high') || 0}
+              <Badge variant="default">Action Defense</Badge>
+              <span className="text-2xs text-text-muted font-mono">
+                Best: {localStorage.getItem('tm_attack_high') || 0}
               </span>
             </div>
 
-            <h2 className="text-lg font-semibold text-ink mb-1.5">
+            <h2 className="text-base font-semibold text-text mb-1">
               Word Attack: Defender
             </h2>
-            <p className="text-xs sm:text-sm text-ink-muted leading-relaxed">
-              Descending drones target your perimeter. Strike keys rapidly to eliminate incoming targets before shield integrity is compromised.
+            <p className="text-xs text-text-muted leading-relaxed">
+              Descending targets converge on your core. Strike keys rapidly to neutralize incoming threats before shield breach.
             </p>
           </div>
 
-          <div className="pt-6 mt-6 border-t border-paper-border flex items-center justify-between">
-            <span className="text-xs text-ink-muted">Difficulty: Challenging</span>
-            <button
-              type="button"
-              onClick={() => setActiveGame('attack')}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-btn bg-accent hover:bg-accent-hover text-white text-xs font-medium transition-colors shadow-subtle"
-            >
+          <div className="pt-4 mt-4 border-t border-border flex items-center justify-between">
+            <span className="text-2xs text-text-muted">Difficulty: Challenging</span>
+            <Button size="sm" variant="primary" onClick={() => setActiveGame('attack')}>
               <Play className="w-3.5 h-3.5" />
-              <span>Play Defender</span>
-            </button>
+              <span>Play</span>
+            </Button>
           </div>
-        </div>
+        </Card>
+
+        {/* Game 3: Speed Race */}
+        <Card className="flex flex-col justify-between" hover>
+          <div>
+            <div className="h-32 rounded-btn bg-surface-2 border border-border flex flex-col items-center justify-center p-4 mb-4 select-none relative">
+              <div className="flex flex-col gap-1.5 w-full px-4">
+                <div className="h-2 w-3/4 bg-accent rounded-full" />
+                <div className="h-2 w-1/2 bg-border rounded-full" />
+                <div className="h-2 w-2/3 bg-border rounded-full" />
+              </div>
+              <span className="text-2xs text-text-muted font-mono mt-3">Race against 3 computer drivers</span>
+            </div>
+
+            <div className="flex items-center justify-between mb-2">
+              <Badge variant="accent">New</Badge>
+              <span className="text-2xs text-text-muted font-mono">
+                Multi-Lane
+              </span>
+            </div>
+
+            <h2 className="text-base font-semibold text-text mb-1">
+              Speed Race
+            </h2>
+            <p className="text-xs text-text-muted leading-relaxed">
+              Race 3 computer cars calibrated to test your speed stamina. Type each word cleanly to accelerate across the finish line.
+            </p>
+          </div>
+
+          <div className="pt-4 mt-4 border-t border-border flex items-center justify-between">
+            <span className="text-2xs text-text-muted">Difficulty: Competitive</span>
+            <Button size="sm" variant="primary" onClick={() => setActiveGame('race')}>
+              <Play className="w-3.5 h-3.5" />
+              <span>Play</span>
+            </Button>
+          </div>
+        </Card>
       </div>
     </div>
   );
