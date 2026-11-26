@@ -11,7 +11,6 @@ export default function Account() {
   const [msg, setMsg] = useState('');
 
   if (!user) {
-    window.location.href = '#/login';
     return null;
   }
 

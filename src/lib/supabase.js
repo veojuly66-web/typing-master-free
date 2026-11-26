@@ -33,5 +33,9 @@ export const supabase = isSupabaseConfigured
         insert: async () => ({ error: null }),
         upsert: async () => ({ error: null }),
         update: () => ({ eq: async () => ({ error: null }) })
-      })
+      }),
+      rpc: async () => ({ data: null, error: null }),
+      functions: {
+        invoke: async () => ({ data: null, error: { message: 'Supabase credentials not configured yet.' } })
+      }
     };

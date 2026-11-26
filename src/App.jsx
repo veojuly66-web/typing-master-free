@@ -33,6 +33,7 @@ const ExamHub = lazy(() => import('./components/exams/ExamHub'));
 const ExamDetailPage = lazy(() => import('./components/exams/ExamDetailPage'));
 const Login = lazy(() => import('./components/auth/Login'));
 const Account = lazy(() => import('./components/auth/Account'));
+const ProtectedRoute = lazy(() => import('./components/auth/ProtectedRoute'));
 const Checkout = lazy(() => import('./components/checkout/Checkout'));
 const AdminPanel = lazy(() => import('./components/admin/AdminPanel'));
 const CertificateVerify = lazy(() => import('./components/CertificateVerify'));
@@ -372,19 +373,25 @@ function MainApp() {
 
         {routeInfo.page === 'account' && (
           <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading account...</div>}>
-            <Account />
+            <ProtectedRoute redirectPath="account">
+              <Account />
+            </ProtectedRoute>
           </Suspense>
         )}
 
         {routeInfo.page === 'checkout' && (
           <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading checkout...</div>}>
-            <Checkout />
+            <ProtectedRoute redirectPath={`checkout${window.location.hash.includes('?') ? '?' + window.location.hash.split('?')[1] : ''}`}>
+              <Checkout />
+            </ProtectedRoute>
           </Suspense>
         )}
 
         {routeInfo.page === 'admin' && (
           <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading admin desk...</div>}>
-            <AdminPanel />
+            <ProtectedRoute requireAdmin redirectPath="admin">
+              <AdminPanel />
+            </ProtectedRoute>
           </Suspense>
         )}
 

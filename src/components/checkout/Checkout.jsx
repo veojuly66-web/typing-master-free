@@ -50,11 +50,21 @@ export default function Checkout() {
         return;
       }
 
+      // Create server-side Razorpay Order so signature & amount are verified end-to-end
+      const { data: orderData, error: orderError } = await supabase.functions.invoke('create-order', {
+        body: { plan: planKey }
+      });
+
+      if (orderError || !orderData?.id) {
+        throw new Error(orderError?.message || orderData?.error || 'Could not create Razorpay order');
+      }
+
       // Live Razorpay options
       const options = {
         key: razorpayKey,
-        amount: plan.price * 100, // in paise
-        currency: 'INR',
+        order_id: orderData.id,
+        amount: orderData.amount,
+        currency: orderData.currency || 'INR',
         name: BRAND.name,
         description: `${plan.name} Subscription`,
         image: `${window.location.origin}/icon.png`,
@@ -67,14 +77,13 @@ export default function Checkout() {
         },
         handler: async function (response) {
           try {
-            // Verify payment on server
-            const { data, error } = await supabase.functions.invoke('verify-payment', {
+            // Verify payment on server against Razorpay API
+            const { error } = await supabase.functions.invoke('verify-payment', {
               body: {
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_signature: response.razorpay_signature,
-                plan: planKey,
-                amount: plan.price * 100
+                plan: planKey
               }
             });
 

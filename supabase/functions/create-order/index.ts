@@ -1,5 +1,5 @@
 // Supabase Edge Function: create-order
-// Creates a one-time Razorpay order for Exam Pack (₹249)
+// Creates a one-time Razorpay order with server-authoritative pricing
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -7,6 +7,13 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+// Server-side authoritative plan pricing in paise (never trust client-supplied amounts)
+const PLAN_PRICES_PAISE: Record<string, number> = {
+  pro_monthly: 9900,
+  pro_yearly: 49900,
+  exam_pack_3m: 24900,
 };
 
 serve(async (req) => {
@@ -30,7 +37,11 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Unauthorized user' }), { status: 401, headers: corsHeaders });
     }
 
-    const { amount = 24900, currency = 'INR', plan = 'exam_pack_3m' } = await req.json();
+    const { plan = 'exam_pack_3m' } = await req.json();
+    const amount = PLAN_PRICES_PAISE[plan];
+    if (!amount) {
+      return new Response(JSON.stringify({ error: 'Invalid plan selected' }), { status: 400, headers: corsHeaders });
+    }
 
     const razorpayKeyId = Deno.env.get('RAZORPAY_KEY_ID') || Deno.env.get('VITE_RAZORPAY_KEY_ID');
     const razorpayKeySecret = Deno.env.get('RAZORPAY_KEY_SECRET');
@@ -50,7 +61,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         amount,
-        currency,
+        currency: 'INR',
         receipt,
         notes: {
           user_id: user.id,

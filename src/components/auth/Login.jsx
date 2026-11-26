@@ -1,11 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../../lib/auth';
 import { isSupabaseConfigured } from '../../lib/supabase';
 import { Card, Button, Badge } from '../ui';
 import { Mail, ArrowRight, ShieldCheck, Check, AlertCircle } from 'lucide-react';
 
+function getPostLoginTarget() {
+  const query = window.location.hash.split('?')[1] || '';
+  const params = new URLSearchParams(query);
+  const rawRedirect = params.get('redirect');
+  if (!rawRedirect) return 'account';
+
+  // Sanitize to internal hash route (prevent open redirect to external URLs)
+  const sanitized = rawRedirect.replace(/^#\/?/, '');
+  if (!sanitized || sanitized.includes('://') || sanitized.startsWith('//')) {
+    return 'account';
+  }
+  const plan = params.get('plan');
+  if (sanitized === 'checkout' && plan && !sanitized.includes('plan=')) {
+    return `checkout?plan=${encodeURIComponent(plan)}`;
+  }
+  return sanitized;
+}
+
 export default function Login() {
-  const { user, signInWithGoogle, signInWithOtp, verifyOtp } = useAuth();
+  const { user, loading: authLoading, signInWithGoogle, signInWithOtp, verifyOtp } = useAuth();
   const [email, setEmail] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [otpToken, setOtpToken] = useState('');
@@ -13,8 +31,15 @@ export default function Login() {
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  if (user) {
-    window.location.href = '#/account';
+  const redirectTarget = useMemo(() => getPostLoginTarget(), []);
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      window.location.hash = `#/${redirectTarget}`;
+    }
+  }, [authLoading, user, redirectTarget]);
+
+  if (!authLoading && user) {
     return null;
   }
 
@@ -22,7 +47,7 @@ export default function Login() {
     try {
       setLoading(true);
       setErrorMsg('');
-      const { error } = await signInWithGoogle();
+      const { error } = await signInWithGoogle(redirectTarget);
       if (error) throw error;
     } catch (err) {
       setErrorMsg(err.message || 'Failed to sign in with Google');
@@ -42,7 +67,7 @@ export default function Login() {
       setLoading(true);
       setErrorMsg('');
       setSuccessMsg('');
-      const { error } = await signInWithOtp(email);
+      const { error } = await signInWithOtp(email, redirectTarget);
       if (error) throw error;
       setOtpSent(true);
       setSuccessMsg('A 6-digit login code has been sent to your email.');
@@ -65,7 +90,7 @@ export default function Login() {
       setErrorMsg('');
       const { error } = await verifyOtp(email, otpToken);
       if (error) throw error;
-      window.location.href = '#/app';
+      window.location.hash = `#/${redirectTarget}`;
     } catch (err) {
       setErrorMsg(err.message || 'Invalid or expired verification code.');
     } finally {

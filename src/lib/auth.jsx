@@ -69,10 +69,16 @@ export function AuthProvider({ children }) {
       const localLessons = Storage.getCompletedLessons();
       const entries = Object.entries(localLessons);
 
+      const inferTrack = (lessonId) => {
+        if (lessonId.startsWith('ins-')) return 'inscript';
+        if (lessonId.startsWith('rem-')) return 'remington';
+        return 'english';
+      };
+
       for (const [lessonId, stats] of entries) {
         await supabase.from('lesson_progress').upsert({
           user_id: userId,
-          track: 'english',
+          track: inferTrack(lessonId),
           lesson_id: lessonId,
           net_wpm: stats.netWpm || 0,
           gross_wpm: stats.grossWpm || 0,
@@ -125,20 +131,26 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
-  const signInWithGoogle = async () => {
+  const buildRedirectUrl = (redirectHash = 'account') => {
+    const cleanHash = String(redirectHash || 'account').replace(/^#\/?/, '');
+    const base = `${window.location.origin}${window.location.pathname}`;
+    return `${base}#/${cleanHash}`;
+  };
+
+  const signInWithGoogle = async (redirectHash = 'account') => {
     return supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin
+        redirectTo: buildRedirectUrl(redirectHash)
       }
     });
   };
 
-  const signInWithOtp = async (email) => {
+  const signInWithOtp = async (email, redirectHash = 'account') => {
     return supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: window.location.origin
+        emailRedirectTo: buildRedirectUrl(redirectHash)
       }
     });
   };
