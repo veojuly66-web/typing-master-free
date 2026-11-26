@@ -81,6 +81,20 @@
   .tabular-nums {
     font-variant-numeric: tabular-nums;
   }
+
+  /* Physical keycap signature detail */
+  .keycap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    box-shadow: 0 1px 1px rgba(28, 27, 25, 0.04);
+  }
 }
 
 /* Reduced motion preference */

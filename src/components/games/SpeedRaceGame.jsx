@@ -212,10 +212,10 @@ export default function SpeedRaceGame({ onBack }) {
               <Flag className="w-4 h-4" />
             </div>
             <div
-              className="absolute left-1 h-6 px-2 rounded-btn bg-accent text-white font-mono text-2xs font-bold flex items-center justify-center transition-all duration-150 shadow-subtle"
+              className="absolute left-1 h-6 px-2 rounded-key bg-accent text-white font-mono text-2xs font-semibold flex items-center justify-center transition-[left] duration-150 shadow-subtle"
               style={{ left: `calc(${userProgress}% * 0.88)` }}
             >
-              🏎 You
+              You
             </div>
           </div>
         </div>
@@ -225,17 +225,17 @@ export default function SpeedRaceGame({ onBack }) {
           <div key={bot.id}>
             <div className="flex items-center justify-between text-2xs text-text-muted font-medium mb-1">
               <span>Lane {bIdx + 2}: {bot.name}</span>
-              <span className="font-mono">{Math.round(bot.progress)}%</span>
+              <span className="font-mono tabular-nums">{Math.round(bot.progress)}%</span>
             </div>
             <div className="relative w-full h-8 bg-surface-2 border border-border rounded-btn overflow-hidden flex items-center px-1">
               <div className="absolute right-2 top-0 bottom-0 flex items-center text-text-muted/40">
-                <Flag className="w-4 h-4" />
+                <Flag className="w-4 h-4" strokeWidth={1.5} />
               </div>
               <div
-                className="absolute left-1 h-6 px-2 rounded-btn bg-surface border border-border text-text font-mono text-2xs font-medium flex items-center justify-center transition-all duration-200"
+                className="absolute left-1 h-6 px-2 rounded-key bg-surface border border-border text-text font-mono text-2xs font-medium flex items-center justify-center transition-[left] duration-200"
                 style={{ left: `calc(${bot.progress}% * 0.88)` }}
               >
-                🚗 {bot.name.split(' ')[0]}
+                {bot.name.split(' ')[0]}
               </div>
             </div>
           </div>
@@ -265,7 +265,7 @@ export default function SpeedRaceGame({ onBack }) {
             Race against 3 computer drivers. Type each word accurately to propel your racer across the finish line.
           </p>
           <Button variant="primary" onClick={startCountdown}>
-            <Play className="w-4 h-4" />
+            <Play className="w-4 h-4" strokeWidth={1.5} />
             <span>Start Race</span>
           </Button>
         </Card>
@@ -273,8 +273,8 @@ export default function SpeedRaceGame({ onBack }) {
 
       {gameState === 'countdown' && (
         <Card className="text-center p-12">
-          <div className="font-mono text-6xl font-bold text-accent animate-bounce">
-            {countdown === 0 ? 'GO!' : countdown}
+          <div className="font-mono text-6xl font-semibold tabular-nums text-accent">
+            {countdown === 0 ? 'Go' : countdown}
           </div>
           <p className="text-xs text-text-muted mt-2">Get ready on the home row</p>
         </Card>
@@ -283,13 +283,13 @@ export default function SpeedRaceGame({ onBack }) {
       {gameState === 'finished' && finalStats && (
         <Card className="text-center p-8">
           <div className="w-12 h-12 mx-auto mb-3 rounded-card bg-accent-soft text-accent flex items-center justify-center">
-            <Trophy className="w-6 h-6" />
+            <Trophy className="w-6 h-6" strokeWidth={1.5} />
           </div>
           <h3 className="text-xl font-semibold text-text mb-1">
-            {finalStats.place === 1 ? '1st Place! Victory!' : `${finalStats.place}th Place Finish`}
+            {finalStats.place === 1 ? '1st Place Finish' : `${finalStats.place}th Place Finish`}
           </h3>
           <p className="text-xs text-text-muted mb-6">
-            {finalStats.place === 1 ? 'Flawless cadence and speed!' : 'Great run! Retake the race to claim first place.'}
+            {finalStats.place === 1 ? 'Steady cadence and clean accuracy' : 'Good run — race again to aim for first place'}
           </p>
 
           <div className="grid grid-cols-3 gap-3 max-w-xs mx-auto mb-6">
@@ -299,7 +299,7 @@ export default function SpeedRaceGame({ onBack }) {
           </div>
 
           <Button variant="primary" onClick={startCountdown}>
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-4 h-4" strokeWidth={1.5} />
             <span>Race Again</span>
           </Button>
         </Card>

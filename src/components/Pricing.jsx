@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BRAND } from '../config/brand';
 import { useAuth } from '../lib/auth';
 import { Card, Button, Badge } from './ui';
-import { Check, Sparkles, HelpCircle, ShieldCheck, ArrowRight, X } from 'lucide-react';
+import { Check, ShieldCheck, ArrowRight, X } from 'lucide-react';
 
 export default function Pricing() {
   const { user, isProUser, subscription } = useAuth();
@@ -40,18 +40,17 @@ export default function Pricing() {
     <div className="max-w-content mx-auto py-12 md:py-20 px-4">
       {/* Title & Tagline */}
       <div className="text-center max-w-2xl mx-auto mb-12">
-        <Badge variant="accent" className="mb-3">Simple, Transparent Pricing</Badge>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-text tracking-tight mb-4">
-          Invest in your typing speed. Pass your exam with confidence.
+          Invest in your typing speed and pass with confidence
         </h1>
         <p className="text-sm sm:text-base text-text-muted leading-relaxed">
-          Start with our generous free plan, or unlock complete government exam simulations, Hindi Inscript & Remington Gail courses, and unlimited certificates.
+          Start with the free curriculum or unlock complete government exam simulations, Hindi Inscript and Remington Gail courses, and verifiable certificates.
         </p>
 
         {/* 7-Day Free Trial Callout */}
-        <div className="inline-flex items-center gap-2 mt-5 px-3 py-1.5 rounded-full bg-accent-soft text-accent text-xs font-semibold border border-accent/20">
-          <ShieldCheck className="w-4 h-4" />
-          <span>All new accounts include 7 days of free Pro access. No card required.</span>
+        <div className="inline-flex items-center gap-2 mt-5 px-3 py-1.5 rounded-btn bg-accent-soft text-accent text-xs font-medium border border-accent/20">
+          <ShieldCheck className="w-4 h-4" strokeWidth={1.5} />
+          <span>All new accounts include 7 days of free Pro access, no card required</span>
         </div>
       </div>
 
@@ -60,11 +59,11 @@ export default function Pricing() {
         {/* Plan 1: Free Starter */}
         <Card className="p-6 flex flex-col justify-between">
           <div>
-            <div className="text-2xs font-semibold uppercase tracking-wider text-text-muted mb-2">
+            <div className="text-xs font-medium text-text-muted mb-2">
               {plans.free.name}
             </div>
             <div className="flex items-baseline gap-1 mb-2">
-              <span className="font-mono text-4xl font-bold text-text">₹0</span>
+              <span className="font-mono text-4xl font-semibold tabular-nums text-text">₹0</span>
               <span className="text-xs text-text-muted font-sans">/ forever</span>
             </div>
             <p className="text-xs text-text-muted leading-relaxed mb-6">
@@ -74,7 +73,7 @@ export default function Pricing() {
             <ul className="space-y-3 text-xs text-text-muted mb-8">
               {plans.free.features.map((feat, idx) => (
                 <li key={idx} className="flex items-start gap-2">
-                  <Check className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
+                  <Check className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" strokeWidth={1.5} />
                   <span>{feat}</span>
                 </li>
               ))}
@@ -94,11 +93,11 @@ export default function Pricing() {
         {/* Plan 2: Pro Monthly */}
         <Card className="p-6 flex flex-col justify-between">
           <div>
-            <div className="text-2xs font-semibold uppercase tracking-wider text-text-muted mb-2">
+            <div className="text-xs font-medium text-text-muted mb-2">
               {plans.monthly.name}
             </div>
             <div className="flex items-baseline gap-1 mb-2">
-              <span className="font-mono text-4xl font-bold text-text">₹99</span>
+              <span className="font-mono text-4xl font-semibold tabular-nums text-text">₹99</span>
               <span className="text-xs text-text-muted font-sans">/ month</span>
             </div>
             <p className="text-xs text-text-muted leading-relaxed mb-6">
@@ -108,7 +107,7 @@ export default function Pricing() {
             <ul className="space-y-3 text-xs text-text-muted mb-8">
               {plans.monthly.features.slice(0, 7).map((feat, idx) => (
                 <li key={idx} className="flex items-start gap-2">
-                  <Check className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
+                  <Check className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" strokeWidth={1.5} />
                   <span>{feat}</span>
                 </li>
               ))}
@@ -126,24 +125,20 @@ export default function Pricing() {
         </Card>
 
         {/* Plan 3: Pro Yearly (Highlighted - Best Value) */}
-        <Card className="p-6 flex flex-col justify-between relative border-pro ring-2 ring-pro bg-surface shadow-md">
-          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-2xs font-bold uppercase tracking-wider bg-pro text-white shadow-subtle">
-              <Sparkles className="w-3 h-3" />
-              <span>{plans.yearly.badge} · {plans.yearly.discountLabel}</span>
-            </span>
-          </div>
-
+        <Card className="p-6 flex flex-col justify-between border-pro ring-1 ring-pro bg-surface shadow-subtle">
           <div>
-            <div className="text-2xs font-semibold uppercase tracking-wider text-pro mb-2 mt-2">
-              {plans.yearly.name}
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <span className="text-xs font-medium text-pro">
+                {plans.yearly.name}
+              </span>
+              <Badge variant="pro">{plans.yearly.badge} · {plans.yearly.discountLabel}</Badge>
             </div>
             <div className="flex items-baseline gap-2 mb-1">
-              <span className="font-mono text-4xl font-bold text-text">₹499</span>
+              <span className="font-mono text-4xl font-semibold tabular-nums text-text">₹499</span>
               <span className="text-xs text-text-muted font-sans">/ year</span>
-              <span className="text-xs text-text-muted line-through">₹1,188</span>
+              <span className="text-xs text-text-muted line-through tabular-nums">₹1,188</span>
             </div>
-            <div className="text-2xs text-accent font-medium mb-3">
+            <div className="text-2xs text-accent font-medium tabular-nums mb-3">
               Only ₹41.58 / month
             </div>
             <p className="text-xs text-text-muted leading-relaxed mb-6">
@@ -152,8 +147,8 @@ export default function Pricing() {
 
             <ul className="space-y-3 text-xs text-text mb-8">
               {plans.yearly.features.map((feat, idx) => (
-                <li key={idx} className="flex items-start gap-2 font-medium">
-                  <Check className="w-3.5 h-3.5 text-pro shrink-0 mt-0.5" />
+                <li key={idx} className="flex items-start gap-2">
+                  <Check className="w-3.5 h-3.5 text-pro shrink-0 mt-0.5" strokeWidth={1.5} />
                   <span>{feat}</span>
                 </li>
               ))}
@@ -167,7 +162,7 @@ export default function Pricing() {
             className="w-full justify-center !bg-pro hover:!bg-pro-hover text-white shadow-subtle"
           >
             <span>Start 7-Day Free Trial</span>
-            <ArrowRight className="w-4 h-4 ml-1" />
+            <ArrowRight className="w-4 h-4 ml-1" strokeWidth={1.5} />
           </Button>
         </Card>
       </div>
@@ -175,11 +170,11 @@ export default function Pricing() {
       {/* Exam Pack Callout Box */}
       <div className="p-6 sm:p-8 rounded-card border border-border bg-surface-2 mb-16 flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
-          <div className="inline-flex items-center gap-1.5 text-2xs font-semibold uppercase tracking-wider text-text-muted mb-1">
+          <div className="inline-flex items-center gap-2 text-xs font-medium text-text-muted mb-1.5">
             <Badge variant="outline">{plans.examPack.badge}</Badge>
-            <span>One-Time Payment</span>
+            <span>One-time payment</span>
           </div>
-          <h2 className="text-xl font-semibold text-text mb-1">
+          <h2 className="text-xl font-semibold text-text tabular-nums mb-1">
             {plans.examPack.name} — ₹249 for 90 Days
           </h2>
           <p className="text-xs sm:text-sm text-text-muted max-w-xl leading-relaxed">
@@ -222,65 +217,65 @@ export default function Pricing() {
               <tr>
                 <td className="py-3 px-4 font-medium text-text">English Touch Typing Lessons</td>
                 <td className="py-3 px-4 text-center text-text-muted">First 2 Levels (12 drills)</td>
-                <td className="py-3 px-4 text-center font-semibold text-pro">All 5 Levels (30+ drills)</td>
+                <td className="py-3 px-4 text-center font-medium text-pro">All 5 Levels (30 drills)</td>
               </tr>
               <tr>
                 <td className="py-3 px-4 font-medium text-text">Hindi Inscript Course</td>
                 <td className="py-3 px-4 text-center text-text-muted">First 2 Levels</td>
-                <td className="py-3 px-4 text-center font-semibold text-pro">All 6 Levels (Full Conjuncts)</td>
+                <td className="py-3 px-4 text-center font-medium text-pro">All 6 Levels (Full Conjuncts)</td>
               </tr>
               <tr>
                 <td className="py-3 px-4 font-medium text-text">Hindi Remington Gail Course (Krutidev)</td>
                 <td className="py-3 px-4 text-center text-text-muted">First 2 Levels</td>
-                <td className="py-3 px-4 text-center font-semibold text-pro">All 6 Levels (Pre-base matras)</td>
+                <td className="py-3 px-4 text-center font-medium text-pro">All 6 Levels (Pre-base matras)</td>
               </tr>
               <tr>
                 <td className="py-3 px-4 font-medium text-text">Government Exam Simulator (SSC/High Court)</td>
                 <td className="py-3 px-4 text-center text-text-muted">1 Preview Test</td>
-                <td className="py-3 px-4 text-center font-semibold text-pro">Unlimited Mock Tests</td>
+                <td className="py-3 px-4 text-center font-medium text-pro">Unlimited Mock Tests</td>
               </tr>
               <tr>
                 <td className="py-3 px-4 font-medium text-text">Official Evaluation Scorecard</td>
                 <td className="py-3 px-4 text-center text-text-muted">Basic</td>
-                <td className="py-3 px-4 text-center font-semibold text-pro">Full / Half Mistake Breakdown</td>
+                <td className="py-3 px-4 text-center font-medium text-pro">Full / Half Mistake Breakdown</td>
               </tr>
               <tr>
                 <td className="py-3 px-4 font-medium text-text">Timed Speed Tests</td>
                 <td className="py-3 px-4 text-center text-text-muted">1-Minute (3 / day)</td>
-                <td className="py-3 px-4 text-center font-semibold text-pro">1, 2, 3, 5, 10 min (Unlimited)</td>
+                <td className="py-3 px-4 text-center font-medium text-pro">1, 2, 3, 5, 10 min (Unlimited)</td>
               </tr>
               <tr>
                 <td className="py-3 px-4 font-medium text-text">Verifiable Certificates (PDF & PNG)</td>
                 <td className="py-3 px-4 text-center text-text-muted">Sample Preview</td>
-                <td className="py-3 px-4 text-center font-semibold text-pro">Unlimited with QR code</td>
+                <td className="py-3 px-4 text-center font-medium text-pro">Unlimited with QR code</td>
               </tr>
               <tr>
                 <td className="py-3 px-4 font-medium text-text">Cross-device Cloud Sync</td>
-                <td className="py-3 px-4 text-center text-text-muted"><X className="w-4 h-4 mx-auto text-text-muted/60" /></td>
-                <td className="py-3 px-4 text-center font-semibold text-pro"><Check className="w-4 h-4 mx-auto text-pro" /></td>
+                <td className="py-3 px-4 text-center text-text-muted"><X className="w-4 h-4 mx-auto text-text-muted/60" strokeWidth={1.5} /></td>
+                <td className="py-3 px-4 text-center font-medium text-pro"><Check className="w-4 h-4 mx-auto text-pro" strokeWidth={1.5} /></td>
               </tr>
               <tr>
                 <td className="py-3 px-4 font-medium text-text">Arcade Games (Speed Race & Attack)</td>
                 <td className="py-3 px-4 text-center text-text-muted">1 Game</td>
-                <td className="py-3 px-4 text-center font-semibold text-pro">All 3 Games</td>
+                <td className="py-3 px-4 text-center font-medium text-pro">All 3 Games</td>
               </tr>
             </tbody>
           </table>
         </div>
       </section>
 
-      {/* Pricing FAQ Accordion */}
+      {/* Pricing FAQ */}
       <section className="max-w-2xl mx-auto">
         <h2 className="text-xl font-semibold text-text text-center tracking-tight mb-6">
           Frequently Asked Questions
         </h2>
 
-        <div className="space-y-4">
+        <div className="divide-y divide-border border-y border-border">
           {faqList.map((item, idx) => (
-            <Card key={idx} className="p-4">
-              <h3 className="text-sm font-semibold text-text mb-1.5">{item.q}</h3>
+            <div key={idx} className="py-4">
+              <h3 className="text-sm font-semibold text-text mb-1">{item.q}</h3>
               <p className="text-xs text-text-muted leading-relaxed">{item.a}</p>
-            </Card>
+            </div>
           ))}
         </div>
       </section>

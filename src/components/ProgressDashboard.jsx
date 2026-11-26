@@ -1,23 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { Storage } from '../lib/storage';
 import { rankWeakKeys } from '../lib/stats';
+import { COURSES } from '../data/courses';
 import { Card, Button, Badge, StatNumber, Modal } from './ui';
 import { KEYBOARD_ROWS } from '../utils/fingerMap';
-import { Download, Upload, RotateCcw, Award, CheckCircle, Flame, Target, Trophy, Clock } from 'lucide-react';
+import {
+  Download,
+  Upload,
+  RotateCcw,
+  Award,
+  CheckCircle,
+  Flame,
+  Target,
+  Trophy,
+  Clock,
+  Keyboard,
+  Zap,
+  TrendingUp,
+  ShieldCheck,
+  Hourglass,
+  Gauge,
+  FileCheck
+} from 'lucide-react';
 
 const ACHIEVEMENTS_LIST = [
-  { id: 'first_drill', title: 'First Keystroke', desc: 'Complete your first interactive typing drill', icon: '🎯' },
-  { id: 'home_row_hero', title: 'Home Row Master', desc: 'Complete all drills in Level 1', icon: '⌨️' },
-  { id: 'speed_40', title: '40 WPM Milestone', desc: 'Reach 40 Net WPM on any lesson or test', icon: '⚡' },
-  { id: 'speed_60', title: '60 WPM Velocity', desc: 'Surpass 60 Net WPM with high accuracy', icon: '🚀' },
-  { id: 'speed_80', title: '80 WPM Professional', desc: 'Join the top tier of touch typists at 80+ WPM', icon: '🏆' },
-  { id: 'pure_precision', title: '100% Pure Accuracy', desc: 'Complete a full lesson with zero mistakes', icon: '💎' },
-  { id: 'practice_30m', title: '30 Minutes Practiced', desc: 'Accumulate 30 total minutes of active typing', icon: '⏱️' },
-  { id: 'practice_1h', title: '1 Hour Dedicated', desc: 'Log 60 minutes of focused keyboard training', icon: '⏳' },
-  { id: 'streak_3d', title: '3-Day Cadence', desc: 'Practice typing for 3 consecutive days', icon: '🔥' },
-  { id: 'streak_7d', title: '7-Day Discipline', desc: 'Maintain an unbroken 7-day practice streak', icon: '🌟' },
-  { id: 'speed_racer', title: 'Race Champion', desc: 'Win first place in the Speed Race game', icon: '🏎️' },
-  { id: 'certified', title: 'Certified Typist', desc: 'Complete a 5-minute timed certification exam', icon: '📜' }
+  { id: 'first_drill', title: 'First Keystroke', desc: 'Complete your first interactive typing drill', icon: Target },
+  { id: 'home_row_hero', title: 'Home Row Master', desc: 'Complete all drills in Level 1', icon: Keyboard },
+  { id: 'speed_40', title: '40 WPM Milestone', desc: 'Reach 40 Net WPM on any lesson or test', icon: Zap },
+  { id: 'speed_60', title: '60 WPM Velocity', desc: 'Surpass 60 Net WPM with high accuracy', icon: TrendingUp },
+  { id: 'speed_80', title: '80 WPM Professional', desc: 'Join the top tier of touch typists at 80+ WPM', icon: Trophy },
+  { id: 'pure_precision', title: '100% Pure Accuracy', desc: 'Complete a full lesson with zero mistakes', icon: ShieldCheck },
+  { id: 'practice_30m', title: '30 Minutes Practiced', desc: 'Accumulate 30 total minutes of active typing', icon: Clock },
+  { id: 'practice_1h', title: '1 Hour Dedicated', desc: 'Log 60 minutes of focused keyboard training', icon: Hourglass },
+  { id: 'streak_3d', title: '3-Day Cadence', desc: 'Practice typing for 3 consecutive days', icon: Flame },
+  { id: 'streak_7d', title: '7-Day Discipline', desc: 'Maintain an unbroken 7-day practice streak', icon: Award },
+  { id: 'speed_racer', title: 'Race Champion', desc: 'Win first place in the Speed Race game', icon: Gauge },
+  { id: 'certified', title: 'Certified Typist', desc: 'Complete a 5-minute timed certification exam', icon: FileCheck }
 ];
 
 export default function ProgressDashboard({ onSelectLesson }) {
@@ -73,7 +91,7 @@ export default function ProgressDashboard({ onSelectLesson }) {
 
     if (heatmapMode === 'error') {
       const errorRate = stats.errors / stats.hits;
-      if (errorRate > 0.25) return 'bg-rose-200 dark:bg-rose-950/70 border-rose-400 text-rose-900 dark:text-rose-200 font-bold';
+      if (errorRate > 0.25) return 'bg-rose-200 dark:bg-rose-950/70 border-rose-400 text-rose-900 dark:text-rose-200 font-semibold';
       if (errorRate > 0.12) return 'bg-amber-100 dark:bg-amber-950/60 border-amber-300 text-amber-900 dark:text-amber-200';
       if (errorRate > 0.05) return 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 text-text';
       return 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-300 text-emerald-800 dark:text-emerald-200';
@@ -165,13 +183,13 @@ export default function ProgressDashboard({ onSelectLesson }) {
         </Card>
 
         <Card className="p-5 flex flex-col justify-between">
-          <StatNumber value={`${completedCount}/30`} label="Lessons Done" />
+          <StatNumber value={`${completedCount}/${COURSES.reduce((sum, c) => sum + c.lessons.length, 0)}`} label="Lessons Done" />
           <div className="text-2xs text-text-muted mt-2">Curriculum progress</div>
         </Card>
 
         {/* Daily Goal Ring */}
         <Card className="p-5 flex flex-col justify-between col-span-2 md:col-span-1">
-          <div className="text-2xs font-semibold uppercase tracking-wider text-text-muted mb-1">
+          <div className="text-xs font-medium text-text-muted mb-1">
             Today's Goal
           </div>
           <div className="flex items-center gap-3">
@@ -183,17 +201,17 @@ export default function ProgressDashboard({ onSelectLesson }) {
                   cx="22"
                   cy="22"
                   r="18"
-                  className="stroke-accent fill-none transition-all duration-300"
+                  className="stroke-accent fill-none transition-[stroke-dashoffset] duration-300 ease-smooth"
                   strokeWidth="3"
                   strokeDasharray="113"
                   strokeDashoffset={113 - (113 * goalPct) / 100}
                   strokeLinecap="round"
                 />
               </svg>
-              <span className="absolute text-2xs font-mono font-bold text-text">{goalPct}%</span>
+              <span className="absolute text-2xs font-mono font-semibold tabular-nums text-text">{goalPct}%</span>
             </div>
             <div>
-              <div className="font-mono text-sm font-semibold text-text">{todayMins}m / {goalMins}m</div>
+              <div className="font-mono text-sm font-semibold tabular-nums text-text">{todayMins}m / {goalMins}m</div>
               <div className="text-2xs text-text-muted">Active practice</div>
             </div>
           </div>
@@ -260,7 +278,7 @@ export default function ProgressDashboard({ onSelectLesson }) {
                 return (
                   <div
                     key={kIdx}
-                    className={`relative flex flex-col items-center justify-center font-mono rounded-btn border text-xs h-10 select-none ${
+                    className={`relative flex flex-col items-center justify-center font-mono keycap text-xs h-10 select-none ${
                       k.width || 'w-10'
                     } ${colorClass} ${k.isSpecial ? 'font-sans text-2xs text-text-muted' : 'font-medium'}`}
                   >
@@ -280,7 +298,7 @@ export default function ProgressDashboard({ onSelectLesson }) {
           <div>
             <div className="flex items-center justify-between pb-3 mb-3 border-b border-border">
               <h3 className="text-sm font-semibold text-text">Weak Key Focus</h3>
-              <span className="text-2xs text-text-muted font-mono">{weakKeys.length} identified</span>
+              <span className="text-2xs text-text-muted font-mono tabular-nums">{weakKeys.length} identified</span>
             </div>
 
             {weakKeys.length === 0 ? (
@@ -292,12 +310,12 @@ export default function ProgressDashboard({ onSelectLesson }) {
                 {weakKeys.map((item) => (
                   <div key={item.key} className="py-2.5 flex items-center justify-between text-xs">
                     <div className="flex items-center gap-3">
-                      <span className="w-7 h-7 rounded-btn bg-surface-2 border border-border font-mono font-bold text-sm text-text flex items-center justify-center uppercase">
+                      <span className="keycap w-7 h-7 font-mono font-medium text-sm text-text flex items-center justify-center uppercase">
                         {item.key}
                       </span>
                       <div>
-                        <div className="font-medium text-text">{item.errors} misses</div>
-                        <div className="text-2xs text-text-muted">{item.avgLatency}ms avg response</div>
+                        <div className="font-medium text-text tabular-nums">{item.errors} misses</div>
+                        <div className="text-2xs text-text-muted tabular-nums">{item.avgLatency}ms avg response</div>
                       </div>
                     </div>
                     <Badge variant={item.errorRate > 0.2 ? 'error' : 'warning'}>
@@ -325,7 +343,7 @@ export default function ProgressDashboard({ onSelectLesson }) {
         <Card className="lg:col-span-7 p-6">
           <div className="flex items-center justify-between pb-3 mb-3 border-b border-border">
             <h3 className="text-sm font-semibold text-text">Recent Speed Tests</h3>
-            <span className="text-2xs text-text-muted font-mono">{history.length} total</span>
+            <span className="text-2xs text-text-muted font-mono tabular-nums">{history.length} total</span>
           </div>
 
           {history.length === 0 ? (
@@ -347,11 +365,11 @@ export default function ProgressDashboard({ onSelectLesson }) {
                   {history.slice(0, 7).map((row, idx) => (
                     <tr key={idx} className="hover:bg-surface-2 transition-colors">
                       <td className="py-2.5 font-medium text-text">{row.testTitle || 'Speed Test'}</td>
-                      <td className="py-2.5 text-text-muted font-mono text-2xs">
+                      <td className="py-2.5 text-text-muted font-mono text-2xs tabular-nums">
                         {row.date ? new Date(row.date).toLocaleDateString() : '—'}
                       </td>
-                      <td className="py-2.5 font-mono font-semibold text-accent">{row.netWpm} WPM</td>
-                      <td className="py-2.5 font-mono text-text">{row.accuracy}%</td>
+                      <td className="py-2.5 font-mono font-semibold tabular-nums text-accent">{row.netWpm} WPM</td>
+                      <td className="py-2.5 font-mono tabular-nums text-text">{row.accuracy}%</td>
                     </tr>
                   ))}
                 </tbody>
@@ -368,7 +386,7 @@ export default function ProgressDashboard({ onSelectLesson }) {
             <h2 className="text-base font-semibold text-text">Achievements</h2>
             <p className="text-xs text-text-muted mt-0.5">Milestones unlocked along your touch-typing journey</p>
           </div>
-          <span className="text-xs font-mono text-text-muted">
+          <span className="text-xs font-mono tabular-nums text-text-muted">
             {achievements.length} / {ACHIEVEMENTS_LIST.length} unlocked
           </span>
         </div>
@@ -376,22 +394,27 @@ export default function ProgressDashboard({ onSelectLesson }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {ACHIEVEMENTS_LIST.map((ach) => {
             const isUnlocked = achievements.includes(ach.id) || (ach.id === 'first_drill' && completedCount > 0);
+            const Icon = ach.icon;
 
             return (
               <div
                 key={ach.id}
-                className={`p-4 rounded-card border transition-all ${
+                className={`p-4 rounded-card border transition-colors duration-150 ${
                   isUnlocked
                     ? 'bg-surface border-accent/40 shadow-subtle'
-                    : 'bg-surface-2 border-border opacity-50'
+                    : 'bg-surface-2 border-border opacity-55'
                 }`}
               >
-                <div className="text-2xl mb-2">{ach.icon}</div>
+                <div className={`w-8 h-8 rounded-btn border flex items-center justify-center mb-2.5 ${
+                  isUnlocked ? 'bg-accent-soft border-accent/20 text-accent' : 'bg-surface border-border text-text-muted'
+                }`}>
+                  <Icon className="w-4 h-4" strokeWidth={1.5} />
+                </div>
                 <div className="text-xs font-semibold text-text mb-0.5">{ach.title}</div>
                 <div className="text-2xs text-text-muted leading-relaxed">{ach.desc}</div>
                 {isUnlocked && (
                   <div className="mt-3 text-2xs text-accent font-medium flex items-center gap-1">
-                    <CheckCircle className="w-3 h-3" />
+                    <CheckCircle className="w-3 h-3" strokeWidth={1.5} />
                     <span>Unlocked</span>
                   </div>
                 )}

@@ -118,7 +118,6 @@ export default function Login() {
       <div className="max-w-md mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <Badge variant="accent" className="mb-2">Student & Aspirant Account</Badge>
           <h1 className="text-2xl sm:text-3xl font-semibold text-text tracking-tight mb-2">
             Sign in to Pankaj Typing
           </h1>
@@ -129,21 +128,21 @@ export default function Login() {
 
         <Card className="p-6 sm:p-8">
           {!isSupabaseConfigured && (
-            <div className="mb-4 p-3 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-2xs text-amber-800 dark:text-amber-300">
+            <div className="mb-4 p-3 rounded-btn bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-2xs text-amber-800 dark:text-amber-300">
               <strong>Dev Mode Notice:</strong> Supabase keys are not set in `.env`. Guests can continue using all free courses and tests completely offline.
             </div>
           )}
 
           {errorMsg && (
-            <div className="mb-4 p-3 rounded bg-rose-50 dark:bg-rose-950/40 border border-rose-300 text-xs text-error flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <div className="mb-4 p-3 rounded-btn bg-rose-50 dark:bg-rose-950/40 border border-rose-300 text-xs text-error flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" strokeWidth={1.5} />
               <span>{errorMsg}</span>
             </div>
           )}
 
           {successMsg && (
-            <div className="mb-4 p-3 rounded bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 text-xs text-emerald-800 dark:text-emerald-300 flex items-start gap-2">
-              <Check className="w-4 h-4 shrink-0 mt-0.5" />
+            <div className="mb-4 p-3 rounded-btn bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 text-xs text-emerald-800 dark:text-emerald-300 flex items-start gap-2">
+              <Check className="w-4 h-4 shrink-0 mt-0.5" strokeWidth={1.5} />
               <span>{successMsg}</span>
             </div>
           )}
@@ -170,7 +169,7 @@ export default function Login() {
 
               <div className="flex items-center gap-3 mb-5">
                 <div className="flex-1 h-px bg-border" />
-                <span className="text-2xs uppercase tracking-wider text-text-muted">or passwordless email</span>
+                <span className="text-xs text-text-muted">or passwordless email</span>
                 <div className="flex-1 h-px bg-border" />
               </div>
             </>
@@ -179,11 +178,11 @@ export default function Login() {
           {!otpSent ? (
             <form onSubmit={handleSendOtp} className="space-y-4">
               <div>
-                <label htmlFor="login-email" className="block text-2xs font-semibold uppercase tracking-wider text-text-muted mb-1.5">
+                <label htmlFor="login-email" className="block text-xs font-medium text-text-muted mb-1.5">
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Mail className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2" strokeWidth={1.5} />
                   <input
                     id="login-email"
                     type="email"
@@ -191,7 +190,7 @@ export default function Login() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="student@example.com"
                     required
-                    className="w-full pl-9 pr-3 py-2 text-xs rounded bg-surface border border-border text-text focus:outline-none focus:border-accent"
+                    className="w-full pl-9 pr-3 py-2 text-xs rounded-input bg-surface border border-border text-text focus:outline-none focus:border-accent"
                   />
                 </div>
               </div>
@@ -204,13 +203,13 @@ export default function Login() {
                 className="w-full justify-center"
               >
                 <span>{loading ? 'Sending code...' : 'Send Login Code'}</span>
-                <ArrowRight className="w-4 h-4 ml-1" />
+                <ArrowRight className="w-4 h-4 ml-1" strokeWidth={1.5} />
               </Button>
             </form>
           ) : (
             <form onSubmit={handleVerifyOtp} className="space-y-4">
               <div>
-                <label htmlFor="login-otp" className="block text-2xs font-semibold uppercase tracking-wider text-text-muted mb-1.5">
+                <label htmlFor="login-otp" className="block text-xs font-medium text-text-muted mb-1.5">
                   Enter 6-Digit Verification Code
                 </label>
                 <input
@@ -221,7 +220,7 @@ export default function Login() {
                   onChange={(e) => setOtpToken(e.target.value)}
                   placeholder="123456"
                   required
-                  className="w-full px-3 py-2 text-center text-lg font-mono tracking-widest rounded bg-surface border border-border text-text focus:outline-none focus:border-accent"
+                  className="w-full px-3 py-2 text-center text-lg font-mono tabular-nums tracking-widest rounded-input bg-surface border border-border text-text focus:outline-none focus:border-accent"
                 />
               </div>
 

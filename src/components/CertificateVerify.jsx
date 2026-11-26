@@ -87,11 +87,11 @@ export default function CertificateVerify({ certId = 'PT-DEMO123' }) {
     <div className="max-w-content mx-auto py-12 md:py-20 px-4 text-center">
       <div className="max-w-lg mx-auto bg-surface border border-border rounded-card p-8 shadow-subtle animate-fadeIn">
         {/* Verified Badge */}
-        <div className="w-16 h-16 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-accent flex items-center justify-center mx-auto mb-4 border border-emerald-300">
-          <CheckCircle2 className="w-8 h-8" />
+        <div className="w-14 h-14 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-accent flex items-center justify-center mx-auto mb-4 border border-emerald-300">
+          <CheckCircle2 className="w-7 h-7" strokeWidth={1.5} />
         </div>
 
-        <span className="text-2xs font-semibold uppercase tracking-wider text-accent bg-accent-soft px-2.5 py-0.5 rounded-full inline-block mb-2">
+        <span className="text-xs font-medium text-accent bg-accent-soft px-2.5 py-0.5 rounded-key inline-block mb-2">
           Authentic Verified Certificate
         </span>
 
@@ -103,10 +103,10 @@ export default function CertificateVerify({ certId = 'PT-DEMO123' }) {
         </p>
 
         {/* Certificate Details Card */}
-        <div className="bg-surface-2 p-5 rounded border border-border text-left space-y-3 text-xs mb-6">
+        <div className="bg-surface-2 p-5 rounded-card border border-border text-left space-y-3 text-xs mb-6">
           <div className="flex justify-between border-b border-border pb-2">
             <span className="text-text-muted">Certificate ID</span>
-            <span className="font-mono font-bold text-text">{cert.id}</span>
+            <span className="font-mono font-semibold tabular-nums text-text">{cert.id}</span>
           </div>
 
           <div className="flex justify-between border-b border-border pb-2">
@@ -121,12 +121,12 @@ export default function CertificateVerify({ certId = 'PT-DEMO123' }) {
 
           <div className="flex justify-between border-b border-border pb-2">
             <span className="text-text-muted">Net Typing Speed</span>
-            <span className="font-mono font-bold text-accent text-sm">{cert.netWpm} WPM</span>
+            <span className="font-mono font-semibold tabular-nums text-accent text-sm">{cert.netWpm} WPM</span>
           </div>
 
           <div className="flex justify-between border-b border-border pb-2">
             <span className="text-text-muted">Accuracy Standard</span>
-            <span className="font-mono font-bold text-text">{cert.accuracy}%</span>
+            <span className="font-mono font-semibold tabular-nums text-text">{cert.accuracy}%</span>
           </div>
 
           <div className="flex justify-between">

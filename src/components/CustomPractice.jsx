@@ -60,7 +60,7 @@ export default function CustomPractice({ onStartCustom }) {
 
       {/* Preset Cards */}
       <div className="mb-8">
-        <div className="text-xs font-semibold uppercase tracking-wider text-ink-muted mb-3">
+        <div className="text-xs font-medium text-ink-muted mb-3">
           Presets
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -71,7 +71,7 @@ export default function CustomPractice({ onStartCustom }) {
                 key={preset.title}
                 type="button"
                 onClick={() => handleApplyPreset(preset)}
-                className={`p-4 rounded-card border text-left transition-all ${
+                className={`p-4 rounded-card border text-left transition-colors duration-150 ease-smooth ${
                   isSelected
                     ? 'bg-paper-surface border-accent shadow-subtle ring-1 ring-accent'
                     : 'bg-paper-surface border-paper-border hover:border-ink-muted/40'
@@ -88,8 +88,8 @@ export default function CustomPractice({ onStartCustom }) {
 
       {/* Text Area Card */}
       <div className="bg-paper-surface border border-paper-border rounded-card p-6 sm:p-8 shadow-subtle">
-        <label htmlFor="custom-input" className="block text-xs font-semibold uppercase tracking-wider text-ink-muted mb-2">
-          Your custom text:
+        <label htmlFor="custom-input" className="block text-xs font-medium text-ink-muted mb-2">
+          Your custom text
         </label>
         <textarea
           id="custom-input"

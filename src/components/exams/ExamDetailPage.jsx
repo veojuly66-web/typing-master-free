@@ -76,43 +76,40 @@ export default function ExamDetailPage({ slug = 'ssc-typing-test' }) {
         href="#/exams"
         className="inline-flex items-center gap-1.5 text-xs text-text-muted hover:text-text font-medium mb-6"
       >
-        <ArrowLeft className="w-3.5 h-3.5" />
+        <ArrowLeft className="w-3.5 h-3.5" strokeWidth={1.5} />
         <span>Back to All Exams</span>
       </a>
 
       {/* Header */}
       <div className="mb-10">
-        <div className="inline-block px-2.5 py-0.5 rounded text-2xs font-semibold uppercase tracking-wider bg-accent-soft text-accent mb-2">
-          Official Pattern Analysis
-        </div>
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-text tracking-tight mb-2">
           {detail.title}
         </h1>
         <p className="text-xs sm:text-sm text-text-muted">
-          Conducted by: <span className="text-text font-medium">{detail.organizer}</span>
+          Conducted by <span className="text-text font-medium">{detail.organizer}</span>
         </p>
       </div>
 
       {/* Grid of Key Exam Parameters */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10 text-xs">
         <Card className="p-4">
-          <span className="text-2xs text-text-muted uppercase tracking-wider block mb-1">Qualifying Speed</span>
-          <span className="font-semibold text-sm text-text">{detail.speedEnglish}</span>
+          <span className="text-xs font-medium text-text-muted block mb-1">Qualifying Speed</span>
+          <span className="font-semibold text-sm tabular-nums text-text">{detail.speedEnglish}</span>
         </Card>
 
         <Card className="p-4">
-          <span className="text-2xs text-text-muted uppercase tracking-wider block mb-1">Hindi Speed (if opted)</span>
-          <span className="font-semibold text-sm text-accent">{detail.speedHindi}</span>
+          <span className="text-xs font-medium text-text-muted block mb-1">Hindi Speed (if opted)</span>
+          <span className="font-semibold text-sm tabular-nums text-accent">{detail.speedHindi}</span>
         </Card>
 
         <Card className="p-4">
-          <span className="text-2xs text-text-muted uppercase tracking-wider block mb-1">Duration</span>
-          <span className="font-semibold text-sm text-text">{detail.duration}</span>
+          <span className="text-xs font-medium text-text-muted block mb-1">Duration</span>
+          <span className="font-semibold text-sm tabular-nums text-text">{detail.duration}</span>
         </Card>
 
         <Card className="p-4">
-          <span className="text-2xs text-text-muted uppercase tracking-wider block mb-1">Max Allowed Errors</span>
-          <span className="font-semibold text-sm text-error">{detail.maxError}</span>
+          <span className="text-xs font-medium text-text-muted block mb-1">Max Allowed Errors</span>
+          <span className="font-semibold text-sm tabular-nums text-error">{detail.maxError}</span>
         </Card>
       </div>
 

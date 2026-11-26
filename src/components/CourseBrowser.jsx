@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { COURSES, getCoursesByTrack } from '../data/courses';
 import { useAuth } from '../lib/auth';
-import { Check, ArrowRight, Play, Lock, Globe, Sparkles, X } from 'lucide-react';
+import { Check, ArrowRight, Play, Lock, Globe, X } from 'lucide-react';
 import PlanBadge from './ui/PlanBadge';
 import ProLock from './ui/ProLock';
 
@@ -72,13 +72,13 @@ export default function CourseBrowser({ completedLessons = {}, onStartLesson }) 
                 key={track.id}
                 type="button"
                 onClick={() => handleTrackChange(track.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-btn text-xs font-medium transition-all whitespace-nowrap border ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-btn text-xs font-medium transition-colors duration-150 whitespace-nowrap border ${
                   isActive
                     ? 'bg-ink text-paper border-ink shadow-subtle'
                     : 'bg-paper-surface border-paper-border text-ink-muted hover:text-ink hover:border-ink-muted/40'
                 }`}
               >
-                <span className={`w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold ${
+                <span className={`w-5 h-5 rounded-key flex items-center justify-center text-[10px] font-semibold ${
                   isActive ? 'bg-paper text-ink' : 'bg-surface-2 text-text-muted'
                 }`}>
                   {track.icon}
@@ -99,9 +99,9 @@ export default function CourseBrowser({ completedLessons = {}, onStartLesson }) 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Column: Course Level List */}
         <aside className="lg:col-span-4 space-y-3">
-          <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-ink-muted px-1 mb-2">
+          <div className="flex items-center justify-between text-xs font-medium text-ink-muted px-1 mb-2">
             <span>Levels ({trackCourses.length})</span>
-            <span className="text-2xs font-normal lowercase">Levels 1-2 free · 3+ Pro</span>
+            <span className="text-2xs font-normal">Levels 1–2 free · 3+ Pro</span>
           </div>
 
           {trackCourses.map((course, idx) => {
@@ -114,7 +114,7 @@ export default function CourseBrowser({ completedLessons = {}, onStartLesson }) 
                 key={course.id}
                 type="button"
                 onClick={() => setSelectedCourseId(course.id)}
-                className={`w-full text-left p-4 rounded-card border transition-all ${
+                className={`w-full text-left p-4 rounded-card border transition-colors duration-150 ${
                   isSelected
                     ? 'bg-paper-surface border-accent shadow-subtle ring-1 ring-accent'
                     : 'bg-paper-surface border-paper-border hover:border-ink-muted/40'
@@ -122,17 +122,17 @@ export default function CourseBrowser({ completedLessons = {}, onStartLesson }) 
               >
                 <div className="flex items-center justify-between mb-1.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-medium text-ink-muted uppercase tracking-wider">
+                    <span className="text-xs font-medium text-ink-muted">
                       Level 0{course.level} · {course.badge}
                     </span>
                     {course.isPro && !isProUser && (
-                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[10px] font-semibold bg-pro-soft text-pro border border-pro/20">
-                        <Lock className="w-2.5 h-2.5" />
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded-key text-[10px] font-semibold bg-pro-soft text-pro border border-pro/20">
+                        <Lock className="w-2.5 h-2.5" strokeWidth={1.5} />
                         PRO
                       </span>
                     )}
                   </div>
-                  <span className="text-xs font-mono text-ink-muted">
+                  <span className="text-xs font-mono tabular-nums text-ink-muted">
                     {completedCount}/{course.lessons.length}
                   </span>
                 </div>
@@ -148,7 +148,7 @@ export default function CourseBrowser({ completedLessons = {}, onStartLesson }) 
                 {/* Progress bar */}
                 <div className="w-full bg-paper border border-paper-border rounded-full h-1.5 overflow-hidden">
                   <div
-                    className="bg-accent h-full transition-all duration-300"
+                    className="bg-accent h-full transition-[width] duration-300"
                     style={{ width: `${progressPct}%` }}
                   />
                 </div>
@@ -199,13 +199,13 @@ export default function CourseBrowser({ completedLessons = {}, onStartLesson }) 
                           {lesson.title}
                         </h3>
                         {isNext && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-white font-medium">
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-key bg-accent text-white font-medium">
                             Next
                           </span>
                         )}
                         {isLocked && (
-                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-pro-soft text-pro border border-pro/20">
-                            <Lock className="w-2.5 h-2.5" />
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-key text-[10px] font-semibold bg-pro-soft text-pro border border-pro/20">
+                            <Lock className="w-2.5 h-2.5" strokeWidth={1.5} />
                             Pro
                           </span>
                         )}
@@ -214,29 +214,29 @@ export default function CourseBrowser({ completedLessons = {}, onStartLesson }) 
                       {/* Real Keys Chips or Review Tag */}
                       <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
                         {lesson.isReview ? (
-                          <span className="text-[11px] px-2 py-0.5 rounded bg-paper border border-paper-border text-ink-muted font-medium">
+                          <span className="text-[11px] px-2 py-0.5 rounded-key bg-paper border border-paper-border text-ink-muted font-medium">
                             {lesson.reviewLabel || 'Review'}
                           </span>
                         ) : lesson.keysTaught && lesson.keysTaught.length > 0 ? (
                           <>
-                            <span className="text-[11px] text-ink-muted">Keys:</span>
+                            <span className="text-[11px] text-ink-muted">Keys</span>
                             {lesson.keysTaught.map((k, kIdx) => (
                               <span
                                 key={kIdx}
-                                className="px-1.5 py-0.5 rounded bg-paper border border-paper-border font-mono text-[11px] text-ink"
+                                className="keycap px-1.5 py-0.5 font-mono text-[11px] text-ink"
                               >
                                 {k === ' ' ? 'Space' : k}
                               </span>
                             ))}
                           </>
                         ) : (
-                          <span className="text-[11px] px-2 py-0.5 rounded bg-paper border border-paper-border text-ink-muted font-medium">
+                          <span className="text-[11px] px-2 py-0.5 rounded-key bg-paper border border-paper-border text-ink-muted font-medium">
                             Practice
                           </span>
                         )}
 
                         <span className="text-ink-muted text-xs mx-1">·</span>
-                        <span className="text-[11px] text-ink-muted">Target: {lesson.targetWpm} WPM</span>
+                        <span className="text-[11px] text-ink-muted tabular-nums">Target {lesson.targetWpm} WPM</span>
                       </div>
                     </div>
                   </div>
@@ -245,10 +245,10 @@ export default function CourseBrowser({ completedLessons = {}, onStartLesson }) 
                     {isCompleted ? (
                       <div className="text-right">
                         <span className="inline-flex items-center gap-1 text-xs text-accent font-medium">
-                          <Check className="w-3.5 h-3.5" />
-                          <span className="font-mono">{result.netWpm} WPM</span>
+                          <Check className="w-3.5 h-3.5" strokeWidth={1.5} />
+                          <span className="font-mono tabular-nums">{result.netWpm} WPM</span>
                         </span>
-                        <div className="text-[10px] text-ink-muted font-mono">{result.accuracy}% acc</div>
+                        <div className="text-[10px] text-ink-muted font-mono tabular-nums">{result.accuracy}% acc</div>
                       </div>
                     ) : (
                       <span className="text-xs text-ink-muted hidden sm:inline font-mono">
@@ -269,12 +269,12 @@ export default function CourseBrowser({ completedLessons = {}, onStartLesson }) 
                     >
                       {isLocked ? (
                         <>
-                          <Lock className="w-3 h-3 text-pro" />
+                          <Lock className="w-3 h-3 text-pro" strokeWidth={1.5} />
                           <span>Unlock</span>
                         </>
                       ) : (
                         <>
-                          <Play className="w-3 h-3" />
+                          <Play className="w-3 h-3" strokeWidth={1.5} />
                           <span>{isCompleted ? 'Retry' : 'Start'}</span>
                         </>
                       )}
@@ -289,15 +289,15 @@ export default function CourseBrowser({ completedLessons = {}, onStartLesson }) 
 
       {/* Pro Unlock Modal */}
       {proModalLesson && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="relative max-w-md w-full bg-surface border border-border rounded-card p-6 shadow-xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 animate-fade-in">
+          <div className="relative max-w-md w-full bg-surface border border-border rounded-modal p-6 shadow-overlay">
             <button
               type="button"
               onClick={() => setProModalLesson(null)}
               className="absolute top-4 right-4 p-1 rounded-btn hover:bg-surface-2 text-text-muted hover:text-text transition-colors"
               aria-label="Close"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" strokeWidth={1.5} />
             </button>
 
             <ProLock

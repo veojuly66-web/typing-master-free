@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { RotateCcw } from 'lucide-react';
+import { COURSES } from '../data/courses';
 
 export default function StatsDashboard({ completedLessons = {}, onSelectLesson }) {
   const [testHistory, setTestHistory] = useState([]);
@@ -35,6 +36,7 @@ export default function StatsDashboard({ completedLessons = {}, onSelectLesson }
 
   // Compute metrics
   const completedCount = Object.keys(completedLessons).length;
+  const totalLessons = COURSES.reduce((sum, c) => sum + c.lessons.length, 0);
   const completedArray = Object.values(completedLessons);
   const avgWpm = completedArray.length > 0
     ? Math.round(completedArray.reduce((acc, l) => acc + (l.netWpm || 0), 0) / completedArray.length)
@@ -64,7 +66,7 @@ export default function StatsDashboard({ completedLessons = {}, onSelectLesson }
                   value={tempName}
                   onChange={(e) => setTempName(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSaveName()}
-                  className="px-2 py-0.5 text-xs rounded-btn bg-paper border border-paper-border text-ink focus:outline-none focus:border-accent"
+                  className="px-2 py-0.5 text-xs rounded-input bg-paper border border-paper-border text-ink focus:outline-none focus:border-accent"
                   autoFocus
                 />
                 <button
@@ -99,7 +101,7 @@ export default function StatsDashboard({ completedLessons = {}, onSelectLesson }
           onClick={handleResetProgress}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-paper-border text-xs text-ink-muted hover:text-type-error transition-colors self-start sm:self-center"
         >
-          <RotateCcw className="w-3 h-3" />
+          <RotateCcw className="w-3 h-3" strokeWidth={1.5} />
           <span>Reset progress</span>
         </button>
       </div>
@@ -107,32 +109,32 @@ export default function StatsDashboard({ completedLessons = {}, onSelectLesson }
       {/* 4 Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-paper-surface border border-paper-border rounded-card p-5 shadow-subtle">
-          <div className="text-xs text-ink-muted uppercase tracking-wider mb-1">Lessons done</div>
-          <div className="font-mono text-3xl font-semibold text-ink">
-            {completedCount} <span className="text-xs font-sans font-normal text-ink-muted">/ 30</span>
+          <div className="text-xs font-medium text-ink-muted mb-1">Lessons done</div>
+          <div className="font-mono text-3xl font-semibold tabular-nums text-ink">
+            {completedCount} <span className="text-xs font-sans font-normal text-ink-muted">/ {totalLessons}</span>
           </div>
           <div className="text-[11px] text-ink-muted mt-1">Interactive drills</div>
         </div>
 
         <div className="bg-paper-surface border border-paper-border rounded-card p-5 shadow-subtle">
-          <div className="text-xs text-ink-muted uppercase tracking-wider mb-1">Peak net speed</div>
-          <div className="font-mono text-3xl font-semibold text-accent">
+          <div className="text-xs font-medium text-ink-muted mb-1">Peak net speed</div>
+          <div className="font-mono text-3xl font-semibold tabular-nums text-accent">
             {topSpeed} <span className="text-xs font-sans font-normal text-ink-muted">WPM</span>
           </div>
           <div className="text-[11px] text-ink-muted mt-1">Best lesson result</div>
         </div>
 
         <div className="bg-paper-surface border border-paper-border rounded-card p-5 shadow-subtle">
-          <div className="text-xs text-ink-muted uppercase tracking-wider mb-1">Avg accuracy</div>
-          <div className="font-mono text-3xl font-semibold text-ink">
+          <div className="text-xs font-medium text-ink-muted mb-1">Avg accuracy</div>
+          <div className="font-mono text-3xl font-semibold tabular-nums text-ink">
             {avgAccuracy}%
           </div>
           <div className="text-[11px] text-ink-muted mt-1">Across all sessions</div>
         </div>
 
         <div className="bg-paper-surface border border-paper-border rounded-card p-5 shadow-subtle">
-          <div className="text-xs text-ink-muted uppercase tracking-wider mb-1">Practice time</div>
-          <div className="font-mono text-3xl font-semibold text-ink">
+          <div className="text-xs font-medium text-ink-muted mb-1">Practice time</div>
+          <div className="font-mono text-3xl font-semibold tabular-nums text-ink">
             {Math.round(totalPracticeTime / 60)} <span className="text-xs font-sans font-normal text-ink-muted">mins</span>
           </div>
           <div className="text-[11px] text-ink-muted mt-1">Active typing time</div>

@@ -36,7 +36,7 @@ export function ToastContainer() {
       {toasts.map((t) => (
         <div
           key={t.id}
-          className={`pointer-events-auto px-3.5 py-2 rounded-btn text-xs font-medium shadow-modal border animate-fadeIn transition-all ${
+          className={`pointer-events-auto px-3.5 py-2 rounded-btn text-xs font-medium shadow-modal border transition-[opacity,transform] duration-150 ease-smooth ${
             t.type === 'error'
               ? 'bg-rose-50 dark:bg-rose-950 text-error border-rose-200 dark:border-rose-900'
               : t.type === 'accent'

@@ -295,7 +295,7 @@ export default function CertificateModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/50 backdrop-blur-sm overflow-y-auto animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 overflow-y-auto animate-fadeIn">
       <div className="relative max-w-3xl w-full my-6">
         {/* Actions bar (hidden in print) */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-3 print:hidden bg-paper-surface border border-paper-border rounded-card p-3 shadow-subtle">
@@ -353,7 +353,7 @@ export default function CertificateModal({
         {/* Certificate Card (Printable) */}
         <div
           ref={certRef}
-          className="bg-[#FAFAF7] text-[#1C1B19] rounded-card p-8 sm:p-12 border-2 border-[#E7E5DF] relative shadow-xl print:m-0 print:border print:shadow-none"
+          className="bg-[#FAFAF7] text-[#1C1B19] rounded-card p-8 sm:p-12 border-2 border-[#E7E5DF] relative shadow-overlay print:m-0 print:border print:shadow-none"
         >
           {/* Inner Accent Line */}
           <div className="border border-[#1F6F54]/30 rounded p-6 sm:p-8">
@@ -383,19 +383,19 @@ export default function CertificateModal({
             <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto my-6 text-center">
               <div className="p-3 bg-white border border-[#E7E5DF] rounded">
                 <div className="text-[10px] text-[#6B6862] uppercase tracking-wider">Net Speed</div>
-                <div className="font-mono text-2xl font-semibold text-[#1C1B19] mt-0.5">{netWpm}</div>
+                <div className="font-mono text-2xl font-semibold tabular-nums text-[#1C1B19] mt-0.5">{netWpm}</div>
                 <div className="text-[10px] text-[#6B6862]">WPM</div>
               </div>
 
               <div className="p-3 bg-white border border-[#E7E5DF] rounded">
                 <div className="text-[10px] text-[#6B6862] uppercase tracking-wider">Accuracy</div>
-                <div className="font-mono text-2xl font-semibold text-[#1F6F54] mt-0.5">{accuracy}%</div>
+                <div className="font-mono text-2xl font-semibold tabular-nums text-[#1F6F54] mt-0.5">{accuracy}%</div>
                 <div className="text-[10px] text-[#6B6862]">Correct</div>
               </div>
 
               <div className="p-3 bg-white border border-[#E7E5DF] rounded">
                 <div className="text-[10px] text-[#6B6862] uppercase tracking-wider">Duration</div>
-                <div className="font-mono text-2xl font-semibold text-[#1C1B19] mt-0.5">
+                <div className="font-mono text-2xl font-semibold tabular-nums text-[#1C1B19] mt-0.5">
                   {duration >= 60 ? `${Math.round(duration / 60)}m` : `${duration}s`}
                 </div>
                 <div className="text-[10px] text-[#6B6862]">Benchmark</div>

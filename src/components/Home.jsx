@@ -1,118 +1,132 @@
 import React, { useState, useEffect } from 'react';
 import { COURSES } from '../data/courses';
 import { BRAND } from '../config/brand';
-import { Storage } from '../lib/storage';
-import { useAuth } from '../lib/auth';
-import { Card, Button, Badge } from './ui';
-import { ArrowRight, Check, Play, ShieldCheck, Award, Zap, Brain, Target, Users, BookOpen, Layers } from 'lucide-react';
+import { Button } from './ui';
+import { ArrowRight, Play, ShieldCheck, Layers, Users, Terminal, ChevronDown } from 'lucide-react';
 
 const FAQ_ITEMS = [
   {
     q: 'Is Pankaj Typing free to use?',
-    a: 'Yes. Our Free Starter plan requires no login or credit card. It includes the first 2 levels of English courses, first 2 levels of Hindi courses, daily 1-minute speed tests, and basic progress tracking.'
+    a: 'Yes. The Free starter plan requires no login or credit card and includes the first 2 levels of English and Hindi courses, 3 daily 1-minute speed tests, and Word Bubbles.'
   },
   {
-    q: 'How does Hindi typing work? Do I need to install Krutidev or Inscript fonts?',
-    a: 'No font or IME installation is required. Our engine runs directly in your browser and automatically maps standard English QWERTY keyboard presses to Unicode Hindi characters for both Inscript and Remington Gail layouts. It even handles pre-base matras (ि) and complex conjuncts.'
+    q: 'Do I need to install Krutidev or Inscript fonts for Hindi?',
+    a: 'No font or external IME installation is needed. Typing runs directly in the browser and converts standard QWERTY keystrokes into Unicode Devanagari for both Inscript and Remington Gail, including pre-base matras (ि) and conjuncts.'
   },
   {
     q: 'Which government exams are supported?',
-    a: 'We have dedicated mock test simulators configured according to the official criteria of SSC CHSL, SSC CGL, High Courts (Allahabad, Patna, Rajasthan), MP CPCT, and State Clerk / DEO exams.'
+    a: 'Exam presets are configured to match SSC CHSL, SSC CGL, Allahabad High Court, Patna High Court, Rajasthan High Court, MP CPCT, and UPSSSC Junior Assistant patterns.'
   },
   {
-    q: 'What is the evaluation formula for government typing tests?',
-    a: 'Our exam simulator replicates official evaluation rules: full mistakes (missing or substituted words) and half mistakes (spacing, punctuation, capitalization) are scored separately, calculating your official Net WPM and Error Percentage.'
+    q: 'How does the exam simulator score mistakes?',
+    a: 'Full mistakes (omitted or substituted words) and half mistakes (spacing, capitalization, punctuation) are evaluated separately to compute Net WPM and Error Percentage against board cutoffs.'
   },
   {
-    q: 'What is included in the Pro plan?',
-    a: 'Pro unlocks all 5 English course levels, all 6 Hindi Inscript levels, all 6 Hindi Remington Gail levels, unlimited exam mock tests, 1 to 10-minute speed tests, weak-key adaptive drills, arcade games, and verifiable certificates.'
+    q: 'What does the Pro plan include?',
+    a: 'Pro unlocks all 5 English levels, all 6 Hindi Inscript levels, all 6 Hindi Remington Gail levels, unlimited exam mock tests, 1 to 10-minute speed tests, weak-key drills, arcade games, and verifiable certificates.'
   }
 ];
 
-export default function Home({ onNavigate, completedLessons = {} }) {
-  const { user, isProUser } = useAuth();
+const DEMO_SNIPPETS = [
+  {
+    id: 'en',
+    label: 'English',
+    layoutName: 'US QWERTY',
+    text: 'Keep your fingers resting lightly on the home row keys.',
+    keys: ['A', 'S', 'D', 'F', 'J', 'K', 'L', ';'],
+    stats: '52 WPM · 98% accuracy'
+  },
+  {
+    id: 'hi',
+    label: 'हिंदी रेमिंगटन',
+    layoutName: 'Remington Gail',
+    text: 'अभ्यास से ही टाइपिंग में गति और शुद्धता आती है।',
+    keys: ['र', 'ा', 'स', 'य', 'क', 'ि', 'त', 'न'],
+    stats: '36 WPM · Unicode output'
+  }
+];
 
-  // Dual Language Auto-typing Demo
-  const demoSnippets = [
-    { text: 'Keep your fingers resting on the home row keys.', lang: 'English' },
-    { text: 'अभ्यास से ही टाइपिंग में गति और शुद्धता आती है।', lang: 'हिंदी रेमिंगटन गेल' }
-  ];
-
+export default function Home({ completedLessons = {} }) {
   const [currentSnippetIdx, setCurrentSnippetIdx] = useState(0);
   const [demoCharIndex, setDemoCharIndex] = useState(0);
   const [openFaq, setOpenFaq] = useState(null);
 
-  const activeSnippet = demoSnippets[currentSnippetIdx];
+  const activeSnippet = DEMO_SNIPPETS[currentSnippetIdx];
 
   useEffect(() => {
+    let switchTimer = null;
     const timer = setInterval(() => {
-      setDemoCharIndex(prev => {
+      setDemoCharIndex((prev) => {
         if (prev >= activeSnippet.text.length) {
-          // Switch snippet after a pause
-          setTimeout(() => {
-            setCurrentSnippetIdx(s => (s + 1) % demoSnippets.length);
-            setDemoCharIndex(0);
-          }, 800);
+          if (!switchTimer) {
+            switchTimer = setTimeout(() => {
+              setCurrentSnippetIdx((s) => (s + 1) % DEMO_SNIPPETS.length);
+              setDemoCharIndex(0);
+            }, 900);
+          }
           return prev;
         }
         return prev + 1;
       });
-    }, 120);
+    }, 115);
 
-    return () => clearInterval(timer);
-  }, [activeSnippet.text.length]);
+    return () => {
+      clearInterval(timer);
+      if (switchTimer) clearTimeout(switchTimer);
+    };
+  }, [activeSnippet.text.length, currentSnippetIdx]);
 
-  // Returning user status
-  const allLessons = COURSES.flatMap(c => c.lessons);
-  const nextUnfinishedLesson = allLessons.find(l => !completedLessons[l.id]) || allLessons[0];
+  const allLessons = COURSES.flatMap((c) => c.lessons);
+  const nextUnfinishedLesson = allLessons.find((l) => !completedLessons[l.id]) || allLessons[0];
   const completedList = Object.values(completedLessons);
   const isReturningUser = completedList.length > 0;
 
-  return (
-    <div className="max-w-content mx-auto px-4 py-10 md:py-16">
-      {/* Hero Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center mb-16 md:mb-24">
-        <div className="lg:col-span-7">
-          <div className="inline-flex items-center gap-1.5 mb-3">
-            <Badge variant="accent">English & Hindi Typing Platform</Badge>
-          </div>
+  const activeKeyHighlightIdx = demoCharIndex % activeSnippet.keys.length;
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-text tracking-tight leading-[1.18] mb-5">
-            Typing practice that gets you exam-ready — in English and Hindi.
+  return (
+    <div className="max-w-content mx-auto px-4 sm:px-6 py-12 md:py-16">
+      {/* Hero Section */}
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center mb-20 md:mb-24">
+        <div className="lg:col-span-7">
+          <p className="text-xs font-medium text-accent mb-3">
+            English QWERTY · Hindi Inscript · Remington Gail
+          </p>
+
+          <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-medium text-text tracking-[-0.025em] leading-[1.12] mb-4">
+            Typing practice that gets you exam-ready, in English and Hindi
           </h1>
 
           <p className="text-base sm:text-lg text-text-muted mb-8 leading-relaxed max-w-xl">
-            Step-by-step touch-typing courses, realistic government exam simulators (SSC, High Court, CPCT), and detailed error feedback. Start free.
+            Step-by-step touch-typing drills and TCS iON pattern government exam mock tests for SSC, High Court, and CPCT aspirants.
           </p>
 
-          {/* Returning User Continue Card OR Dual CTAs */}
           {isReturningUser ? (
-            <Card className="p-5 max-w-lg mb-6 border-accent/30 bg-surface">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-2xs font-semibold uppercase tracking-wider text-accent">
-                  Welcome back · Continue Learning
-                </span>
-                <span className="text-xs font-mono text-text-muted">
-                  {completedList.length} of {allLessons.length} drills done
+            <div className="p-5 max-w-lg mb-6 rounded-card border border-border bg-surface shadow-subtle">
+              <div className="flex items-center justify-between mb-3 pb-2 border-b border-border text-xs">
+                <span className="font-medium text-accent">Continue practice</span>
+                <span className="font-mono tabular-nums text-text-muted">
+                  {completedList.length} / {allLessons.length} drills completed
                 </span>
               </div>
 
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <h3 className="text-sm font-semibold text-text">{nextUnfinishedLesson.title}</h3>
-                  <p className="text-xs text-text-muted">Target: {nextUnfinishedLesson.targetWpm} WPM · 95% accuracy</p>
+                  <h2 className="text-sm font-medium text-text">{nextUnfinishedLesson.title}</h2>
+                  <p className="text-xs text-text-muted tabular-nums mt-0.5">
+                    Target {nextUnfinishedLesson.targetWpm} WPM · {nextUnfinishedLesson.targetAccuracy}% accuracy
+                  </p>
                 </div>
 
                 <Button
-                  size="sm"
+                  size="md"
                   variant="primary"
                   onClick={() => { window.location.hash = `#/lessons/${nextUnfinishedLesson.id}`; }}
                 >
-                  <Play className="w-3.5 h-3.5" />
+                  <Play className="w-3.5 h-3.5" strokeWidth={1.5} />
                   <span>Resume</span>
                 </Button>
               </div>
-            </Card>
+            </div>
           ) : (
             <div className="flex flex-wrap items-center gap-3">
               <Button
@@ -120,8 +134,8 @@ export default function Home({ onNavigate, completedLessons = {} }) {
                 size="lg"
                 onClick={() => { window.location.hash = '#/lessons'; }}
               >
-                <span>Start Free</span>
-                <ArrowRight className="w-4 h-4 ml-1" />
+                <span>Start practicing free</span>
+                <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
               </Button>
 
               <Button
@@ -129,167 +143,201 @@ export default function Home({ onNavigate, completedLessons = {} }) {
                 size="lg"
                 onClick={() => { window.location.hash = '#/test'; }}
               >
-                <span>Take a Free Speed Test</span>
+                <span>Take a speed test</span>
               </Button>
             </div>
           )}
 
-          <div className="flex items-center gap-5 mt-6 text-2xs text-text-muted">
-            <span className="flex items-center gap-1">
-              <Check className="w-3.5 h-3.5 text-accent" />
-              <span>No credit card required</span>
-            </span>
-            <span className="flex items-center gap-1">
-              <Check className="w-3.5 h-3.5 text-accent" />
-              <span>Inscript & Remington Gail</span>
-            </span>
-            <span className="flex items-center gap-1">
-              <Check className="w-3.5 h-3.5 text-accent" />
-              <span>7-Day Pro Trial</span>
-            </span>
-          </div>
-        </div>
-
-        {/* Hero Right: Bilingual Auto-typing Demo */}
-        <div className="lg:col-span-5">
-          <Card className="p-6 bg-surface shadow-subtle border-border">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-border text-xs text-text-muted">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-accent" />
-                <span className="font-medium text-text">{activeSnippet.lang} Live Demo</span>
-              </div>
-              <span className="font-mono text-accent">52 WPM · 98% Acc</span>
-            </div>
-
-            <div className={`${activeSnippet.lang.includes('हिंदी') ? 'font-hindi text-xl leading-[2]' : 'font-mono text-base leading-relaxed'} min-h-[90px] select-none text-text`}>
-              <span>{activeSnippet.text.slice(0, demoCharIndex)}</span>
-              <span className="inline-block w-2 h-5 bg-text align-middle ml-0.5 caret-pulse" />
-              <span className="text-text-muted/40">{activeSnippet.text.slice(demoCharIndex)}</span>
-            </div>
-
-            <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-2xs text-text-muted">
-              <span>Home row finger guidance active</span>
-              <span className="text-accent font-medium">Automatic layout mapping</span>
-            </div>
-          </Card>
-        </div>
-      </div>
-
-      {/* Section 1: Who It's For */}
-      <section className="mb-16 md:mb-24">
-        <div className="text-center max-w-xl mx-auto mb-10">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-text tracking-tight mb-2">
-            Built for serious aspirants and professionals
-          </h2>
-          <p className="text-xs sm:text-sm text-text-muted">
-            Whether you are preparing for a government clerical exam or building daily typing speed.
+          <p className="mt-5 text-xs text-text-muted">
+            No card required to start · Runs offline in your browser · 7-day Pro trial on signup
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="p-5">
-            <div className="w-10 h-10 rounded bg-accent-soft text-accent flex items-center justify-center mb-3">
-              <Target className="w-5 h-5" />
+        {/* Hero Visual Moment: Interactive Bilingual Typing Console & Keycap Row */}
+        <div className="lg:col-span-5">
+          <div className="rounded-card bg-surface border border-border p-5 sm:p-6 shadow-subtle">
+            <div className="flex items-center justify-between pb-3 mb-4 border-b border-border text-xs">
+              <div className="inline-flex items-center gap-1 bg-surface-2 p-1 rounded-btn border border-border">
+                {DEMO_SNIPPETS.map((snip, idx) => (
+                  <button
+                    key={snip.id}
+                    type="button"
+                    onClick={() => {
+                      setCurrentSnippetIdx(idx);
+                      setDemoCharIndex(0);
+                    }}
+                    className={`px-2.5 py-1 rounded-[5px] text-xs font-medium transition-colors ${
+                      currentSnippetIdx === idx
+                        ? 'bg-surface text-text shadow-subtle'
+                        : 'text-text-muted hover:text-text'
+                    }`}
+                  >
+                    {snip.label}
+                  </button>
+                ))}
+              </div>
+              <span className="font-mono text-xs tabular-nums text-accent">{activeSnippet.stats}</span>
             </div>
-            <h3 className="text-sm font-semibold text-text mb-1">Government Aspirants</h3>
-            <p className="text-xs text-text-muted leading-relaxed">
-              SSC CHSL, High Court, and CPCT candidates practicing under strict exam conditions and mistake thresholds.
-            </p>
-          </Card>
 
-          <Card className="p-5">
-            <div className="w-10 h-10 rounded bg-accent-soft text-accent flex items-center justify-center mb-3">
-              <Layers className="w-5 h-5" />
+            <div
+              className={`${
+                activeSnippet.id === 'hi'
+                  ? 'font-hindi text-xl leading-[2]'
+                  : 'font-mono text-base leading-relaxed'
+              } min-h-[96px] select-none text-text mb-4`}
+            >
+              <span>{activeSnippet.text.slice(0, demoCharIndex)}</span>
+              <span className="inline-block w-0.5 h-5 bg-accent align-middle mx-0.5 caret-pulse" />
+              <span className="text-text-muted/45">{activeSnippet.text.slice(demoCharIndex)}</span>
             </div>
-            <h3 className="text-sm font-semibold text-text mb-1">Hindi Typists</h3>
-            <p className="text-xs text-text-muted leading-relaxed">
-              Learners mastering Inscript and Remington Gail without installing third-party font packs or complex software.
-            </p>
-          </Card>
 
-          <Card className="p-5">
-            <div className="w-10 h-10 rounded bg-accent-soft text-accent flex items-center justify-center mb-3">
-              <Users className="w-5 h-5" />
+            {/* Tactile Keycap Signature Strip */}
+            <div className="pt-3 border-t border-border">
+              <div className="flex items-center justify-between gap-1.5 mb-2.5">
+                {activeSnippet.keys.map((k, kIdx) => {
+                  const isActive = demoCharIndex > 0 && demoCharIndex < activeSnippet.text.length && activeKeyHighlightIdx === kIdx;
+                  return (
+                    <span
+                      key={k + kIdx}
+                      className={`keycap h-8 flex-1 text-xs transition-colors ${
+                        isActive
+                          ? '!bg-accent !text-white !border-accent-hover'
+                          : 'text-text-muted'
+                      }`}
+                    >
+                      {k}
+                    </span>
+                  );
+                })}
+              </div>
+              <div className="flex items-center justify-between text-xs text-text-muted">
+                <span>Layout: {activeSnippet.layoutName}</span>
+                <span className="font-mono tabular-nums">No font install needed</span>
+              </div>
             </div>
-            <h3 className="text-sm font-semibold text-text mb-1">Students & Job Seekers</h3>
-            <p className="text-xs text-text-muted leading-relaxed">
-              High school and college students acquiring touch-typing skills to qualify for clerical and data entry positions.
-            </p>
-          </Card>
-
-          <Card className="p-5">
-            <div className="w-10 h-10 rounded bg-accent-soft text-accent flex items-center justify-center mb-3">
-              <Zap className="w-5 h-5" />
-            </div>
-            <h3 className="text-sm font-semibold text-text mb-1">Office Professionals</h3>
-            <p className="text-xs text-text-muted leading-relaxed">
-              Court stenographers, legal assistants, and clerks boosting speed from 30 WPM to 60+ WPM effortlessly.
-            </p>
-          </Card>
+          </div>
         </div>
       </section>
 
-      {/* Section 2: How It Works */}
-      <section className="mb-16 md:mb-24">
-        <h2 className="text-2xl sm:text-3xl font-semibold text-text tracking-tight mb-8 text-center">
-          How Pankaj Typing works
+      {/* Section 1: Who Uses Pankaj Typing (Editorial 2x2 Ledger instead of 4 identical icon-box cards) */}
+      <section className="mb-20 md:mb-24">
+        <div className="max-w-xl mb-8">
+          <h2 className="text-2xl sm:text-3xl font-medium text-text tracking-tight mb-2">
+            Built for exam aspirants and everyday typists
+          </h2>
+          <p className="text-sm text-text-muted">
+            Structured practice from home-row basics to high-speed Hindi court dictation.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 border border-border rounded-card bg-surface divide-y md:divide-y-0 overflow-hidden shadow-subtle">
+          <div className="p-6 md:border-b md:border-r border-border">
+            <div className="flex items-center gap-2 text-text mb-2">
+              <ShieldCheck className="w-4 h-4 text-text-muted" strokeWidth={1.5} />
+              <h3 className="text-sm font-medium text-text">Government exam aspirants</h3>
+            </div>
+            <p className="text-xs sm:text-sm text-text-muted leading-relaxed">
+              SSC CHSL, High Court, and CPCT candidates practicing under real time limits, disabled-backspace toggles, and mistake rules.
+            </p>
+          </div>
+
+          <div className="p-6 md:border-b border-border">
+            <div className="flex items-center gap-2 text-text mb-2">
+              <Layers className="w-4 h-4 text-text-muted" strokeWidth={1.5} />
+              <h3 className="text-sm font-medium text-text">Hindi typists</h3>
+            </div>
+            <p className="text-xs sm:text-sm text-text-muted leading-relaxed">
+              Learners mastering BIS Inscript and Remington Gail directly in the browser without installing legacy Krutidev fonts.
+            </p>
+          </div>
+
+          <div className="p-6 md:border-r border-border">
+            <div className="flex items-center gap-2 text-text mb-2">
+              <Users className="w-4 h-4 text-text-muted" strokeWidth={1.5} />
+              <h3 className="text-sm font-medium text-text">Students and job seekers</h3>
+            </div>
+            <p className="text-xs sm:text-sm text-text-muted leading-relaxed">
+              Beginners building touch-typing accuracy across letters, numbers, and punctuation for clerical and data-entry roles.
+            </p>
+          </div>
+
+          <div className="p-6">
+            <div className="flex items-center gap-2 text-text mb-2">
+              <Terminal className="w-4 h-4 text-text-muted" strokeWidth={1.5} />
+              <h3 className="text-sm font-medium text-text">Office and legal professionals</h3>
+            </div>
+            <p className="text-xs sm:text-sm text-text-muted leading-relaxed">
+              Stenographers, clerks, and writers raising steady speed from 30 WPM to 60+ WPM with targeted weak-key drills.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 2: How It Works (Clean Hairline Columns) */}
+      <section className="mb-20 md:mb-24">
+        <h2 className="text-2xl sm:text-3xl font-medium text-text tracking-tight mb-8">
+          How practice progresses
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="p-6">
-            <div className="font-mono text-2xl font-bold text-accent mb-2">01</div>
-            <h3 className="text-base font-semibold text-text mb-2">Choose your track & layout</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="border-t-2 border-accent pt-4">
+            <div className="font-mono tabular-nums text-xs text-accent mb-2">01</div>
+            <h3 className="text-base font-medium text-text mb-1.5">Pick your keyboard track</h3>
             <p className="text-xs sm:text-sm text-text-muted leading-relaxed">
-              Practice in English (QWERTY), Hindi Inscript (Govt standard), or Hindi Remington Gail (Krutidev exam layout).
+              Switch anytime between English QWERTY, Hindi Inscript (government standard), and Hindi Remington Gail.
             </p>
-          </Card>
+          </div>
 
-          <Card className="p-6">
-            <div className="font-mono text-2xl font-bold text-accent mb-2">02</div>
-            <h3 className="text-base font-semibold text-text mb-2">Build muscle memory daily</h3>
+          <div className="border-t border-border pt-4">
+            <div className="font-mono tabular-nums text-xs text-text-muted mb-2">02</div>
+            <h3 className="text-base font-medium text-text mb-1.5">Build accuracy first</h3>
             <p className="text-xs sm:text-sm text-text-muted leading-relaxed">
-              Ten minutes a day with stop-on-error discipline cements correct finger positions and eliminates glancing down.
+              Follow the finger guide on progressive home-row to conjunct drills for ten minutes a day.
             </p>
-          </Card>
+          </div>
 
-          <Card className="p-6">
-            <div className="font-mono text-2xl font-bold text-accent mb-2">03</div>
-            <h3 className="text-base font-semibold text-text mb-2">Simulate official exams</h3>
+          <div className="border-t border-border pt-4">
+            <div className="font-mono tabular-nums text-xs text-text-muted mb-2">03</div>
+            <h3 className="text-base font-medium text-text mb-1.5">Test under exam rules</h3>
             <p className="text-xs sm:text-sm text-text-muted leading-relaxed">
-              Take full 10 to 15-minute mock tests with real full/half mistake deductions and verifiable speed certificates.
+              Run 10 to 15-minute mock papers with full and half mistake scoring and exportable speed certificates.
             </p>
-          </Card>
+          </div>
         </div>
       </section>
 
-      {/* Section 3: Feature Blocks with Real UI Previews */}
-      <section className="space-y-12 mb-16 md:mb-24">
+      {/* Section 3: Product Deep-Dives */}
+      <section className="space-y-16 mb-20 md:mb-24">
         {/* Feature 1: Hindi Inscript & Remington Gail */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           <div className="lg:col-span-6">
-            <Badge variant="accent" className="mb-2">Hindi Specialization</Badge>
-            <h3 className="text-2xl sm:text-3xl font-semibold text-text tracking-tight mb-3">
-              True Inscript & Remington Gail Typing — In Pure Unicode
+            <p className="text-xs font-medium text-accent mb-2">Devanagari typing engine</p>
+            <h3 className="text-2xl sm:text-3xl font-medium text-text tracking-tight mb-3">
+              Native Inscript and Remington Gail in pure Unicode
             </h3>
-            <p className="text-xs sm:text-sm text-text-muted leading-relaxed mb-4">
-              Most online tutors fail at Hindi because they require legacy Krutidev fonts or broken character sequences. Pankaj Typing handles the pre-base rule (typing 'f' before the letter for chhoti-ee matra), half-letters, reph (र्), and complex conjuncts natively.
+            <p className="text-sm text-text-muted leading-relaxed mb-4">
+              Online forms often break Krutidev typing rules. Our engine converts standard QWERTY presses directly into valid Unicode Devanagari, handling pre-base chhoti-ee matras, half letters, reph (र्), and conjuncts cleanly.
             </p>
-            <div className="flex items-center gap-3 text-xs font-semibold text-accent">
-              <a href="#/lessons" className="inline-flex items-center gap-1 hover:underline">
-                <span>Explore Hindi Courses</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </a>
-            </div>
+            <a href="#/lessons" className="inline-flex items-center gap-1.5 text-xs font-medium text-accent hover:underline">
+              <span>Explore Hindi courses</span>
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
+            </a>
           </div>
 
           <div className="lg:col-span-6">
-            <div className="p-5 rounded-card bg-surface-2 border border-border">
-              <div className="flex justify-between text-2xs text-text-muted pb-2 border-b border-border mb-3 font-mono">
-                <span>REMIN_GAIL_KEYMAP</span>
-                <span className="text-accent">f + k = कि</span>
+            <div className="p-5 sm:p-6 rounded-card bg-surface border border-border shadow-subtle">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-text-muted pb-3 border-b border-border mb-4">
+                <span>Remington Gail · Pre-base matra</span>
+                <div className="inline-flex items-center gap-1.5 font-mono text-text">
+                  <kbd className="keycap px-2 py-0.5 text-xs">f</kbd>
+                  <span className="text-text-muted">+</span>
+                  <kbd className="keycap px-2 py-0.5 text-xs">k</kbd>
+                  <span className="text-text-muted">→</span>
+                  <span className="font-hindi text-sm font-medium text-accent">कि</span>
+                </div>
               </div>
-              <div className="font-hindi text-xl text-text leading-[2] p-3 bg-surface rounded border border-border">
-                प्रधानमंत्री ने राष्ट्र के नाम संदेश में आत्मनिर्भर भारत के संकल्प को दोहराया।
+              <div className="font-hindi text-xl text-text leading-[2] p-4 bg-surface-2 rounded-btn border border-border">
+                निरंतर अभ्यास और शुद्धता से ही परीक्षा में उच्च गति प्राप्त होती है।
               </div>
             </div>
           </div>
@@ -298,164 +346,202 @@ export default function Home({ onNavigate, completedLessons = {} }) {
         {/* Feature 2: Government Exam Simulator */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           <div className="lg:col-span-6 order-2 lg:order-1">
-            <div className="p-5 rounded-card bg-surface border border-border shadow-subtle space-y-3">
-              <div className="flex justify-between items-center text-xs pb-2 border-b border-border">
-                <span className="font-semibold text-text">SSC CHSL Mock Test</span>
-                <span className="text-2xs font-bold text-accent bg-accent-soft px-2 py-0.5 rounded">QUALIFIED</span>
+            <div className="p-5 sm:p-6 rounded-card bg-surface border border-border shadow-subtle space-y-4">
+              <div className="flex justify-between items-center text-xs pb-3 border-b border-border">
+                <span className="font-medium text-text">SSC CHSL Skill Test Scorecard</span>
+                <span className="px-2 py-0.5 rounded-key text-xs font-medium text-accent bg-accent-soft border border-accent/20">
+                  Qualified
+                </span>
               </div>
-              <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                <div className="p-2 bg-surface-2 rounded">
-                  <span className="text-2xs text-text-muted block">Net WPM</span>
-                  <span className="font-mono text-lg font-bold text-text">38.4</span>
+              <div className="grid grid-cols-3 gap-3 text-left text-xs">
+                <div className="p-3 bg-surface-2 rounded-btn border border-border">
+                  <span className="text-xs text-text-muted block mb-1">Net speed</span>
+                  <span className="font-mono text-lg font-medium tabular-nums text-text">38.4 WPM</span>
                 </div>
-                <div className="p-2 bg-surface-2 rounded">
-                  <span className="text-2xs text-text-muted block">Full Mistakes</span>
-                  <span className="font-mono text-lg font-bold text-error">2</span>
+                <div className="p-3 bg-surface-2 rounded-btn border border-border">
+                  <span className="text-xs text-text-muted block mb-1">Mistakes</span>
+                  <span className="font-mono text-lg font-medium tabular-nums text-error">2 full</span>
                 </div>
-                <div className="p-2 bg-surface-2 rounded">
-                  <span className="text-2xs text-text-muted block">Error %</span>
-                  <span className="font-mono text-lg font-bold text-accent">3.2%</span>
+                <div className="p-3 bg-surface-2 rounded-btn border border-border">
+                  <span className="text-xs text-text-muted block mb-1">Error rate</span>
+                  <span className="font-mono text-lg font-medium tabular-nums text-accent">3.2%</span>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="lg:col-span-6 order-1 lg:order-2">
-            <Badge variant="accent" className="mb-2">Exam Simulator</Badge>
-            <h3 className="text-2xl sm:text-3xl font-semibold text-text tracking-tight mb-3">
-              Official-Pattern TCS iON Dual-Box Simulator
+            <p className="text-xs font-medium text-accent mb-2">Exam console</p>
+            <h3 className="text-2xl sm:text-3xl font-medium text-text tracking-tight mb-3">
+              Dual-box TCS iON pattern simulator
             </h3>
-            <p className="text-xs sm:text-sm text-text-muted leading-relaxed mb-4">
-              Practice in the exact interface used by exam centers: passage box on top, typing box below, timer countdown, and no live spell check. Get detailed evaluation with full and half mistake calculations.
+            <p className="text-sm text-text-muted leading-relaxed mb-4">
+              Practice in the same layout used at testing centers: reference passage on top, typing pane below, live timer countdown, no spell-check, and post-test breakdown of full vs. half mistakes.
             </p>
-            <a href="#/exams" className="text-xs font-semibold text-accent hover:underline inline-flex items-center gap-1">
-              <span>Try Exam Simulator</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+            <a href="#/exams" className="text-xs font-medium text-accent hover:underline inline-flex items-center gap-1.5">
+              <span>Try exam simulator</span>
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
             </a>
           </div>
         </div>
       </section>
 
       {/* Section 4: Target Exams List */}
-      <section className="mb-16 md:mb-24 p-8 rounded-card bg-surface border border-border">
-        <div className="text-center max-w-xl mx-auto mb-8">
-          <Badge variant="accent" className="mb-2">Recruitment Coverage</Badge>
-          <h2 className="text-2xl font-semibold text-text tracking-tight">
-            Government Exams We Support
-          </h2>
-          <p className="text-xs text-text-muted mt-1">
-            Presets configured according to standard recruitment criteria:
-          </p>
+      <section className="mb-20 md:mb-24 p-6 sm:p-8 rounded-card bg-surface border border-border shadow-subtle">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 pb-4 border-b border-border">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-medium text-text tracking-tight">
+              Supported recruitment typing exams
+            </h2>
+            <p className="text-xs sm:text-sm text-text-muted mt-1">
+              Pre-configured speeds, durations, and error rules matched to board notifications
+            </p>
+          </div>
+          <a href="#/exams" className="text-xs font-medium text-accent hover:underline shrink-0">
+            Open exam center →
+          </a>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
           {BRAND.exams.map((ex) => (
-            <div key={ex.id} className="p-3 rounded bg-surface-2 border border-border">
-              <span className="font-semibold text-text block mb-0.5">{ex.name}</span>
-              <span className="text-2xs text-text-muted block">{ex.languages.join(' · ')}</span>
-              <span className="text-2xs font-mono text-accent mt-1 block">Min: {ex.minSpeed} WPM</span>
+            <div key={ex.id} className="p-3.5 rounded-btn bg-surface-2 border border-border flex flex-col justify-between gap-1.5">
+              <div>
+                <span className="font-medium text-text block">{ex.name}</span>
+                <span className="text-xs text-text-muted block mt-0.5">{ex.languages.join(' · ')}</span>
+              </div>
+              <span className="text-xs font-mono tabular-nums text-accent">Minimum {ex.minSpeed} WPM</span>
             </div>
           ))}
         </div>
       </section>
 
       {/* Section 5: Pricing Preview */}
-      <section className="mb-16 md:mb-24 text-center">
-        <div className="max-w-xl mx-auto mb-8">
-          <Badge variant="accent" className="mb-2">Affordable Plans</Badge>
-          <h2 className="text-2xl sm:text-3xl font-semibold text-text tracking-tight mb-2">
-            Simple, honest pricing for students
+      <section className="mb-20 md:mb-24">
+        <div className="max-w-xl mb-8">
+          <h2 className="text-2xl sm:text-3xl font-medium text-text tracking-tight mb-2">
+            Simple, honest plans
           </h2>
-          <p className="text-xs sm:text-sm text-text-muted">
-            Start completely free, or unlock the full Pro curriculum starting at just ₹99/month.
+          <p className="text-sm text-text-muted">
+            Begin on the free starter plan or upgrade for full Hindi, exam simulation, and certificates.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto text-left">
-          <Card className="p-6 flex flex-col justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+          <div className="p-6 rounded-card bg-surface border border-border shadow-subtle flex flex-col justify-between">
             <div>
-              <div className="text-2xs font-semibold uppercase tracking-wider text-text-muted mb-1">Free Plan</div>
-              <div className="font-mono text-3xl font-bold text-text mb-2">₹0</div>
-              <p className="text-xs text-text-muted mb-4">First 2 levels of English & Hindi lessons, daily speed tests.</p>
+              <div className="text-xs font-medium text-text-muted mb-1">Free starter</div>
+              <div className="font-mono tabular-nums text-3xl font-medium text-text mb-2">₹0</div>
+              <p className="text-xs text-text-muted mb-5 leading-relaxed">
+                First 2 levels of English and Hindi lessons, daily 1-minute speed tests, and Word Bubbles.
+              </p>
             </div>
-            <Button variant="outline" size="sm" onClick={() => window.location.href = '#/lessons'} className="w-full justify-center">
-              Start Free
+            <Button variant="outline" size="md" onClick={() => { window.location.hash = '#/lessons'; }} className="w-full justify-center">
+              Start free
             </Button>
-          </Card>
+          </div>
 
-          <Card className="p-6 flex flex-col justify-between border-pro ring-1 ring-pro bg-surface">
+          <div className="p-6 rounded-card bg-surface border border-pro ring-1 ring-pro shadow-subtle flex flex-col justify-between">
             <div>
               <div className="flex justify-between items-center mb-1">
-                <span className="text-2xs font-bold uppercase tracking-wider text-pro">Pro Yearly</span>
-                <span className="text-2xs font-bold px-2 py-0.5 rounded bg-pro-soft text-pro">Save 58%</span>
+                <span className="text-xs font-medium text-pro">Pro yearly</span>
+                <span className="text-xs font-medium px-2 py-0.5 rounded-key bg-pro-soft text-pro">Save 58%</span>
               </div>
-              <div className="font-mono text-3xl font-bold text-text mb-2">₹499 <span className="text-xs font-sans text-text-muted">/ yr</span></div>
-              <p className="text-xs text-text-muted mb-4">Everything unlocked for 12 months. All exam simulators & certificates.</p>
+              <div className="font-mono tabular-nums text-3xl font-medium text-text mb-2">
+                ₹499 <span className="text-xs font-sans text-text-muted font-normal">/ year</span>
+              </div>
+              <p className="text-xs text-text-muted mb-5 leading-relaxed">
+                All 17 courses across English and Hindi, unlimited exam simulators, analytics, and QR certificates.
+              </p>
             </div>
-            <Button variant="primary" size="sm" onClick={() => window.location.href = '#/pricing'} className="w-full justify-center !bg-pro text-white">
-              View All Plans
+            <Button
+              variant="primary"
+              size="md"
+              onClick={() => { window.location.hash = '#/pricing'; }}
+              className="w-full justify-center !bg-pro hover:opacity-90 text-white"
+            >
+              View plans
             </Button>
-          </Card>
+          </div>
 
-          <Card className="p-6 flex flex-col justify-between">
+          <div className="p-6 rounded-card bg-surface border border-border shadow-subtle flex flex-col justify-between">
             <div>
-              <div className="text-2xs font-semibold uppercase tracking-wider text-text-muted mb-1">Exam Pack</div>
-              <div className="font-mono text-3xl font-bold text-text mb-2">₹249 <span className="text-xs font-sans text-text-muted">/ 90 days</span></div>
-              <p className="text-xs text-text-muted mb-4">One-time payment for 3 months. No recurring debit mandate.</p>
+              <div className="text-xs font-medium text-text-muted mb-1">Exam pack</div>
+              <div className="font-mono tabular-nums text-3xl font-medium text-text mb-2">
+                ₹249 <span className="text-xs font-sans text-text-muted font-normal">/ 90 days</span>
+              </div>
+              <p className="text-xs text-text-muted mb-5 leading-relaxed">
+                One-time payment for three months of complete Pro access with no recurring auto-debit.
+              </p>
             </div>
-            <Button variant="secondary" size="sm" onClick={() => window.location.href = '#/pricing'} className="w-full justify-center">
-              Explore Exam Pack
+            <Button variant="secondary" size="md" onClick={() => { window.location.hash = '#/pricing'; }} className="w-full justify-center">
+              Explore exam pack
             </Button>
-          </Card>
+          </div>
         </div>
       </section>
 
       {/* Hidden Testimonials Section (Placeholder for User to populate later) */}
-      <div id="testimonials-placeholder" className="hidden" aria-hidden="true">
-        {/* Fill with real verified student reviews once published */}
-      </div>
+      <div id="testimonials-placeholder" className="hidden" aria-hidden="true" />
 
-      {/* Section 6: FAQ */}
-      <section className="max-w-2xl mx-auto mb-16">
-        <h2 className="text-2xl font-semibold text-text tracking-tight mb-6 text-center">
-          Frequently Asked Questions
+      {/* Section 6: FAQ (Hairline Disclosure List) */}
+      <section className="max-w-3xl mb-20">
+        <h2 className="text-2xl font-medium text-text tracking-tight mb-6">
+          Frequently asked questions
         </h2>
 
-        <div className="space-y-3">
-          {FAQ_ITEMS.map((faq, idx) => (
-            <Card key={idx} className="p-4">
-              <h3 className="text-sm font-semibold text-text mb-1">{faq.q}</h3>
-              <p className="text-xs text-text-muted leading-relaxed">{faq.a}</p>
-            </Card>
-          ))}
+        <div className="border-t border-border divide-y divide-border">
+          {FAQ_ITEMS.map((faq, idx) => {
+            const isOpen = openFaq === idx;
+            return (
+              <div key={idx} className="py-4">
+                <button
+                  type="button"
+                  onClick={() => setOpenFaq(isOpen ? null : idx)}
+                  className="w-full flex items-center justify-between gap-4 text-left"
+                  aria-expanded={isOpen}
+                >
+                  <span className="text-sm font-medium text-text">{faq.q}</span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-text-muted shrink-0 transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`}
+                    strokeWidth={1.5}
+                  />
+                </button>
+                {isOpen && (
+                  <p className="text-xs sm:text-sm text-text-muted leading-relaxed mt-2 pr-6">
+                    {faq.a}
+                  </p>
+                )}
+              </div>
+            );
+          })}
         </div>
       </section>
 
       {/* Final Call to Action */}
-      <div className="p-8 sm:p-12 rounded-card bg-surface border border-accent/30 text-center max-w-3xl mx-auto shadow-subtle">
-        <h2 className="text-2xl sm:text-3xl font-semibold text-text tracking-tight mb-2">
-          Ready to build your typing velocity?
+      <div className="p-8 sm:p-10 rounded-card bg-surface border border-border text-center shadow-subtle">
+        <h2 className="text-2xl sm:text-3xl font-medium text-text tracking-tight mb-2">
+          Start building consistent typing speed today
         </h2>
-        <p className="text-xs sm:text-sm text-text-muted max-w-lg mx-auto mb-6 leading-relaxed">
-          Start practicing in your browser right now. No account required to begin.
+        <p className="text-sm text-text-muted max-w-lg mx-auto mb-6 leading-relaxed">
+          Open the home-row lessons or jump straight into an exam mock console right in your browser.
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Button
             variant="primary"
             size="lg"
-            onClick={() => window.location.href = '#/lessons'}
+            onClick={() => { window.location.hash = '#/lessons'; }}
           >
-            <span>Start Learning for Free</span>
-            <ArrowRight className="w-4 h-4 ml-1" />
+            <span>Start practicing free</span>
+            <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
           </Button>
 
           <Button
             variant="secondary"
             size="lg"
-            onClick={() => window.location.href = '#/exams'}
+            onClick={() => { window.location.hash = '#/exams'; }}
           >
-            <span>Simulate Exam Test</span>
+            <span>Open exam simulator</span>
           </Button>
         </div>
       </div>

@@ -33,13 +33,13 @@ export default function VirtualKeyboard({ targetChar, activeKey }) {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto mt-6 bg-paper-surface border border-paper-border rounded-card p-4 shadow-subtle transition-all select-none">
+    <div className="w-full max-w-3xl mx-auto mt-6 bg-paper-surface border border-paper-border rounded-card p-4 shadow-subtle select-none">
       {/* Keyboard Header */}
       <div className="flex items-center justify-between pb-3 mb-3 border-b border-paper-border text-xs">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5">
-            <span className="text-ink-muted">Next key:</span>
-            <span className="inline-flex items-center justify-center min-w-[28px] h-7 px-2 rounded-btn bg-accent-soft text-accent font-mono font-semibold text-sm">
+            <span className="text-ink-muted">Next key</span>
+            <span className="keycap inline-flex items-center justify-center min-w-[28px] h-7 px-2 font-mono font-medium text-sm text-accent">
               {targetChar === ' ' ? 'Space' : targetChar || '—'}
             </span>
           </div>
@@ -47,9 +47,9 @@ export default function VirtualKeyboard({ targetChar, activeKey }) {
           {fingerInfo && (
             <div className="flex items-center gap-1.5 text-ink-muted">
               <span className={`w-2 h-2 rounded-full ${fingerInfo.dot}`} />
-              <span>Use: <strong className="text-ink font-medium">{fingerInfo.name}</strong></span>
+              <span>Use <strong className="text-ink font-medium">{fingerInfo.name}</strong></span>
               {fingerInfo.needsShift && (
-                <span className="text-[11px] px-1.5 py-0.5 rounded bg-paper border border-paper-border text-ink font-medium">
+                <span className="keycap text-[11px] px-1.5 py-0.5 text-ink font-medium">
                   + {fingerInfo.shiftHand}
                 </span>
               )}
@@ -105,19 +105,19 @@ export default function VirtualKeyboard({ targetChar, activeKey }) {
                 return (
                   <div
                     key={kIdx}
-                    className={`relative flex flex-col items-center justify-center font-mono rounded-btn border transition-all duration-75 select-none ${
+                    className={`relative flex flex-col items-center justify-center font-mono keycap transition-colors duration-75 select-none ${
                       k.width || 'w-10'
                     } h-10 text-xs ${keyBg} ${
                       k.isSpecial ? 'font-sans text-[11px] font-medium text-ink-muted' : 'font-medium'
                     }`}
                   >
                     {k.shiftKey && (
-                      <span className={`text-[9px] leading-none mb-0.5 opacity-60 ${target && k.shiftKey === targetChar ? 'font-bold' : ''}`}>
+                      <span className={`text-[9px] leading-none mb-0.5 opacity-60 ${target && k.shiftKey === targetChar ? 'font-semibold' : ''}`}>
                         {k.shiftKey}
                       </span>
                     )}
 
-                    <span className={`leading-none uppercase ${target && k.key.toLowerCase() === targetChar?.toLowerCase() ? 'font-bold text-white' : ''}`}>
+                    <span className={`leading-none uppercase ${target && k.key.toLowerCase() === targetChar?.toLowerCase() ? 'font-semibold text-white' : ''}`}>
                       {k.key}
                     </span>
 

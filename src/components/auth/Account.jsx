@@ -64,11 +64,11 @@ export default function Account() {
           <Card className="p-6 sm:p-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 mb-4 border-b border-border">
               <div>
-                <span className="text-2xs font-semibold uppercase tracking-wider text-text-muted block mb-1">
+                <span className="text-xs font-medium text-text-muted block mb-1">
                   Active Subscription
                 </span>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-xl font-bold text-text">{planTitle}</h2>
+                  <h2 className="text-xl font-semibold text-text">{planTitle}</h2>
                   <PlanBadge plan={isProUser ? 'pro' : subscription?.status === 'trialing' ? 'trial' : 'free'} trialDaysLeft={trialDaysLeft} />
                 </div>
               </div>
@@ -81,11 +81,11 @@ export default function Account() {
                   className="!bg-pro hover:!bg-pro-hover text-white gap-1.5"
                 >
                   <span>Upgrade to Pro</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
                 </Button>
               ) : (
                 <span className="text-xs text-accent font-medium inline-flex items-center gap-1">
-                  <ShieldCheck className="w-4 h-4 text-accent" />
+                  <ShieldCheck className="w-4 h-4 text-accent" strokeWidth={1.5} />
                   <span>Pro Unlocked</span>
                 </span>
               )}
@@ -93,16 +93,16 @@ export default function Account() {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-text-muted">
               <div>
-                <span className="block text-2xs uppercase tracking-wider mb-0.5">Status</span>
-                <span className="font-semibold text-text capitalize">{subscription?.status || 'Active (Free)'}</span>
+                <span className="block text-xs font-medium mb-0.5">Status</span>
+                <span className="font-medium text-text capitalize">{subscription?.status || 'Active (Free)'}</span>
               </div>
               <div>
-                <span className="block text-2xs uppercase tracking-wider mb-0.5">Next Renewal / Expiry</span>
-                <span className="font-semibold text-text">{periodEndStr}</span>
+                <span className="block text-xs font-medium mb-0.5">Next Renewal / Expiry</span>
+                <span className="font-medium text-text tabular-nums">{periodEndStr}</span>
               </div>
               <div>
-                <span className="block text-2xs uppercase tracking-wider mb-0.5">Payment Method</span>
-                <span className="font-semibold text-text">Razorpay UPI / Card</span>
+                <span className="block text-xs font-medium mb-0.5">Payment Method</span>
+                <span className="font-medium text-text">Razorpay UPI / Card</span>
               </div>
             </div>
 
@@ -128,15 +128,15 @@ export default function Account() {
             <h3 className="text-sm font-semibold text-text mb-4">Profile Details</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
-                <label className="text-2xs uppercase tracking-wider text-text-muted block mb-1">Email</label>
-                <div className="p-2.5 rounded bg-surface-2 border border-border text-text font-mono">
+                <label className="text-xs font-medium text-text-muted block mb-1">Email</label>
+                <div className="p-2.5 rounded-input bg-surface-2 border border-border text-text font-mono">
                   {user.email}
                 </div>
               </div>
 
               <div>
-                <label className="text-2xs uppercase tracking-wider text-text-muted block mb-1">User ID</label>
-                <div className="p-2.5 rounded bg-surface-2 border border-border text-text-muted font-mono truncate">
+                <label className="text-xs font-medium text-text-muted block mb-1">User ID</label>
+                <div className="p-2.5 rounded-input bg-surface-2 border border-border text-text-muted font-mono truncate">
                   {user.id}
                 </div>
               </div>

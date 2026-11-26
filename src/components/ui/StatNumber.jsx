@@ -17,13 +17,13 @@ export default function StatNumber({
   return (
     <div className={`select-none ${className}`}>
       {label && (
-        <div className="text-2xs font-semibold uppercase tracking-wider text-text-muted mb-1">
+        <div className="text-xs font-medium text-text-muted mb-1">
           {label}
         </div>
       )}
       <div className="flex items-baseline gap-1">
         <span
-          className={`font-mono font-semibold tabular-nums tracking-tight ${
+          className={`font-mono font-medium tabular-nums tracking-tight ${
             accent ? 'text-accent' : 'text-text'
           } ${sizeClasses[size] || sizeClasses.md}`}
         >

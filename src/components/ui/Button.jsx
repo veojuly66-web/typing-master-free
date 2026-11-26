@@ -10,7 +10,7 @@ export default function Button({
   onClick,
   ...props
 }) {
-  const baseStyles = 'inline-flex items-center justify-center font-medium transition-colors select-none focus:outline-none disabled:opacity-40 disabled:pointer-events-none rounded-btn';
+  const baseStyles = 'inline-flex items-center justify-center font-medium transition-[background-color,border-color,color,transform] duration-150 ease-smooth active:scale-[0.98] select-none focus:outline-none disabled:opacity-40 disabled:pointer-events-none rounded-btn';
 
   const variantStyles = {
     primary: 'bg-accent hover:bg-accent-hover text-white shadow-subtle',
@@ -21,9 +21,9 @@ export default function Button({
   };
 
   const sizeStyles = {
-    sm: 'text-xs px-2.5 py-1.5 gap-1.5',
-    md: 'text-sm px-4 py-2 gap-2',
-    lg: 'text-base px-5 py-2.5 gap-2.5'
+    sm: 'text-xs h-8 px-3 gap-1.5',
+    md: 'text-sm h-9 px-4 gap-2',
+    lg: 'text-sm sm:text-base h-11 px-5 gap-2'
   };
 
   return (

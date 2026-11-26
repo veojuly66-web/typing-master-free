@@ -132,15 +132,15 @@ export default function Checkout() {
     return (
       <div className="max-w-content mx-auto py-16 px-4 text-center">
         <div className="max-w-md mx-auto bg-surface border border-border rounded-card p-8 shadow-subtle animate-fadeIn">
-          <div className="w-14 h-14 rounded-full bg-accent-soft text-accent flex items-center justify-center mx-auto mb-4 border border-accent/20">
-            <Check className="w-7 h-7" />
+          <div className="w-12 h-12 rounded-full bg-accent-soft text-accent flex items-center justify-center mx-auto mb-4 border border-accent/20">
+            <Check className="w-6 h-6" strokeWidth={1.5} />
           </div>
 
-          <h1 className="text-2xl font-bold text-text tracking-tight mb-2">
-            Pro Plan Activated!
+          <h1 className="text-2xl font-semibold text-text tracking-tight mb-2">
+            Pro Plan Activated
           </h1>
           <p className="text-xs sm:text-sm text-text-muted leading-relaxed mb-6">
-            Congratulations! Your account now has unlimited access to all English & Hindi courses, government exam simulators, and verified certificates.
+            Your account now has unlimited access to all English & Hindi courses, government exam simulators, and verified certificates.
           </p>
 
           <Button
@@ -150,7 +150,7 @@ export default function Checkout() {
             className="w-full justify-center"
           >
             <span>Go to Exam Simulator</span>
-            <ArrowRight className="w-4 h-4 ml-1" />
+            <ArrowRight className="w-4 h-4 ml-1" strokeWidth={1.5} />
           </Button>
         </div>
       </div>
@@ -164,22 +164,22 @@ export default function Checkout() {
           href="#/pricing"
           className="inline-flex items-center gap-1.5 text-xs text-text-muted hover:text-text font-medium mb-6"
         >
-          <ArrowLeft className="w-3.5 h-3.5" />
+          <ArrowLeft className="w-3.5 h-3.5" strokeWidth={1.5} />
           <span>Back to Plans</span>
         </a>
 
         <Card className="p-6 sm:p-8">
-          <div className="text-2xs font-semibold uppercase tracking-wider text-accent mb-1">
+          <div className="text-xs font-medium text-accent mb-1">
             Order Summary
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-text mb-4">
+          <h1 className="text-xl sm:text-2xl font-semibold text-text mb-4">
             {plan.name}
           </h1>
 
-          <div className="p-4 rounded bg-surface-2 border border-border mb-6">
+          <div className="p-4 rounded-btn bg-surface-2 border border-border mb-6">
             <div className="flex items-baseline justify-between mb-1">
               <span className="text-xs text-text-muted">Subscription Fee</span>
-              <span className="font-mono text-lg font-bold text-text">₹{plan.price}</span>
+              <span className="font-mono text-lg font-semibold tabular-nums text-text">₹{plan.price}</span>
             </div>
             <div className="flex items-center justify-between text-2xs text-text-muted">
               <span>Taxes (18% GST)</span>
@@ -187,25 +187,25 @@ export default function Checkout() {
             </div>
             <div className="pt-2 mt-2 border-t border-border flex items-baseline justify-between font-semibold text-text text-sm">
               <span>Total Payable</span>
-              <span className="font-mono text-xl text-accent">₹{plan.price}</span>
+              <span className="font-mono text-xl font-semibold tabular-nums text-accent">₹{plan.price}</span>
             </div>
           </div>
 
           {errorMsg && (
-            <div className="mb-4 p-3 rounded bg-rose-50 dark:bg-rose-950/40 border border-rose-300 text-xs text-error flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <div className="mb-4 p-3 rounded-btn bg-rose-50 dark:bg-rose-950/40 border border-rose-300 text-xs text-error flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" strokeWidth={1.5} />
               <span>{errorMsg}</span>
             </div>
           )}
 
           <div className="space-y-3 mb-6">
-            <div className="text-2xs font-semibold uppercase tracking-wider text-text-muted">
-              Included in this plan:
+            <div className="text-xs font-medium text-text-muted">
+              Included in this plan
             </div>
             <ul className="space-y-2 text-xs text-text-muted">
               {plan.features.slice(0, 5).map((f, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <Check className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
+                  <Check className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" strokeWidth={1.5} />
                   <span>{f}</span>
                 </li>
               ))}

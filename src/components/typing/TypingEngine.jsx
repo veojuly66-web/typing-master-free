@@ -328,9 +328,9 @@ export default function TypingEngine({
 
         <div className="flex items-center gap-2">
           {capsLockOn && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-2xs font-semibold border border-amber-300 dark:border-amber-800 animate-pulse">
-              <AlertCircle className="w-3 h-3" />
-              <span>CAPS LOCK ON</span>
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-key bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-2xs font-medium border border-amber-300 dark:border-amber-800">
+              <AlertCircle className="w-3 h-3" strokeWidth={1.5} />
+              <span>Caps Lock on</span>
             </span>
           )}
 
@@ -340,7 +340,7 @@ export default function TypingEngine({
             aria-label="Restart exercise"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-border bg-surface hover:bg-surface-2 text-xs text-text font-medium transition-colors"
           >
-            <RotateCcw className="w-3.5 h-3.5 text-text-muted" />
+            <RotateCcw className="w-3.5 h-3.5 text-text-muted" strokeWidth={1.5} />
             <span className="hidden sm:inline">Restart (Esc)</span>
           </button>
         </div>
@@ -349,12 +349,12 @@ export default function TypingEngine({
       {/* Live Stat Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 text-xs font-medium pb-3 mb-4 border-b border-border text-text-muted select-none">
         <div>
-          <span className="font-mono text-xl sm:text-2xl font-bold text-text tabular-nums">{netWpm}</span>
+          <span className="font-mono text-xl sm:text-2xl font-semibold text-text tabular-nums">{netWpm}</span>
           <span className="ml-1 text-text-muted">Net WPM</span>
         </div>
 
         <div>
-          <span className={`font-mono text-xl sm:text-2xl font-bold tabular-nums ${accuracy >= targetAccuracy ? 'text-accent' : 'text-text'}`}>
+          <span className={`font-mono text-xl sm:text-2xl font-semibold tabular-nums ${accuracy >= targetAccuracy ? 'text-accent' : 'text-text'}`}>
             {accuracy}%
           </span>
           <span className="ml-1 text-text-muted">Accuracy</span>
@@ -362,25 +362,25 @@ export default function TypingEngine({
 
         {isHindiText ? (
           <div>
-            <span className="font-mono text-xl sm:text-2xl font-bold text-text tabular-nums">{kph}</span>
+            <span className="font-mono text-xl sm:text-2xl font-semibold text-text tabular-nums">{kph}</span>
             <span className="ml-1 text-text-muted">KPH</span>
           </div>
         ) : (
           <div>
-            <span className="font-mono text-xl sm:text-2xl font-bold text-text tabular-nums">{grossWpm}</span>
+            <span className="font-mono text-xl sm:text-2xl font-semibold text-text tabular-nums">{grossWpm}</span>
             <span className="ml-1 text-text-muted">Gross WPM</span>
           </div>
         )}
 
         <div>
-          <span className="font-mono text-xl sm:text-2xl font-bold text-text tabular-nums">
+          <span className="font-mono text-xl sm:text-2xl font-semibold text-text tabular-nums">
             {durationLimitSeconds ? `${Math.max(0, Math.round(durationLimitSeconds - elapsedSeconds))}s` : `${Math.round(elapsedSeconds)}s`}
           </span>
           <span className="ml-1 text-text-muted">{durationLimitSeconds ? 'Remaining' : 'Time'}</span>
         </div>
 
         <div>
-          <span className={`font-mono text-xl sm:text-2xl font-bold tabular-nums ${errorsCount > 0 ? 'text-error' : 'text-text'}`}>
+          <span className={`font-mono text-xl sm:text-2xl font-semibold tabular-nums ${errorsCount > 0 ? 'text-error' : 'text-text'}`}>
             {errorsCount}
           </span>
           <span className="ml-1 text-text-muted">Errors</span>
@@ -392,7 +392,7 @@ export default function TypingEngine({
         errorFlash ? 'border-error bg-rose-50/20 dark:bg-rose-950/10' : 'border-border'
       }`}>
         {isPaused && (
-          <div className="absolute inset-0 bg-surface/90 backdrop-blur-sm z-20 flex flex-col items-center justify-center rounded-card">
+          <div className="absolute inset-0 bg-surface/95 z-20 flex flex-col items-center justify-center rounded-card">
             <span className="text-sm font-semibold text-text mb-1">Typing Paused</span>
             <span className="text-xs text-text-muted">Click or press any key to resume</span>
           </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { getFingerInfo, getKeyboardRows } from '../../utils/fingerMap';
-import { Eye, EyeOff, Sparkles, Hand } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function VirtualKeyboard({
   targetChar,
@@ -77,8 +77,8 @@ export default function VirtualKeyboard({
       <div className="flex flex-wrap items-center justify-between gap-3 pb-3 mb-3 border-b border-border text-xs">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5">
-            <span className="text-text-muted">Target key:</span>
-            <span className="inline-flex items-center justify-center min-w-[28px] h-7 px-2 rounded-btn bg-accent-soft text-accent font-mono font-semibold text-sm">
+            <span className="text-text-muted">Target key</span>
+            <span className="keycap inline-flex items-center justify-center min-w-[28px] h-7 px-2 font-mono font-medium text-sm text-accent">
               {targetChar === ' ' ? 'Space' : targetChar || '—'}
             </span>
           </div>
@@ -86,9 +86,9 @@ export default function VirtualKeyboard({
           {fingerInfo && (
             <div className="flex items-center gap-1.5 text-text-muted">
               <span className={`w-2 h-2 rounded-full ${fingerInfo.dot || 'bg-accent'}`} />
-              <span>Use: <strong className="text-text font-medium">{fingerInfo.name}</strong></span>
+              <span>Use <strong className="text-text font-medium">{fingerInfo.name}</strong></span>
               {fingerInfo.needsShift && (
-                <span className="text-2xs px-1.5 py-0.5 rounded bg-surface-2 border border-border text-text font-medium">
+                <span className="keycap text-2xs px-1.5 py-0.5 text-text font-medium">
                   + {fingerInfo.shiftHand}
                 </span>
               )}
@@ -131,7 +131,7 @@ export default function VirtualKeyboard({
             aria-label="Hide keyboard"
             className="p-1 rounded-btn text-text-muted hover:text-text transition-colors"
           >
-            <EyeOff className="w-4 h-4" />
+            <EyeOff className="w-4 h-4" strokeWidth={1.5} />
           </button>
         </div>
       </div>
@@ -159,7 +159,7 @@ export default function VirtualKeyboard({
               return (
                 <div
                   key={kIdx}
-                  className={`relative flex flex-col items-center justify-center font-mono rounded-btn border transition-all duration-75 select-none ${
+                  className={`relative flex flex-col items-center justify-center font-mono keycap transition-colors duration-75 select-none ${
                     k.width || 'w-10'
                   } h-11 text-xs ${keyStyle} ${
                     k.isSpecial ? 'font-sans text-2xs font-medium text-text-muted' : 'font-medium'
@@ -171,11 +171,11 @@ export default function VirtualKeyboard({
                     </span>
                   )}
                   {k.shiftKey && (
-                    <span className={`text-[10px] leading-none mb-0.5 opacity-60 font-hindi ${target && k.shiftKey === targetChar ? 'font-bold text-white' : ''}`}>
+                    <span className={`text-[10px] leading-none mb-0.5 opacity-60 font-hindi ${target && k.shiftKey === targetChar ? 'font-semibold text-white' : ''}`}>
                       {k.shiftKey}
                     </span>
                   )}
-                  <span className={`leading-none ${layout !== 'us' && layout !== 'uk' ? 'font-hindi text-sm' : 'uppercase'} ${target && k.key.toLowerCase() === targetChar?.toLowerCase() ? 'font-bold text-white' : ''}`}>
+                  <span className={`leading-none ${layout !== 'us' && layout !== 'uk' ? 'font-hindi text-sm' : 'uppercase'} ${target && k.key.toLowerCase() === targetChar?.toLowerCase() ? 'font-semibold text-white' : ''}`}>
                     {k.key}
                   </span>
 
@@ -196,11 +196,11 @@ export default function VirtualKeyboard({
           <div className="flex flex-col items-center gap-1">
             <span className="font-medium">Left Hand</span>
             <div className="flex items-end gap-1 h-8">
-              <span title="Pinky" className={`w-2 rounded-t transition-all ${activeFingerKey === 'left-pinky' ? 'h-6 bg-accent' : 'h-5 bg-border'}`} />
-              <span title="Ring" className={`w-2 rounded-t transition-all ${activeFingerKey === 'left-ring' ? 'h-7 bg-accent' : 'h-6 bg-border'}`} />
-              <span title="Middle" className={`w-2 rounded-t transition-all ${activeFingerKey === 'left-middle' ? 'h-8 bg-accent' : 'h-7 bg-border'}`} />
-              <span title="Index" className={`w-2 rounded-t transition-all ${activeFingerKey === 'left-index' ? 'h-7 bg-accent' : 'h-6 bg-border'}`} />
-              <span title="Thumb" className={`w-2.5 rounded-t transition-all ${activeFingerKey === 'thumb' ? 'h-4 bg-accent' : 'h-4 bg-border'}`} />
+              <span title="Pinky" className={`w-2 rounded-t transition-[height,background-color] duration-150 ${activeFingerKey === 'left-pinky' ? 'h-6 bg-accent' : 'h-5 bg-border'}`} />
+              <span title="Ring" className={`w-2 rounded-t transition-[height,background-color] duration-150 ${activeFingerKey === 'left-ring' ? 'h-7 bg-accent' : 'h-6 bg-border'}`} />
+              <span title="Middle" className={`w-2 rounded-t transition-[height,background-color] duration-150 ${activeFingerKey === 'left-middle' ? 'h-8 bg-accent' : 'h-7 bg-border'}`} />
+              <span title="Index" className={`w-2 rounded-t transition-[height,background-color] duration-150 ${activeFingerKey === 'left-index' ? 'h-7 bg-accent' : 'h-6 bg-border'}`} />
+              <span title="Thumb" className={`w-2.5 rounded-t transition-[height,background-color] duration-150 ${activeFingerKey === 'thumb' ? 'h-4 bg-accent' : 'h-4 bg-border'}`} />
             </div>
           </div>
 
@@ -208,11 +208,11 @@ export default function VirtualKeyboard({
           <div className="flex flex-col items-center gap-1">
             <span className="font-medium">Right Hand</span>
             <div className="flex items-end gap-1 h-8">
-              <span title="Thumb" className={`w-2.5 rounded-t transition-all ${activeFingerKey === 'thumb' ? 'h-4 bg-accent' : 'h-4 bg-border'}`} />
-              <span title="Index" className={`w-2 rounded-t transition-all ${activeFingerKey === 'right-index' ? 'h-7 bg-accent' : 'h-6 bg-border'}`} />
-              <span title="Middle" className={`w-2 rounded-t transition-all ${activeFingerKey === 'right-middle' ? 'h-8 bg-accent' : 'h-7 bg-border'}`} />
-              <span title="Ring" className={`w-2 rounded-t transition-all ${activeFingerKey === 'right-ring' ? 'h-7 bg-accent' : 'h-6 bg-border'}`} />
-              <span title="Pinky" className={`w-2 rounded-t transition-all ${activeFingerKey === 'right-pinky' ? 'h-6 bg-accent' : 'h-5 bg-border'}`} />
+              <span title="Thumb" className={`w-2.5 rounded-t transition-[height,background-color] duration-150 ${activeFingerKey === 'thumb' ? 'h-4 bg-accent' : 'h-4 bg-border'}`} />
+              <span title="Index" className={`w-2 rounded-t transition-[height,background-color] duration-150 ${activeFingerKey === 'right-index' ? 'h-7 bg-accent' : 'h-6 bg-border'}`} />
+              <span title="Middle" className={`w-2 rounded-t transition-[height,background-color] duration-150 ${activeFingerKey === 'right-middle' ? 'h-8 bg-accent' : 'h-7 bg-border'}`} />
+              <span title="Ring" className={`w-2 rounded-t transition-[height,background-color] duration-150 ${activeFingerKey === 'right-ring' ? 'h-7 bg-accent' : 'h-6 bg-border'}`} />
+              <span title="Pinky" className={`w-2 rounded-t transition-[height,background-color] duration-150 ${activeFingerKey === 'right-pinky' ? 'h-6 bg-accent' : 'h-5 bg-border'}`} />
             </div>
           </div>
         </div>

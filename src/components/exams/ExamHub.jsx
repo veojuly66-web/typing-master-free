@@ -47,7 +47,6 @@ export default function ExamHub() {
     <div className="max-w-content mx-auto py-10 md:py-16 px-4">
       {/* Header */}
       <div className="mb-12">
-        <Badge variant="accent" className="mb-3">Official Examination Syllabus</Badge>
         <h1 className="text-3xl sm:text-4xl font-semibold text-text tracking-tight mb-3">
           Government Typing Exam Center
         </h1>
@@ -61,9 +60,9 @@ export default function ExamHub() {
         {examGuides.map((guide) => (
           <Card key={guide.id} className="p-6 flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-2xs text-text-muted mb-2">
-                <span className="font-semibold text-accent uppercase tracking-wider">Exam Syllabus</span>
-                <span className="font-mono">{guide.duration}</span>
+              <div className="flex items-center justify-between text-xs text-text-muted mb-2">
+                <span className="font-medium text-accent">Exam Syllabus</span>
+                <span className="font-mono tabular-nums">{guide.duration}</span>
               </div>
 
               <h2 className="text-lg font-semibold text-text mb-2">
@@ -74,8 +73,8 @@ export default function ExamHub() {
                 {guide.description}
               </p>
 
-              <div className="inline-block px-2.5 py-1 rounded bg-surface-2 text-2xs font-medium text-text mb-6">
-                Qualifying: <strong className="text-accent">{guide.speed}</strong>
+              <div className="inline-block px-2.5 py-1 rounded-key bg-surface-2 text-2xs font-medium text-text mb-6">
+                Qualifying: <strong className="font-semibold text-accent">{guide.speed}</strong>
               </div>
             </div>
 
@@ -85,7 +84,7 @@ export default function ExamHub() {
                 className="text-xs font-semibold text-accent hover:text-accent-hover inline-flex items-center gap-1"
               >
                 <span>Read Exam Guide & Rules</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
               </a>
 
               <a
@@ -105,7 +104,7 @@ export default function ExamHub() {
           Official Error Evaluation Rules Summary
         </h2>
         <p className="text-xs sm:text-sm text-text-muted mb-6">
-          How mistakes are counted in major government examinations:
+          How mistakes are counted in major government examinations
         </p>
 
         <div className="overflow-x-auto">

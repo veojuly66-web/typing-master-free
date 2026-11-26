@@ -14,7 +14,7 @@ export default function Badge({
 
   return (
     <span
-      className={`inline-flex items-center px-2 py-0.5 rounded-btn text-2xs font-medium border select-none ${
+      className={`inline-flex items-center px-2 py-0.5 rounded-key text-2xs font-medium border select-none ${
         variantStyles[variant] || variantStyles.default
       } ${className}`}
     >

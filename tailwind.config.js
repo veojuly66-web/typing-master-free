@@ -58,18 +58,22 @@ export default {
         serif: ['"Source Serif 4"', 'Georgia', 'serif'],
       },
       borderRadius: {
-        btn: '6px',
-        input: '6px',
-        card: '10px',
-        modal: '14px',
+        key: '5px',
+        btn: '8px',
+        input: '8px',
+        card: '12px',
+        modal: '16px',
       },
       boxShadow: {
-        subtle: '0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 1px rgba(0, 0, 0, 0.04)',
-        modal: '0 12px 32px rgba(0, 0, 0, 0.12)',
+        subtle: '0 1px 2px rgba(28, 27, 25, 0.05)',
+        modal: '0 8px 24px rgba(28, 27, 25, 0.08)',
       },
       maxWidth: {
         content: '1120px',
         typing: '860px',
+      },
+      transitionTimingFunction: {
+        smooth: 'cubic-bezier(0.22, 1, 0.36, 1)',
       },
       transitionDuration: {
         DEFAULT: '150ms',

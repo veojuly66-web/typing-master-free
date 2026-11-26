@@ -31,14 +31,14 @@ export default function Modal({
       role="dialog"
       aria-modal="true"
       aria-label={title || 'Modal dialog'}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-text/40 backdrop-blur-sm animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-text/35"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
       <div
         ref={modalRef}
-        className={`bg-surface border border-border rounded-modal w-full ${maxWidth} p-6 sm:p-8 shadow-modal relative`}
+        className={`bg-surface border border-border rounded-modal w-full ${maxWidth} p-6 shadow-modal relative`}
       >
         {showClose && (
           <button
@@ -47,13 +47,13 @@ export default function Modal({
             aria-label="Close dialog"
             className="absolute top-4 right-4 p-1.5 rounded-btn text-text-muted hover:text-text transition-colors"
           >
-            <X className="w-4 h-4" />
+            <X className="w-4 h-4" strokeWidth={1.5} />
           </button>
         )}
 
         {title && (
           <div className="mb-4 pr-6">
-            <h3 className="text-lg font-semibold text-text tracking-tight">{title}</h3>
+            <h3 className="text-lg font-medium text-text tracking-tight">{title}</h3>
           </div>
         )}
 

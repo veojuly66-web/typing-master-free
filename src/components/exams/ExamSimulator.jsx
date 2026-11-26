@@ -130,12 +130,6 @@ export default function ExamSimulator() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <div className="inline-flex items-center gap-1.5 mb-2">
-            <span className="w-2 h-2 rounded-full bg-accent" />
-            <span className="text-2xs font-semibold uppercase tracking-wider text-accent">
-              Official Pattern Simulator
-            </span>
-          </div>
           <h1 className="text-2xl sm:text-3xl font-semibold text-text tracking-tight">
             Government Exam Simulator
           </h1>
@@ -166,17 +160,17 @@ export default function ExamSimulator() {
                   key={preset.id}
                   type="button"
                   onClick={() => handleSelectExam(preset)}
-                  className={`text-left p-4 rounded-card border transition-all ${
+                  className={`text-left p-4 rounded-card border transition-colors duration-150 ease-smooth ${
                     isSelected
                       ? 'bg-surface border-accent shadow-subtle ring-1 ring-accent'
                       : 'bg-surface border-border hover:border-text-muted/40'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-2xs font-semibold uppercase tracking-wider text-text-muted">
+                    <span className="text-xs font-medium text-text-muted">
                       {preset.organizer}
                     </span>
-                    <span className="text-2xs font-mono font-medium px-1.5 py-0.5 rounded bg-surface-2 text-text">
+                    <span className="text-2xs font-mono font-medium tabular-nums px-1.5 py-0.5 rounded-key bg-surface-2 text-text">
                       {Math.round(preset.durationSeconds / 60)} min
                     </span>
                   </div>
@@ -187,7 +181,7 @@ export default function ExamSimulator() {
                   </p>
 
                   <div className="flex items-center justify-between text-2xs pt-2 border-t border-border">
-                    <span className="text-accent font-medium">Req: {preset.qualifyingSpeedWpm} WPM</span>
+                    <span className="text-accent font-medium tabular-nums">Req: {preset.qualifyingSpeedWpm} WPM</span>
                     <span className="text-text-muted">{preset.backspaceAllowed ? 'Backspace Allowed' : 'No Backspace'}</span>
                   </div>
                 </button>
@@ -205,11 +199,11 @@ export default function ExamSimulator() {
 
               {isHindi && (
                 <div className="flex items-center gap-2 text-xs">
-                  <span className="text-text-muted">Layout:</span>
+                  <span className="text-text-muted">Layout</span>
                   <select
                     value={activeLayout}
                     onChange={(e) => setActiveLayout(e.target.value)}
-                    className="px-2.5 py-1 rounded bg-surface border border-border text-xs text-text font-medium"
+                    className="px-2.5 py-1 rounded-input bg-surface border border-border text-xs text-text font-medium"
                   >
                     <option value="remington-gail">Remington Gail (Krutidev)</option>
                     <option value="inscript">Inscript (Govt Standard)</option>
@@ -219,7 +213,7 @@ export default function ExamSimulator() {
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-6 text-xs text-text-muted">
+              <div className="flex items-center gap-6 text-xs text-text-muted tabular-nums">
                 <div>
                   <span className="font-semibold text-text">{Math.round(selectedExam.durationSeconds / 60)} Minutes</span> Duration
                 </div>
@@ -232,7 +226,7 @@ export default function ExamSimulator() {
               </div>
 
               <Button variant="primary" size="lg" onClick={handleStartExam} className="gap-2">
-                <Play className="w-4 h-4 fill-current" />
+                <Play className="w-4 h-4 fill-current" strokeWidth={1.5} />
                 <span>Begin Examination</span>
               </Button>
             </div>
@@ -247,14 +241,14 @@ export default function ExamSimulator() {
           <div className="flex items-center justify-between p-3.5 rounded-card bg-surface border border-border">
             <div className="flex items-center gap-3">
               <span className="font-semibold text-text text-sm">{selectedExam.title}</span>
-              <span className="text-2xs font-mono px-2 py-0.5 rounded bg-surface-2 text-text-muted uppercase">
+              <span className="text-2xs font-mono px-2 py-0.5 rounded-key bg-surface-2 text-text-muted">
                 {activeLayout}
               </span>
             </div>
 
             <div className="flex items-center gap-3">
-              <div className={`font-mono text-xl font-bold px-3 py-1 rounded ${
-                timeLeft < 60 ? 'bg-rose-50 dark:bg-rose-950/40 text-error animate-pulse' : 'bg-surface-2 text-text'
+              <div className={`font-mono text-xl font-semibold tabular-nums px-3 py-1 rounded-btn ${
+                timeLeft < 60 ? 'bg-rose-50 dark:bg-rose-950/40 text-error border border-rose-300' : 'bg-surface-2 text-text'
               }`}>
                 {timeFormatted}
               </div>
@@ -267,19 +261,19 @@ export default function ExamSimulator() {
 
           {/* Upper Box: Original Passage (Scrollable) */}
           <div className="p-5 rounded-card bg-surface border border-border">
-            <div className="text-2xs font-semibold uppercase tracking-wider text-text-muted mb-2">
-              Passage to transcribe:
+            <div className="text-xs font-medium text-text-muted mb-2">
+              Passage to transcribe
             </div>
-            <div className={`${isHindi ? 'font-hindi text-xl leading-[2]' : 'font-mono text-base leading-relaxed'} text-text max-h-[160px] overflow-y-auto select-none p-3 bg-surface-2/60 rounded border border-border/60`}>
+            <div className={`${isHindi ? 'font-hindi text-xl leading-[2]' : 'font-mono text-base leading-relaxed'} text-text max-h-[160px] overflow-y-auto select-none p-3 bg-surface-2/60 rounded-btn border border-border/60`}>
               {selectedExam.samplePassage}
             </div>
           </div>
 
           {/* Lower Box: Candidate Typing Area */}
           <div className="p-5 rounded-card bg-surface border border-border">
-            <div className="flex items-center justify-between text-2xs font-semibold uppercase tracking-wider text-text-muted mb-2">
-              <span>Candidate transcription box:</span>
-              <span>Words typed: {typedText.trim().split(/\s+/).filter(Boolean).length}</span>
+            <div className="flex items-center justify-between text-xs font-medium text-text-muted mb-2">
+              <span>Candidate transcription box</span>
+              <span className="font-mono tabular-nums">Words typed: {typedText.trim().split(/\s+/).filter(Boolean).length}</span>
             </div>
             <textarea
               ref={inputRef}
@@ -292,7 +286,7 @@ export default function ExamSimulator() {
               }}
               onKeyDown={handleKeyDown}
               placeholder="Start typing the passage here..."
-              className={`w-full p-4 rounded bg-bg border border-border focus:outline-none focus:border-accent ${
+              className={`w-full p-4 rounded-input bg-bg border border-border focus:outline-none focus:border-accent ${
                 isHindi ? 'font-hindi text-xl leading-[2]' : 'font-mono text-base leading-relaxed'
               } text-text resize-none`}
             />
@@ -306,40 +300,40 @@ export default function ExamSimulator() {
           {/* Header & Qualification Status */}
           <div className="flex items-center justify-between pb-4 mb-6 border-b border-border">
             <div>
-              <span className="text-2xs font-semibold uppercase tracking-wider text-text-muted block mb-1">
+              <span className="text-xs font-medium text-text-muted block mb-1">
                 Official Examination Scorecard
               </span>
               <h2 className="text-xl font-semibold text-text">{selectedExam.title}</h2>
             </div>
 
-            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ${
+            <div className={`flex items-center gap-1.5 px-3 py-1 rounded-key text-xs font-medium ${
               scorecard.isQualified
                 ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-300'
                 : 'bg-rose-50 dark:bg-rose-950/40 text-error border border-rose-300'
             }`}>
-              {scorecard.isQualified ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
-              <span>{scorecard.isQualified ? 'QUALIFIED' : 'NOT QUALIFIED'}</span>
+              {scorecard.isQualified ? <CheckCircle className="w-4 h-4" strokeWidth={1.5} /> : <XCircle className="w-4 h-4" strokeWidth={1.5} />}
+              <span>{scorecard.isQualified ? 'Qualified' : 'Not Qualified'}</span>
             </div>
           </div>
 
           {/* Main Speed Metrics */}
           <div className="grid grid-cols-2 gap-4 pb-6 mb-6 border-b border-border">
             <div>
-              <div className="text-xs text-text-muted uppercase tracking-wider mb-1">Net Typing Speed</div>
-              <div className="font-mono text-4xl sm:text-5xl font-bold text-text">
+              <div className="text-xs font-medium text-text-muted mb-1">Net Typing Speed</div>
+              <div className="font-mono text-4xl sm:text-5xl font-semibold tabular-nums text-text">
                 {scorecard.netWpm} <span className="text-sm font-sans font-normal text-text-muted">WPM</span>
               </div>
-              <div className="text-2xs text-text-muted mt-1">
+              <div className="text-2xs text-text-muted mt-1 tabular-nums">
                 Required speed: {selectedExam.qualifyingSpeedWpm} WPM
               </div>
             </div>
 
             <div className="text-right">
-              <div className="text-xs text-text-muted uppercase tracking-wider mb-1">Error Rate</div>
-              <div className={`font-mono text-4xl sm:text-5xl font-bold ${scorecard.isAccuracyQualified ? 'text-accent' : 'text-error'}`}>
+              <div className="text-xs font-medium text-text-muted mb-1">Error Rate</div>
+              <div className={`font-mono text-4xl sm:text-5xl font-semibold tabular-nums ${scorecard.isAccuracyQualified ? 'text-accent' : 'text-error'}`}>
                 {scorecard.errorPercentage}%
               </div>
-              <div className="text-2xs text-text-muted mt-1">
+              <div className="text-2xs text-text-muted mt-1 tabular-nums">
                 Max allowed: {selectedExam.maxErrorPercentage}%
               </div>
             </div>
@@ -347,28 +341,28 @@ export default function ExamSimulator() {
 
           {/* Mistake Breakdown Grid */}
           <div className="grid grid-cols-3 gap-3 mb-6 text-xs text-text-muted text-center">
-            <div className="p-3 rounded bg-surface-2 border border-border">
+            <div className="p-3 rounded-btn bg-surface-2 border border-border">
               <div className="text-2xs mb-0.5">Total Words</div>
-              <div className="font-mono text-xl font-bold text-text">{scorecard.totalTypedWords}</div>
+              <div className="font-mono text-xl font-semibold tabular-nums text-text">{scorecard.totalTypedWords}</div>
             </div>
 
-            <div className="p-3 rounded bg-surface-2 border border-border">
+            <div className="p-3 rounded-btn bg-surface-2 border border-border">
               <div className="text-2xs mb-0.5">Full Mistakes</div>
-              <div className="font-mono text-xl font-bold text-error">{scorecard.fullMistakes}</div>
+              <div className="font-mono text-xl font-semibold tabular-nums text-error">{scorecard.fullMistakes}</div>
               <div className="text-[10px] text-text-muted">1 word deducted each</div>
             </div>
 
-            <div className="p-3 rounded bg-surface-2 border border-border">
+            <div className="p-3 rounded-btn bg-surface-2 border border-border">
               <div className="text-2xs mb-0.5">Half Mistakes</div>
-              <div className="font-mono text-xl font-bold text-amber-600 dark:text-amber-400">{scorecard.halfMistakes}</div>
+              <div className="font-mono text-xl font-semibold tabular-nums text-amber-600 dark:text-amber-400">{scorecard.halfMistakes}</div>
               <div className="text-[10px] text-text-muted">0.5 word deducted each</div>
             </div>
           </div>
 
           {/* Word by Word Comparison Preview */}
-          <div className="mb-6 p-4 rounded bg-surface-2 border border-border">
-            <div className="text-2xs font-semibold uppercase tracking-wider text-text-muted mb-2">
-              Mistake-by-mistake transcription preview:
+          <div className="mb-6 p-4 rounded-btn bg-surface-2 border border-border">
+            <div className="text-xs font-medium text-text-muted mb-2">
+              Mistake-by-mistake transcription preview
             </div>
             <div className="flex flex-wrap gap-1.5 text-xs font-mono max-h-36 overflow-y-auto">
               {scorecard.wordComparisons.map((item, idx) => (

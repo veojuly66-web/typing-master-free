@@ -27,8 +27,8 @@ export default function LessonResultModal({
     .slice(0, 4);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-paper-surface border border-paper-border rounded-card max-w-lg w-full p-6 sm:p-8 shadow-xl relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 animate-fadeIn">
+      <div className="bg-paper-surface border border-paper-border rounded-modal max-w-lg w-full p-6 sm:p-8 shadow-overlay relative">
         {/* Close Button */}
         <button
           type="button"
@@ -36,7 +36,7 @@ export default function LessonResultModal({
           aria-label="Close result modal"
           className="absolute top-4 right-4 text-ink-muted hover:text-ink transition-colors"
         >
-          <X className="w-4 h-4" />
+          <X className="w-4 h-4" strokeWidth={1.5} />
         </button>
 
         {/* Status Heading */}
@@ -44,7 +44,7 @@ export default function LessonResultModal({
           <div className="flex items-center gap-2 mb-1">
             {passed ? (
               <span className="w-5 h-5 rounded-full bg-accent-soft text-accent flex items-center justify-center">
-                <Check className="w-3.5 h-3.5" />
+                <Check className="w-3.5 h-3.5" strokeWidth={1.5} />
               </span>
             ) : null}
             <h3 className="text-xl font-semibold text-ink tracking-tight">
@@ -52,22 +52,22 @@ export default function LessonResultModal({
             </h3>
           </div>
           <p className="text-xs text-ink-muted">
-            {lessonTitle} · {passed ? 'Target reached with good form.' : 'Repeat this drill to build steady rhythm.'}
+            {lessonTitle} · {passed ? 'Target reached with good form' : 'Repeat this drill to build steady rhythm'}
           </p>
         </div>
 
         {/* Main Metric: Big Net WPM */}
         <div className="py-4 border-y border-paper-border mb-6 flex items-baseline justify-between">
           <div>
-            <div className="text-xs text-ink-muted uppercase tracking-wider mb-1">Net typing speed</div>
-            <div className="font-mono text-4xl sm:text-5xl font-semibold text-ink">
+            <div className="text-xs font-medium text-ink-muted mb-1">Net typing speed</div>
+            <div className="font-mono text-4xl sm:text-5xl font-semibold tabular-nums text-ink">
               {netWpm} <span className="text-sm font-sans font-normal text-ink-muted">WPM</span>
             </div>
           </div>
 
           <div className="text-right">
-            <div className="text-xs text-ink-muted uppercase tracking-wider mb-1">Accuracy</div>
-            <div className={`font-mono text-3xl font-semibold ${accuracy >= 95 ? 'text-accent' : 'text-ink'}`}>
+            <div className="text-xs font-medium text-ink-muted mb-1">Accuracy</div>
+            <div className={`font-mono text-3xl font-semibold tabular-nums ${accuracy >= 95 ? 'text-accent' : 'text-ink'}`}>
               {accuracy}%
             </div>
           </div>
@@ -96,15 +96,15 @@ export default function LessonResultModal({
         {/* Problem Keys (if any) */}
         {problemKeys.length > 0 && (
           <div className="mb-6 p-3 rounded-card bg-paper border border-paper-border">
-            <div className="text-[11px] text-ink-muted mb-2">Most missed keys:</div>
+            <div className="text-[11px] text-ink-muted mb-2">Most missed keys</div>
             <div className="flex items-center gap-2 flex-wrap">
               {problemKeys.map(([k, count]) => (
                 <span
                   key={k}
-                  className="px-2 py-0.5 rounded-btn bg-paper-surface border border-paper-border font-mono text-xs text-ink inline-flex items-center gap-1.5"
+                  className="keycap px-2 py-0.5 font-mono text-xs text-ink inline-flex items-center gap-1.5"
                 >
                   <span>{k === ' ' ? 'Space' : k}</span>
-                  <span className="text-[10px] text-ink-muted">({count}×)</span>
+                  <span className="text-[10px] text-ink-muted tabular-nums">({count}×)</span>
                 </span>
               ))}
             </div>
@@ -118,7 +118,7 @@ export default function LessonResultModal({
             onClick={onRetry}
             className="w-full sm:w-auto flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-btn border border-paper-border text-ink hover:bg-paper text-xs font-medium transition-colors"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
+            <RotateCcw className="w-3.5 h-3.5" strokeWidth={1.5} />
             <span>Try again</span>
           </button>
 
@@ -129,7 +129,7 @@ export default function LessonResultModal({
               className="w-full sm:w-auto flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-btn bg-accent hover:bg-accent-hover text-white text-xs font-medium transition-colors shadow-subtle"
             >
               <span>Next lesson</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
             </button>
           )}
 

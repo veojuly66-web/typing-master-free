@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { Storage } from '../lib/storage';
 import { rankWeakKeys } from '../lib/stats';
 import { Card, Button, Tabs, Badge } from './ui';
-import { Sparkles, Code, FileText, Target, Play, Hash } from 'lucide-react';
+import { Keyboard, Code, FileText, Target, Play, Hash } from 'lucide-react';
 
 const COMMON_DRILLS = [
   {
     id: 'drill-bigrams',
     title: 'High-Frequency Bigrams',
     category: 'Speed Drills',
-    icon: Sparkles,
+    icon: Keyboard,
     text: 'th he in er an re nd at on nt en ha to ti is or es te et me se ar al te co de ro li ra ri'
   },
   {
@@ -165,7 +165,7 @@ export default function AdaptivePractice({ onStartCustom }) {
       <div className="mb-8">
         <Tabs
           tabs={[
-            { id: 'smart', label: 'Adaptive Practice', icon: Sparkles },
+            { id: 'smart', label: 'Adaptive Practice', icon: Keyboard },
             { id: 'drills', label: 'Curated Drills', icon: Target },
             { id: 'custom', label: 'Custom Text', icon: FileText }
           ]}
@@ -190,7 +190,7 @@ export default function AdaptivePractice({ onStartCustom }) {
             </div>
 
             <Button variant="primary" onClick={handleStartSmart}>
-              <Play className="w-4 h-4" />
+              <Play className="w-4 h-4" strokeWidth={1.5} />
               <span>Start Adaptive Drill</span>
             </Button>
           </div>
@@ -198,9 +198,9 @@ export default function AdaptivePractice({ onStartCustom }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {focusKeyLetters.map((keyLetter, idx) => (
               <div key={idx} className="p-4 rounded-card bg-surface-2 border border-border">
-                <div className="text-2xs text-text-muted uppercase font-semibold mb-1">Focus Key 0{idx + 1}</div>
-                <div className="font-mono text-3xl font-bold text-accent">{keyLetter}</div>
-                <div className="text-2xs text-text-muted mt-1">Weighted into generation</div>
+                <div className="text-xs font-medium text-text-muted mb-2">Focus key {idx + 1}</div>
+                <div className="keycap inline-flex items-center justify-center w-9 h-9 font-mono text-base font-medium text-accent">{keyLetter}</div>
+                <div className="text-2xs text-text-muted mt-2">Weighted into generation</div>
               </div>
             ))}
           </div>
@@ -221,7 +221,7 @@ export default function AdaptivePractice({ onStartCustom }) {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <Badge variant="default">{drill.category}</Badge>
-                    <Icon className="w-4 h-4 text-text-muted" />
+                    <Icon className="w-4 h-4 text-text-muted" strokeWidth={1.5} />
                   </div>
                   <h3 className="text-sm font-semibold text-text mb-1">{drill.title}</h3>
                   <p className="text-xs text-text-muted font-mono line-clamp-3 bg-surface-2 p-2.5 rounded-btn border border-border mb-4">
@@ -230,7 +230,7 @@ export default function AdaptivePractice({ onStartCustom }) {
                 </div>
 
                 <Button size="sm" variant="secondary" onClick={() => handleStartDrill(drill)}>
-                  <Play className="w-3.5 h-3.5" />
+                  <Play className="w-3.5 h-3.5" strokeWidth={1.5} />
                   <span>Practice drill</span>
                 </Button>
               </Card>
@@ -242,8 +242,8 @@ export default function AdaptivePractice({ onStartCustom }) {
       {/* Tab 3: Custom Text */}
       {activeTab === 'custom' && (
         <Card className="p-6 sm:p-8">
-          <label htmlFor="custom-practice-text" className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-2">
-            Paste or enter custom text:
+          <label htmlFor="custom-practice-text" className="block text-xs font-medium text-text-muted mb-2">
+            Paste or enter custom text
           </label>
           <textarea
             id="custom-practice-text"

@@ -5,7 +5,7 @@ import SpeedRaceGame from './SpeedRaceGame';
 import { Card, Button, Badge } from '../ui';
 import { useAuth } from '../../lib/auth';
 import ProLock from '../ui/ProLock';
-import { ArrowLeft, Play, Lock, Sparkles, X } from 'lucide-react';
+import { ArrowLeft, Play, Lock, X } from 'lucide-react';
 
 export default function GamesHub() {
   const [activeGame, setActiveGame] = useState(null); // 'bubbles' | 'attack' | 'race' | null
@@ -211,8 +211,8 @@ export default function GamesHub() {
               <Badge variant="accent">Multi-Lane</Badge>
               <div className="flex items-center gap-1.5">
                 {!isProUser && (
-                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-pro-soft text-pro border border-pro/20">
-                    <Lock className="w-2.5 h-2.5" />
+                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-key text-[10px] font-semibold bg-pro-soft text-pro border border-pro/20">
+                    <Lock className="w-2.5 h-2.5" strokeWidth={1.5} />
                     PRO
                   </span>
                 )}
@@ -240,12 +240,12 @@ export default function GamesHub() {
             >
               {!isProUser ? (
                 <>
-                  <Lock className="w-3.5 h-3.5 text-pro" />
+                  <Lock className="w-3.5 h-3.5 text-pro" strokeWidth={1.5} />
                   <span>Unlock Pro</span>
                 </>
               ) : (
                 <>
-                  <Play className="w-3.5 h-3.5" />
+                  <Play className="w-3.5 h-3.5" strokeWidth={1.5} />
                   <span>Play</span>
                 </>
               )}
@@ -256,15 +256,15 @@ export default function GamesHub() {
 
       {/* Pro Modal for Games */}
       {proModalGame && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="relative max-w-md w-full bg-surface border border-border rounded-card p-6 shadow-xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 animate-fade-in">
+          <div className="relative max-w-md w-full bg-surface border border-border rounded-modal p-6 shadow-overlay">
             <button
               type="button"
               onClick={() => setProModalGame(null)}
               className="absolute top-4 right-4 p-1 rounded-btn hover:bg-surface-2 text-text-muted hover:text-text transition-colors"
               aria-label="Close"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" strokeWidth={1.5} />
             </button>
 
             <ProLock

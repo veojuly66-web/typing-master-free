@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BRAND } from '../../config/brand';
 import { useAuth } from '../../lib/auth';
 import { Card, Button, Badge } from '../ui';
-import { ShieldCheck, Users, CreditCard, Sparkles, AlertCircle, Plus, Check } from 'lucide-react';
+import { ShieldCheck, Users, CreditCard, Award, AlertCircle, Plus, Check } from 'lucide-react';
 
 export default function AdminPanel() {
   const { user } = useAuth();
@@ -68,54 +68,58 @@ export default function AdminPanel() {
   return (
     <div className="max-w-content mx-auto py-10 md:py-16 px-4">
       {/* Header */}
-      <div className="flex items-center justify-between pb-6 mb-8 border-b border-border">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-6 mb-6 border-b border-border">
         <div>
-          <Badge variant="accent" className="mb-1.5">Owner Desk</Badge>
           <h1 className="text-2xl sm:text-3xl font-semibold text-text tracking-tight">
             Admin Management Console
           </h1>
-          <p className="text-xs text-text-muted">
+          <p className="text-xs text-text-muted mt-1">
             Managing {BRAND.name} · Signed in as {user.email}
           </p>
         </div>
+        <Badge variant="outline">Owner Desk · Local Preview</Badge>
       </div>
 
-      {/* Metrics Row */}
+      {/* Metrics Row (Sample preview figures) */}
+      <div className="flex items-center justify-between gap-2 mb-3 text-xs text-text-muted">
+        <span className="font-medium">Platform metrics preview</span>
+        <span>Sample figures — connect Supabase Admin API for live counts</span>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 text-xs">
         <Card className="p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-text-muted font-medium uppercase text-2xs">Total Registered</span>
-            <Users className="w-4 h-4 text-accent" />
+            <span className="text-text-muted font-medium">Total Registered</span>
+            <Users className="w-4 h-4 text-accent" strokeWidth={1.5} />
           </div>
-          <div className="font-mono text-3xl font-bold text-text">1,420</div>
-          <div className="text-2xs text-accent mt-1">+128 this week</div>
+          <div className="font-mono text-3xl font-semibold tabular-nums text-text">1,420</div>
+          <div className="text-2xs text-text-muted mt-1">Sample benchmark count</div>
         </Card>
 
         <Card className="p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-text-muted font-medium uppercase text-2xs">Active Pro Subscribers</span>
-            <Sparkles className="w-4 h-4 text-pro" />
+            <span className="text-text-muted font-medium">Pro Subscribers</span>
+            <Award className="w-4 h-4 text-pro" strokeWidth={1.5} />
           </div>
-          <div className="font-mono text-3xl font-bold text-pro">284</div>
-          <div className="text-2xs text-text-muted mt-1">₹499 & ₹99 plans</div>
+          <div className="font-mono text-3xl font-semibold tabular-nums text-pro">284</div>
+          <div className="text-2xs text-text-muted mt-1">Preview tier breakdown</div>
         </Card>
 
         <Card className="p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-text-muted font-medium uppercase text-2xs">Active Trials</span>
-            <ShieldCheck className="w-4 h-4 text-text-muted" />
+            <span className="text-text-muted font-medium">Active Trials</span>
+            <ShieldCheck className="w-4 h-4 text-text-muted" strokeWidth={1.5} />
           </div>
-          <div className="font-mono text-3xl font-bold text-text">512</div>
-          <div className="text-2xs text-text-muted mt-1">7-day free trials</div>
+          <div className="font-mono text-3xl font-semibold tabular-nums text-text">512</div>
+          <div className="text-2xs text-text-muted mt-1">Preview 7-day trials</div>
         </Card>
 
         <Card className="p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-text-muted font-medium uppercase text-2xs">Estimated Monthly MRR</span>
-            <CreditCard className="w-4 h-4 text-emerald-600" />
+            <span className="text-text-muted font-medium">Estimated MRR</span>
+            <CreditCard className="w-4 h-4 text-accent" strokeWidth={1.5} />
           </div>
-          <div className="font-mono text-3xl font-bold text-emerald-700 dark:text-emerald-400">₹42,850</div>
-          <div className="text-2xs text-emerald-600 mt-1">via Razorpay</div>
+          <div className="font-mono text-3xl font-semibold tabular-nums text-accent">₹42,850</div>
+          <div className="text-2xs text-text-muted mt-1">Sample Razorpay estimate</div>
         </Card>
       </div>
 
@@ -128,15 +132,15 @@ export default function AdminPanel() {
           </p>
 
           {grantSuccess && (
-            <div className="mb-4 p-3 rounded bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
-              <Check className="w-4 h-4" />
+            <div className="mb-4 p-3 rounded-btn bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
+              <Check className="w-4 h-4" strokeWidth={1.5} />
               <span>{grantSuccess}</span>
             </div>
           )}
 
           <form onSubmit={handleGrantPro} className="space-y-4 text-xs">
             <div>
-              <label htmlFor="target-user-email" className="block text-2xs uppercase text-text-muted mb-1">User Email</label>
+              <label htmlFor="target-user-email" className="block text-xs font-medium text-text-muted mb-1">User Email</label>
               <input
                 id="target-user-email"
                 type="email"
@@ -144,17 +148,17 @@ export default function AdminPanel() {
                 onChange={(e) => setTargetEmail(e.target.value)}
                 placeholder="student@example.com"
                 required
-                className="w-full px-3 py-2 rounded bg-surface border border-border text-text focus:outline-none focus:border-accent"
+                className="w-full px-3 py-2 rounded-input bg-surface border border-border text-text focus:outline-none focus:border-accent"
               />
             </div>
 
             <div>
-              <label htmlFor="target-duration" className="block text-2xs uppercase text-text-muted mb-1">Duration</label>
+              <label htmlFor="target-duration" className="block text-xs font-medium text-text-muted mb-1">Duration</label>
               <select
                 id="target-duration"
                 value={grantDuration}
                 onChange={(e) => setGrantDuration(e.target.value)}
-                className="w-full px-3 py-2 rounded bg-surface border border-border text-text"
+                className="w-full px-3 py-2 rounded-input bg-surface border border-border text-text"
               >
                 <option value="30">30 Days (1 Month)</option>
                 <option value="90">90 Days (Exam Pack)</option>
@@ -178,12 +182,12 @@ export default function AdminPanel() {
 
           <div className="space-y-2 mb-6">
             {coupons.map((c, i) => (
-              <div key={i} className="flex items-center justify-between p-3 rounded bg-surface-2 border border-border text-xs">
+              <div key={i} className="flex items-center justify-between p-3 rounded-btn bg-surface-2 border border-border text-xs">
                 <div>
-                  <span className="font-mono font-bold text-text">{c.code}</span>
+                  <span className="font-mono font-semibold text-text">{c.code}</span>
                   <span className="text-text-muted ml-2">({c.discount})</span>
                 </div>
-                <span className="text-2xs font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400">
+                <span className="text-2xs font-medium px-2 py-0.5 rounded-key bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400">
                   Active
                 </span>
               </div>

@@ -178,10 +178,10 @@ export default function WordAttackGame({ onBack }) {
           </div>
 
           <div className="flex items-center gap-2">
-            <Shield className={`w-4 h-4 ${shield > 25 ? 'text-accent' : 'text-type-error'}`} />
+            <Shield className={`w-4 h-4 ${shield > 25 ? 'text-accent' : 'text-type-error'}`} strokeWidth={1.5} />
             <div className="w-20 bg-paper border border-paper-border rounded-full h-2 overflow-hidden">
               <div
-                className={`h-full transition-all duration-200 ${
+                className={`h-full transition-[width,background-color] duration-200 ${
                   shield > 40 ? 'bg-accent' : 'bg-type-error'
                 }`}
                 style={{ width: `${shield}%` }}
@@ -206,7 +206,7 @@ export default function WordAttackGame({ onBack }) {
           return (
             <div
               key={en.id}
-              className={`absolute transform -translate-x-1/2 flex items-center justify-center px-3 py-1 rounded-btn font-mono text-xs border transition-all ${
+              className={`absolute transform -translate-x-1/2 flex items-center justify-center px-3 py-1 rounded-key font-mono text-xs border transition-colors duration-150 ${
                 isMatched
                   ? 'bg-accent text-white border-accent scale-105'
                   : 'bg-paper text-ink border-paper-border'
@@ -233,14 +233,14 @@ export default function WordAttackGame({ onBack }) {
 
         {/* Menu Screen */}
         {gameState === 'menu' && (
-          <div className="absolute inset-0 bg-paper-surface/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
+          <div className="absolute inset-0 bg-paper-surface/95 flex flex-col items-center justify-center p-6 text-center">
             <h3 className="text-2xl font-semibold text-ink mb-2">Word Attack</h3>
             <p className="text-xs sm:text-sm text-ink-muted max-w-sm mb-6 leading-relaxed">
               Maintain focus under pressure. Targets advance toward your defense perimeter. Type each word to clear it before impact.
             </p>
             {highScore > 0 && (
-              <div className="mb-6 px-3 py-1 rounded-btn bg-paper border border-paper-border text-xs text-ink-muted flex items-center gap-1.5 font-mono">
-                <Trophy className="w-3.5 h-3.5 text-accent" />
+              <div className="mb-6 px-3 py-1 rounded-btn bg-paper border border-paper-border text-xs text-ink-muted flex items-center gap-1.5 font-mono tabular-nums">
+                <Trophy className="w-3.5 h-3.5 text-accent" strokeWidth={1.5} />
                 <span>Best: {highScore} pts</span>
               </div>
             )}
@@ -249,7 +249,7 @@ export default function WordAttackGame({ onBack }) {
               onClick={startGame}
               className="inline-flex items-center gap-2 px-6 py-2.5 rounded-btn bg-accent hover:bg-accent-hover text-white font-medium text-xs transition-colors shadow-subtle"
             >
-              <Play className="w-3.5 h-3.5 fill-white" />
+              <Play className="w-3.5 h-3.5 fill-white" strokeWidth={1.5} />
               <span>Start defense</span>
             </button>
           </div>
@@ -257,14 +257,14 @@ export default function WordAttackGame({ onBack }) {
 
         {/* Game Over Screen */}
         {gameState === 'gameover' && (
-          <div className="absolute inset-0 bg-paper-surface/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
+          <div className="absolute inset-0 bg-paper-surface/95 flex flex-col items-center justify-center p-6 text-center">
             <h3 className="text-2xl font-semibold text-ink mb-1">Defense Compromised</h3>
             <p className="text-xs text-ink-muted mb-6">Each round trains your finger reflexes.</p>
 
             <div className="grid grid-cols-2 gap-3 max-w-xs w-full mb-6 text-xs">
               <div className="bg-paper border border-paper-border p-3 rounded-card">
                 <div className="text-ink-muted mb-0.5">Score</div>
-                <div className="text-xl font-mono font-semibold text-ink">{score}</div>
+                <div className="text-xl font-mono font-semibold tabular-nums text-ink">{score}</div>
               </div>
               <div className="bg-paper border border-paper-border p-3 rounded-card">
                 <div className="text-ink-muted mb-0.5">High Score</div>

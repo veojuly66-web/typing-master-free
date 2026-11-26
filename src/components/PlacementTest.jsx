@@ -89,7 +89,7 @@ export default function PlacementTest({ onSelectLesson }) {
 
           {/* Recommendation Box */}
           <div className="p-4 rounded-card bg-surface-2 border border-border mb-6">
-            <div className="text-2xs font-semibold uppercase tracking-wider text-accent mb-1">
+            <div className="text-xs font-medium text-accent mb-1">
               Recommended Starting Point
             </div>
             <div className="text-base font-semibold text-text mb-1">
@@ -110,7 +110,7 @@ export default function PlacementTest({ onSelectLesson }) {
               }}
             >
               <span>Start {testResult.levelName}</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
             </Button>
 
             <Button
@@ -118,7 +118,7 @@ export default function PlacementTest({ onSelectLesson }) {
               className="w-full sm:w-auto"
               onClick={() => setTestResult(null)}
             >
-              <RotateCcw className="w-4 h-4" />
+              <RotateCcw className="w-4 h-4" strokeWidth={1.5} />
               <span>Retake test</span>
             </Button>
           </div>
