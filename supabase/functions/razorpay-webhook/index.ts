@@ -3,7 +3,30 @@
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { hmac } from 'https://deno.land/x/hmac@v2.0.1/mod.ts';
+
+async function hmacSha256Hex(secret: string, message: string): Promise<string> {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw',
+    enc.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, enc.encode(message));
+  return Array.from(new Uint8Array(sig))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) {
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return diff === 0;
+}
 
 serve(async (req) => {
   try {
@@ -15,9 +38,9 @@ serve(async (req) => {
     }
 
     const rawBody = await req.text();
-    const expectedSignature = hmac('sha256', webhookSecret, rawBody, 'utf8', 'hex');
+    const expectedSignature = await hmacSha256Hex(webhookSecret, rawBody);
 
-    if (signature !== expectedSignature) {
+    if (!timingSafeEqual(signature, expectedSignature)) {
       return new Response('Invalid webhook signature', { status: 400 });
     }
 
@@ -87,6 +110,26 @@ serve(async (req) => {
             current_period_end: periodEnd.toISOString(),
             updated_at: now.toISOString()
           }, { onConflict: 'user_id' });
+      }
+    }
+
+    // 4. Payment Failed
+    if (eventType === 'payment.failed') {
+      const paymentEntity = payload.payment?.entity;
+      const notes = paymentEntity?.notes || {};
+      const userId = notes.user_id;
+
+      if (userId && paymentEntity?.id) {
+        await supabase.from('payments').upsert({
+          user_id: userId,
+          razorpay_payment_id: paymentEntity.id,
+          razorpay_order_id: paymentEntity.order_id || null,
+          amount: paymentEntity.amount || 0,
+          currency: paymentEntity.currency || 'INR',
+          status: 'failed',
+          plan: notes.plan || 'pro_monthly',
+          method: paymentEntity.method || null
+        }, { onConflict: 'razorpay_payment_id', ignoreDuplicates: true });
       }
     }
 

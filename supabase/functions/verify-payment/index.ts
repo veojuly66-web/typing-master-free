@@ -3,12 +3,35 @@
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { hmac } from 'https://deno.land/x/hmac@v2.0.1/mod.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+async function hmacSha256Hex(secret: string, message: string): Promise<string> {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw',
+    enc.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, enc.encode(message));
+  return Array.from(new Uint8Array(sig))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) {
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return diff === 0;
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -49,13 +72,13 @@ serve(async (req) => {
     let generatedSignature = '';
     if (razorpay_subscription_id) {
       // Subscription signature: payment_id + "|" + subscription_id
-      generatedSignature = hmac('sha256', razorpayKeySecret, `${razorpay_payment_id}|${razorpay_subscription_id}`, 'utf8', 'hex');
+      generatedSignature = await hmacSha256Hex(razorpayKeySecret, `${razorpay_payment_id}|${razorpay_subscription_id}`);
     } else if (razorpay_order_id) {
       // Order signature: order_id + "|" + payment_id
-      generatedSignature = hmac('sha256', razorpayKeySecret, `${razorpay_order_id}|${razorpay_payment_id}`, 'utf8', 'hex');
+      generatedSignature = await hmacSha256Hex(razorpayKeySecret, `${razorpay_order_id}|${razorpay_payment_id}`);
     }
 
-    if (generatedSignature !== razorpay_signature) {
+    if (!razorpay_signature || !generatedSignature || !timingSafeEqual(generatedSignature, razorpay_signature)) {
       return new Response(JSON.stringify({ error: 'Invalid payment signature' }), { status: 400, headers: corsHeaders });
     }
 
@@ -86,8 +109,8 @@ serve(async (req) => {
         updated_at: now.toISOString()
       }, { onConflict: 'user_id' });
 
-    // Record payment
-    await supabase.from('payments').insert({
+    // Record payment idempotently
+    await supabase.from('payments').upsert({
       user_id: user.id,
       razorpay_payment_id,
       razorpay_order_id: razorpay_order_id || null,
@@ -97,7 +120,7 @@ serve(async (req) => {
       status: 'captured',
       plan,
       created_at: now.toISOString()
-    });
+    }, { onConflict: 'razorpay_payment_id', ignoreDuplicates: true });
 
     return new Response(JSON.stringify({ success: true, plan, current_period_end: periodEnd }), {
       status: 200,
