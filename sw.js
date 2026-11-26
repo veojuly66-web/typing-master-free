@@ -1,1 +1,25 @@
-if(!self.define){let s,e={};const i=(i,l)=>(i=new URL(i+".js",l).href,e[i]||new Promise(e=>{if("document"in self){const s=document.createElement("script");s.src=i,s.onload=e,document.head.appendChild(s)}else s=i,importScripts(i),e()}).then(()=>{let s=e[i];if(!s)throw new Error(`Module ${i} didn’t register its module`);return s}));self.define=(l,r)=>{const n=s||("document"in self?document.currentScript.src:"")||location.href;if(e[n])return;let u={};const a=s=>i(s,n),o={module:{uri:n},exports:u,require:a};e[n]=Promise.all(l.map(s=>o[s]||a(s))).then(s=>(r(...s),u))}}define(["./workbox-9c191d2f"],function(s){"use strict";self.skipWaiting(),s.clientsClaim(),s.precacheAndRoute([{url:"registerSW.js",revision:"402b66900e731ca748771b6fc5e7a068"},{url:"og-image.png",revision:"57a50deba51b3f65229bb6936e310594"},{url:"index.html",revision:"f1a985a4436da02fc3cdb145a4950148"},{url:"icon.png",revision:"19972a84d2dbf18263605c4899b34a71"},{url:"favicon.svg",revision:"dcae1c5b00af449edee44c9a017568b8"},{url:"apple-touch-icon.png",revision:"196eeac0f1ccdb5e0d36ceebc3bd23ff"},{url:"assets/vendor-supabase-D4UEdJz8.js",revision:null},{url:"assets/vendor-react-Bch0NNzi.js",revision:null},{url:"assets/vendor-icons-B361Jdq_.js",revision:null},{url:"assets/purify.es-BKvm9NlY.js",revision:null},{url:"assets/index.es-CzA8ZflS.js",revision:null},{url:"assets/index-Cz_cZrQb.css",revision:null},{url:"assets/index-B2svIMHb.js",revision:null},{url:"assets/html2canvas.esm-CBrSDip1.js",revision:null},{url:"assets/Terms-B2YaGXAH.js",revision:null},{url:"assets/StatNumber-DZ1lD2Cc.js",revision:null},{url:"assets/ShippingPolicy-_uXAbwPp.js",revision:null},{url:"assets/Settings-DcQfKPa7.js",revision:null},{url:"assets/RefundPolicy-zarJ56OC.js",revision:null},{url:"assets/ProtectedRoute-B_rtwq2g.js",revision:null},{url:"assets/ProgressDashboard-CHYsddXr.js",revision:null},{url:"assets/Privacy-BqOuVRei.js",revision:null},{url:"assets/Pricing-Do050lmK.js",revision:null},{url:"assets/PlacementTest-DT8sRcre.js",revision:null},{url:"assets/Login-By4I2Rsw.js",revision:null},{url:"assets/GamesHub-CdQfa8L3.js",revision:null},{url:"assets/ExamSimulator-BDFQ3sp5.js",revision:null},{url:"assets/ExamHub-CgbkVqTN.js",revision:null},{url:"assets/ExamDetailPage-DzXbdf6i.js",revision:null},{url:"assets/Contact-CYxOguDG.js",revision:null},{url:"assets/Checkout-4iyeEXK5.js",revision:null},{url:"assets/CertificateVerify-iKYMLzjh.js",revision:null},{url:"assets/CertificateModal-D0PWmxgb.js",revision:null},{url:"assets/Card-C_2N4rSS.js",revision:null},{url:"assets/Badge-BLMvqwjg.js",revision:null},{url:"assets/AdminPanel-B1UYaYwj.js",revision:null},{url:"assets/AdaptivePractice-DhlJwP-9.js",revision:null},{url:"assets/Account-0Dt-mDCF.js",revision:null},{url:"assets/About-adSiompH.js",revision:null},{url:"apple-touch-icon.png",revision:"196eeac0f1ccdb5e0d36ceebc3bd23ff"},{url:"favicon.svg",revision:"dcae1c5b00af449edee44c9a017568b8"},{url:"icon.png",revision:"19972a84d2dbf18263605c4899b34a71"},{url:"og-image.png",revision:"57a50deba51b3f65229bb6936e310594"},{url:"robots.txt",revision:"1d6274b977e0edaf4ca7e7c566ac2e68"},{url:"manifest.webmanifest",revision:"93479f9d661d569471167ea1f15a3b95"}],{}),s.cleanupOutdatedCaches(),s.registerRoute(new s.NavigationRoute(s.createHandlerBoundToURL("index.html")))});
+
+self.addEventListener('install', (e) => {
+  self.skipWaiting();
+});
+self.addEventListener('activate', (e) => {
+  self.registration.unregister()
+    .then(() => self.clients.matchAll())
+    .then((clients) => {
+      clients.forEach((client) => {
+        if (client instanceof WindowClient)
+          client.navigate(client.url);
+      });
+      return Promise.resolve();
+    })
+    .then(() => {
+      self.caches.keys().then((cacheNames) => {
+        Promise.all(
+          cacheNames.map((cacheName) => {
+            return self.caches.delete(cacheName);
+          }),
+        );
+      })
+    });
+});
+    
