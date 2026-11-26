@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { soundManager } from '../utils/audio';
-import { Keyboard, BookOpen, Zap, Gamepad2, Edit3, BarChart2, Volume2, VolumeX, Crown, Settings } from 'lucide-react';
+import { Keyboard, BookOpen, Zap, Gamepad2, Edit3, BarChart2, Volume2, VolumeX, Crown, Settings, Monitor, Download, X, CheckCircle, HardDrive } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab }) {
   const [soundPack, setSoundPack] = useState(soundManager.soundPack);
   const [isSoundEnabled, setIsSoundEnabled] = useState(soundManager.enabled);
   const [showSoundSettings, setShowSoundSettings] = useState(false);
+  const [showWindowsModal, setShowWindowsModal] = useState(false);
 
   const navItems = [
     { id: 'courses', label: 'Courses', icon: BookOpen },
@@ -127,6 +128,16 @@ export default function Navbar({ activeTab, setActiveTab }) {
             )}
           </div>
 
+          {/* Windows App Download Button */}
+          <button
+            onClick={() => setShowWindowsModal(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 text-xs font-bold transition-all shadow-sm"
+            title="Download or Install on Windows"
+          >
+            <Monitor className="w-3.5 h-3.5 text-blue-400" />
+            <span className="hidden sm:inline">Windows App</span>
+          </button>
+
           {/* Premium Badge */}
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold">
             <Crown className="w-3.5 h-3.5 text-amber-400" />
@@ -156,6 +167,89 @@ export default function Navbar({ activeTab, setActiveTab }) {
           );
         })}
       </div>
+
+      {/* Windows App Download & Install Modal */}
+      {showWindowsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
+          <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative text-left">
+            <button
+              onClick={() => setShowWindowsModal(false)}
+              className="absolute top-5 right-5 p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-2xl bg-blue-600/20 border border-blue-500/40 text-blue-400 flex items-center justify-center shadow-lg">
+                <Monitor className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-xl font-black text-white tracking-tight">Pankaj Typing for Windows</h3>
+                <p className="text-xs text-slate-400">Install or download native desktop app for Windows 10 & 11</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 my-4 text-xs">
+              {/* Option 1: Native 1-Click App Install (PWA) */}
+              <div className="p-4 rounded-2xl bg-slate-950/70 border border-blue-500/30">
+                <div className="flex items-center gap-2 mb-1.5 font-bold text-white text-sm">
+                  <span className="w-2 h-2 rounded-full bg-blue-400 animate-ping" />
+                  <span>Option 1: 1-Click Desktop Install (Recommended)</span>
+                </div>
+                <p className="text-slate-400 leading-relaxed mb-3">
+                  Windows Edge ya Chrome me address bar ke top-right corner me <strong>App Install icon (+)</strong> par click karein. Yeh aapke Windows Desktop aur Taskbar par official app icon bana dega!
+                </p>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-500/20 text-blue-300 font-semibold text-[11px] border border-blue-500/30">
+                  <CheckCircle className="w-3.5 h-3.5" />
+                  <span>Works 100% Offline on Windows</span>
+                </div>
+              </div>
+
+              {/* Option 2: Offline Portable ZIP with Batch Launcher */}
+              <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="font-bold text-white text-sm flex items-center gap-1.5">
+                    <HardDrive className="w-4 h-4 text-emerald-400" />
+                    <span>Option 2: Offline Portable ZIP Package</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 font-bold">90 KB</span>
+                </div>
+                <p className="text-slate-400 leading-relaxed mb-3">
+                  Download karke extract karein aur <code className="text-slate-200 bg-slate-800 px-1 py-0.5 rounded font-mono">Pankaj-Typing-Windows.bat</code> double click karein. Bina internet ke native window me chalega!
+                </p>
+                <a
+                  href="./pankaj-typing-windows-offline.zip"
+                  download="pankaj-typing-windows-offline.zip"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-md shadow-emerald-500/20 transition-all"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Download Offline Windows ZIP</span>
+                </a>
+              </div>
+
+              {/* Option 3: Full Windows .EXE Installer & Portable Executable */}
+              <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
+                <div className="font-bold text-white text-sm mb-1 flex items-center gap-1.5">
+                  <Monitor className="w-4 h-4 text-purple-400" />
+                  <span>Option 3: Full Windows .EXE Installer</span>
+                </div>
+                <p className="text-slate-400 leading-relaxed">
+                  Aapke project ke <code className="text-slate-200 bg-slate-800 px-1 py-0.5 rounded font-mono">release/</code> folder me official Windows Setup Installer (<code className="text-purple-300 font-mono">.exe</code>) aur Portable (<code className="text-purple-300 font-mono">.exe</code>) ready hai.
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-2 text-center">
+              <button
+                onClick={() => setShowWindowsModal(false)}
+                className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
