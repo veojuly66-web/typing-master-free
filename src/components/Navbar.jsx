@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { soundManager } from '../utils/audio';
-import { Volume2, VolumeX, Sun, Moon, Menu, X, Monitor, Sliders } from 'lucide-react';
+import { Volume2, VolumeX, Sun, Moon, Menu, X, Settings as SettingsIcon, Sliders, Check } from 'lucide-react';
 
 export default function Navbar({ currentRoute, isDark, onToggleTheme }) {
   const [soundEnabled, setSoundEnabled] = useState(soundManager.enabled);
   const [soundPack, setSoundPack] = useState(soundManager.soundPack);
   const [showSoundMenu, setShowSoundMenu] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showWindowsModal, setShowWindowsModal] = useState(false);
+  const [dismissMobileWarning, setDismissMobileWarning] = useState(() => {
+    try {
+      return sessionStorage.getItem('pt_dismiss_mobile_warn') === 'true';
+    } catch (e) {
+      return false;
+    }
+  });
 
   const navItems = [
     { href: '#/lessons', label: 'Lessons', id: 'lessons' },
@@ -17,24 +23,60 @@ export default function Navbar({ currentRoute, isDark, onToggleTheme }) {
     { href: '#/progress', label: 'Progress', id: 'progress' },
   ];
 
+  const soundPacks = [
+    { id: 'mechanical', label: 'Mechanical' },
+    { id: 'soft', label: 'Modern Soft' },
+    { id: 'typewriter', label: 'Typewriter' },
+    { id: 'piano', label: 'Piano' },
+    { id: 'muted', label: 'Muted Beep' },
+  ];
+
   const handleToggleSound = () => {
     soundManager.enabled = !soundManager.enabled;
     soundManager.saveSettings();
     setSoundEnabled(soundManager.enabled);
+    if (soundManager.enabled) {
+      soundManager.playKeypress('a');
+    }
   };
 
-  const handleSelectSoundPack = (pack) => {
-    soundManager.soundPack = pack;
+  const handleSelectSoundPack = (packId) => {
+    soundManager.soundPack = packId;
     soundManager.enabled = true;
     soundManager.saveSettings();
-    setSoundPack(pack);
+    setSoundPack(packId);
     setSoundEnabled(true);
+    setShowSoundMenu(false);
     soundManager.playKeypress('a');
+  };
+
+  const handleDismissWarning = () => {
+    setDismissMobileWarning(true);
+    try {
+      sessionStorage.setItem('pt_dismiss_mobile_warn', 'true');
+    } catch (e) {}
   };
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-paper-surface/95 backdrop-blur-md border-b border-paper-border h-16">
+      {/* Mobile Keyboard Advisory Banner */}
+      {!dismissMobileWarning && (
+        <div className="md:hidden bg-paper-surface border-b border-paper-border px-4 py-1.5 text-xs text-ink-muted flex items-center justify-between">
+          <p className="truncate pr-2">
+            Touch typing practice works best with a physical keyboard.
+          </p>
+          <button
+            type="button"
+            onClick={handleDismissWarning}
+            aria-label="Dismiss keyboard advisory"
+            className="text-ink-muted hover:text-ink shrink-0 p-1"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      <header className="sticky top-0 z-40 bg-paper-surface/95 backdrop-blur-md border-b border-paper-border h-16 transition-opacity duration-200">
         <div className="max-w-content mx-auto px-4 h-full flex items-center justify-between gap-4">
           {/* Logo & Wordmark */}
           <a
@@ -72,74 +114,82 @@ export default function Navbar({ currentRoute, isDark, onToggleTheme }) {
 
           {/* Right Action Controls */}
           <div className="flex items-center gap-1.5 sm:gap-2">
-            {/* Sound Toggle & Sound Pack Menu */}
+            {/* Sound Toggle & Menu */}
             <div className="relative">
-              <button
-                type="button"
-                onClick={handleToggleSound}
-                aria-label={soundEnabled ? 'Key sounds: On. Click to mute.' : 'Key sounds: Off. Click to unmute.'}
-                title={soundEnabled ? `Key sounds: On (${soundPack})` : 'Key sounds: Off'}
-                className="p-2 rounded-btn border border-paper-border text-ink hover:bg-paper transition-colors"
-              >
-                {soundEnabled ? (
-                  <Volume2 className="w-4 h-4 text-accent" />
-                ) : (
-                  <VolumeX className="w-4 h-4 text-ink-muted" />
-                )}
-              </button>
+              <div className="inline-flex rounded-btn border border-paper-border overflow-hidden">
+                <button
+                  type="button"
+                  onClick={handleToggleSound}
+                  aria-label={soundEnabled ? 'Key sounds: On. Click to mute.' : 'Key sounds: Off. Click to unmute.'}
+                  title={soundEnabled ? `Key sounds: On (${soundPack})` : 'Key sounds: Off'}
+                  className="p-2 text-ink hover:bg-paper transition-colors"
+                >
+                  {soundEnabled ? (
+                    <Volume2 className="w-4 h-4 text-accent" />
+                  ) : (
+                    <VolumeX className="w-4 h-4 text-ink-muted" />
+                  )}
+                </button>
 
-              <button
-                type="button"
-                onClick={() => setShowSoundMenu(!showSoundMenu)}
-                aria-label="Sound options"
-                title="Select keyboard sound effect"
-                className="hidden sm:inline-flex p-1.5 text-ink-muted hover:text-ink text-xs transition-colors align-middle"
-              >
-                <Sliders className="w-3.5 h-3.5" />
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setShowSoundMenu(!showSoundMenu)}
+                  aria-label="Sound pack menu"
+                  title="Choose key sound effect"
+                  className="px-1.5 text-ink-muted hover:text-ink hover:bg-paper border-l border-paper-border transition-colors hidden sm:flex items-center"
+                >
+                  <Sliders className="w-3.5 h-3.5" />
+                </button>
+              </div>
 
-              {/* Sound Options Popover */}
+              {/* Sound Pack Dropdown */}
               {showSoundMenu && (
-                <div className="absolute right-0 mt-2 w-52 bg-paper-surface border border-paper-border rounded-card p-2 shadow-lg z-50 text-xs">
-                  <div className="flex items-center justify-between pb-2 mb-2 border-b border-paper-border font-medium text-ink">
-                    <span>Key Sound Pack</span>
-                    <button
-                      onClick={() => setShowSoundMenu(false)}
-                      className="text-ink-muted hover:text-ink"
-                      aria-label="Close sound menu"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                  <div className="space-y-1">
-                    {[
-                      { id: 'piano', label: 'Grand Piano (Melodic)' },
-                      { id: 'mechanical', label: 'Mechanical Switch' },
-                      { id: 'typewriter', label: 'Vintage Typewriter' },
-                      { id: 'soft', label: 'Soft Gentle Click' }
-                    ].map((pack) => (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowSoundMenu(false)}
+                  />
+                  <div className="absolute right-0 mt-1.5 w-44 bg-paper-surface border border-paper-border rounded-card shadow-lg p-1.5 z-50 text-xs">
+                    <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-ink-muted border-b border-paper-border mb-1">
+                      Keyboard Sound
+                    </div>
+                    {soundPacks.map((pack) => (
                       <button
                         key={pack.id}
                         type="button"
-                        onClick={() => {
-                          handleSelectSoundPack(pack.id);
-                          setShowSoundMenu(false);
-                        }}
-                        className={`w-full text-left px-2.5 py-1.5 rounded-btn font-medium transition-colors ${
+                        onClick={() => handleSelectSoundPack(pack.id)}
+                        className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-btn text-left transition-colors ${
                           soundPack === pack.id && soundEnabled
-                            ? 'bg-accent-soft text-accent'
-                            : 'text-ink-muted hover:text-ink hover:bg-paper'
+                            ? 'bg-accent-soft text-accent font-medium'
+                            : 'text-ink hover:bg-paper'
                         }`}
                       >
-                        {pack.label}
+                        <span>{pack.label}</span>
+                        {soundPack === pack.id && soundEnabled && (
+                          <Check className="w-3.5 h-3.5 text-accent" />
+                        )}
                       </button>
                     ))}
                   </div>
-                </div>
+                </>
               )}
             </div>
 
-            {/* Dark / Light Theme Toggle */}
+            {/* Settings Link */}
+            <a
+              href="#/settings"
+              aria-label="Open Settings"
+              title="Settings"
+              className={`p-2 rounded-btn border border-paper-border transition-colors ${
+                currentRoute === 'settings'
+                  ? 'bg-paper text-ink border-accent'
+                  : 'text-ink hover:bg-paper'
+              }`}
+            >
+              <SettingsIcon className="w-4 h-4 text-ink-muted" />
+            </a>
+
+            {/* Theme Toggle Button */}
             <button
               type="button"
               onClick={onToggleTheme}
@@ -147,144 +197,72 @@ export default function Navbar({ currentRoute, isDark, onToggleTheme }) {
               title={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
               className="p-2 rounded-btn border border-paper-border text-ink hover:bg-paper transition-colors"
             >
-              {isDark ? <Sun className="w-4 h-4 text-accent" /> : <Moon className="w-4 h-4 text-ink-muted" />}
-            </button>
-
-            {/* Quiet Windows App Modal Trigger */}
-            <button
-              type="button"
-              onClick={() => setShowWindowsModal(true)}
-              aria-label="Download Windows offline application"
-              title="Use offline on Windows"
-              className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-paper-border text-xs text-ink-muted hover:text-ink hover:bg-paper transition-colors"
-            >
-              <Monitor className="w-3.5 h-3.5" />
-              <span>Windows</span>
+              {isDark ? (
+                <Sun className="w-4 h-4 text-amber-500" />
+              ) : (
+                <Moon className="w-4 h-4 text-ink-muted" />
+              )}
             </button>
 
             {/* Mobile Hamburger Button */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              className="md:hidden p-2 rounded-btn border border-paper-border text-ink hover:bg-paper transition-colors"
+              aria-label="Toggle navigation menu"
+              className="md:hidden p-2 rounded-btn border border-paper-border text-ink hover:bg-paper transition-colors ml-1"
             >
               {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Slide-down Sheet */}
+        {/* Mobile Slide-down Navigation Sheet */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-paper-surface border-b border-paper-border px-4 py-3 shadow-lg animate-fadeIn">
-            <nav className="flex flex-col space-y-1" aria-label="Mobile Navigation">
-              {navItems.map((item) => {
-                const isActive = currentRoute === item.id;
-                return (
-                  <a
-                    key={item.id}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`px-3 py-2 rounded-btn text-sm font-medium transition-colors ${
-                      isActive
-                        ? 'bg-paper text-accent font-semibold'
-                        : 'text-ink-muted hover:text-ink hover:bg-paper'
-                    }`}
-                  >
-                    {item.label}
-                  </a>
-                );
-              })}
+          <div className="md:hidden border-b border-paper-border bg-paper-surface px-4 py-4 space-y-1 shadow-lg animate-fadeIn">
+            {navItems.map((item) => {
+              const isActive = currentRoute === item.id;
+              return (
+                <a
+                  key={item.id}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`block px-3 py-2.5 rounded-btn text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'bg-paper text-ink font-semibold'
+                      : 'text-ink-muted hover:text-ink hover:bg-paper/60'
+                  }`}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
 
-              <div className="pt-2 mt-2 border-t border-paper-border flex flex-col space-y-1 text-xs text-ink-muted">
-                <a
-                  href="#/about"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-3 py-1.5 hover:text-ink"
-                >
-                  About Pankaj Typing
-                </a>
-                <a
-                  href="#/privacy"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-3 py-1.5 hover:text-ink"
-                >
-                  Privacy Policy
-                </a>
-                <a
-                  href="#/contact"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-3 py-1.5 hover:text-ink"
-                >
-                  Contact
-                </a>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setShowWindowsModal(true);
-                  }}
-                  className="text-left px-3 py-1.5 hover:text-ink flex items-center gap-1.5"
-                >
-                  <Monitor className="w-3.5 h-3.5" />
-                  <span>Download for Windows</span>
-                </button>
-              </div>
-            </nav>
+            <div className="pt-2 border-t border-paper-border space-y-1">
+              <a
+                href="#/placement"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-btn text-xs text-ink-muted hover:text-ink hover:bg-paper/60"
+              >
+                Placement Diagnostic
+              </a>
+              <a
+                href="#/settings"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-btn text-xs text-ink-muted hover:text-ink hover:bg-paper/60"
+              >
+                Settings & Preferences
+              </a>
+              <a
+                href="#/about"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-btn text-xs text-ink-muted hover:text-ink hover:bg-paper/60"
+              >
+                About Pankaj Typing
+              </a>
+            </div>
           </div>
         )}
       </header>
-
-      {/* Windows App Modal */}
-      {showWindowsModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-paper-surface border border-paper-border rounded-card max-w-md w-full p-6 shadow-xl relative">
-            <button
-              onClick={() => setShowWindowsModal(false)}
-              aria-label="Close modal"
-              className="absolute top-4 right-4 text-ink-muted hover:text-ink"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-card bg-accent-soft text-accent flex items-center justify-center">
-                <Monitor className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="text-base font-semibold text-ink">Windows Offline Edition</h3>
-                <p className="text-xs text-ink-muted">Practice typing without internet</p>
-              </div>
-            </div>
-
-            <p className="text-xs text-ink-muted leading-relaxed mb-4">
-              You can run Pankaj Typing as a standalone desktop application on Windows 10 & 11 or install it as a lightweight Progressive Web App (PWA).
-            </p>
-
-            <div className="space-y-3">
-              <a
-                href="./pankaj-typing-windows-offline.zip"
-                download="pankaj-typing-windows-offline.zip"
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-btn bg-accent hover:bg-accent-hover text-white text-xs font-medium transition-colors"
-              >
-                <span>Download Offline ZIP package</span>
-              </a>
-
-              <a
-                href="./Pankaj-Typing-Windows.bat"
-                download="Pankaj-Typing-Windows.bat"
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-btn bg-paper hover:bg-paper-border/40 text-ink border border-paper-border text-xs font-medium transition-colors"
-              >
-                <span>Download Windows Quick-Launch script (.bat)</span>
-              </a>
-            </div>
-
-            <p className="text-[11px] text-ink-muted mt-4 text-center">
-              Or in Google Chrome/Edge, click the install icon in the address bar to install as an app.
-            </p>
-          </div>
-        </div>
-      )}
     </>
   );
 }

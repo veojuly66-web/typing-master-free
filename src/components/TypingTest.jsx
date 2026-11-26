@@ -1,322 +1,308 @@
-import React, { useState, useEffect, useRef, Suspense } from 'react';
-import { TYPING_TESTS } from '../data/courses';
-import { soundManager } from '../utils/audio';
-import { Play, RotateCcw, Award } from 'lucide-react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { PASSAGES, getRandomPassage } from '../data/passages';
+import { Storage } from '../lib/storage';
+import { calculateSpeedBand } from '../lib/stats';
+import TypingEngine from './typing/TypingEngine';
+import { Play, RotateCcw, Award, ArrowRight, Check, Filter } from 'lucide-react';
 
 const CertificateModal = React.lazy(() => import('./CertificateModal'));
 
-export default function TypingTest({ onBack }) {
-  const [selectedTest, setSelectedTest] = useState(TYPING_TESTS[0]);
+export default function TypingTest({ onBack, onFocusChange }) {
+  const [duration, setDuration] = useState(60); // 60, 120, 180, 300, 600
+  const [difficulty, setDifficulty] = useState('All'); // All, Easy, Medium, Hard
+  const [passageType, setPassageType] = useState('All'); // All, sentences, paragraphs, numbers & punctuation
+
+  const [currentPassage, setCurrentPassage] = useState(() => getRandomPassage());
   const [isRunning, setIsRunning] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(TYPING_TESTS[0].duration);
-  const [typed, setTyped] = useState('');
-  const [errorsCount, setErrorsCount] = useState(0);
-  const [showCertificate, setShowCertificate] = useState(false);
   const [finalStats, setFinalStats] = useState(null);
-  const [errorFlash, setErrorFlash] = useState(false);
+  const [showCertificate, setShowCertificate] = useState(false);
 
-  const containerRef = useRef(null);
-  const textDisplayRef = useRef(null);
-  const timerRef = useRef(null);
+  const durationOptions = [
+    { label: '1 Min', value: 60 },
+    { label: '2 Min', value: 120 },
+    { label: '3 Min', value: 180 },
+    { label: '5 Min', value: 300 },
+  ];
 
-  const testText = selectedTest.text;
+  const difficultyOptions = ['All', 'Easy', 'Medium', 'Hard'];
 
-  const handleSelectTest = (test) => {
-    setSelectedTest(test);
+  const handleSelectPassage = (diff, type) => {
+    const filters = {};
+    if (diff && diff !== 'All') filters.difficulty = diff;
+    if (type && type !== 'All') filters.type = type;
+    const next = getRandomPassage(filters);
+    setCurrentPassage(next);
     setIsRunning(false);
-    setTimeLeft(test.duration);
-    setTyped('');
-    setErrorsCount(0);
-    setShowCertificate(false);
     setFinalStats(null);
   };
 
-  // Timer countdown
-  useEffect(() => {
-    if (isRunning && timeLeft > 0) {
-      timerRef.current = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            clearInterval(timerRef.current);
-            finishTest();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    } else {
-      clearInterval(timerRef.current);
-    }
-    return () => clearInterval(timerRef.current);
-  }, [isRunning, timeLeft]);
-
-  // Compute live statistics
-  const timeElapsed = selectedTest.duration - timeLeft;
-  const minutes = Math.max(timeElapsed / 60, 0.016);
-  const totalCorrect = typed.length;
-  const totalAttempts = totalCorrect + errorsCount;
-
-  const grossWpm = Math.round((totalAttempts / 5) / minutes) || 0;
-  const netWpm = Math.max(0, Math.round((totalCorrect / 5) / minutes)) || 0;
-  const accuracy = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 100;
-
-  const startTest = () => {
+  const handleStartTest = () => {
     setIsRunning(true);
-    setTimeLeft(selectedTest.duration);
-    setTyped('');
-    setErrorsCount(0);
-    setShowCertificate(false);
     setFinalStats(null);
-    setTimeout(() => {
-      containerRef.current?.focus();
-    }, 50);
   };
 
-  const finishTest = () => {
+  const handleTestComplete = (stats) => {
     setIsRunning(false);
-    soundManager.playSuccess();
-    const stats = {
-      netWpm,
-      grossWpm,
-      accuracy,
-      duration: selectedTest.duration,
-      errorsCount,
-      totalChars: testText.length
+    const result = {
+      ...stats,
+      duration,
+      testId: currentPassage.id,
+      testTitle: `${Math.round(duration / 60)}-Minute Speed Test (${currentPassage.title})`,
+      date: new Date().toISOString()
     };
-    setFinalStats(stats);
+    setFinalStats(result);
 
-    // Save to test history in localStorage
+    // Save to storage
     try {
-      const history = JSON.parse(localStorage.getItem('tm_test_history') || '[]');
-      history.unshift({
-        ...stats,
-        testId: selectedTest.id,
-        testTitle: selectedTest.title,
-        date: new Date().toISOString()
-      });
-      localStorage.setItem('tm_test_history', JSON.stringify(history.slice(0, 30)));
+      Storage.addTestResult(result);
     } catch (e) {
-      console.error(e);
+      console.error('Failed to save test result', e);
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (!isRunning) return;
-
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      startTest();
-      return;
-    }
-
-    if (e.ctrlKey || e.metaKey || e.altKey) return;
-
-    if (e.key === 'Backspace') {
-      e.preventDefault();
-      if (typed.length > 0) {
-        setTyped(prev => prev.slice(0, -1));
-        soundManager.playKeypress('backspace', true);
-      }
-      return;
-    }
-
-    if (e.key.length === 1) {
-      e.preventDefault();
-      const expectedChar = testText[typed.length];
-      const isCorrect = e.key === expectedChar;
-
-      if (isCorrect) {
-        soundManager.playKeypress(e.key);
-        setErrorFlash(false);
-        const nextTyped = typed + e.key;
-        setTyped(nextTyped);
-
-        if (nextTyped.length >= testText.length) {
-          finishTest();
-        }
-      } else {
-        soundManager.playError();
-        setErrorFlash(true);
-        setTimeout(() => setErrorFlash(false), 180);
-        setErrorsCount(prev => prev + 1);
-      }
-    }
-  };
-
-  // Auto-scroll caret
-  useEffect(() => {
-    const caretEl = document.getElementById('test-caret');
-    if (caretEl && textDisplayRef.current) {
-      const containerTop = textDisplayRef.current.offsetTop;
-      const caretTop = caretEl.offsetTop;
-      const scrollPos = caretTop - containerTop - 40;
-      if (scrollPos > 0) {
-        textDisplayRef.current.scrollTop = scrollPos;
-      } else {
-        textDisplayRef.current.scrollTop = 0;
-      }
-    }
-  }, [typed]);
-
-  const formatTime = (secs) => {
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
-    return `${m}:${s < 10 ? '0' : ''}${s}`;
+  const handleRestart = () => {
+    handleSelectPassage(difficulty, passageType);
   };
 
   return (
-    <div
-      ref={containerRef}
-      tabIndex={0}
-      onKeyDown={handleKeyDown}
-      onClick={() => containerRef.current?.focus()}
-      className="max-w-content mx-auto py-8 md:py-12 px-4 outline-none focus:outline-none"
-    >
+    <div className="max-w-content mx-auto py-8 md:py-12 px-4">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-semibold text-ink tracking-tight mb-2">
           Typing Speed Test
         </h1>
         <p className="text-sm sm:text-base text-ink-muted max-w-2xl">
-          Check your typing speed and accuracy under timed benchmark conditions. Complete any test to receive a Certificate of Completion.
+          Standardized benchmark tests with real-time word counting, error penalties, and verifiable speed certification.
         </p>
       </div>
 
-      {/* Test Selection Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
-        {TYPING_TESTS.map((test) => {
-          const isSelected = selectedTest.id === test.id;
-          return (
-            <button
-              key={test.id}
-              type="button"
-              onClick={() => handleSelectTest(test)}
-              className={`p-4 rounded-card border text-left transition-all ${
-                isSelected
-                  ? 'bg-paper-surface border-accent shadow-subtle ring-1 ring-accent'
-                  : 'bg-paper-surface border-paper-border hover:border-ink-muted/40'
-              }`}
-            >
-              <div className="flex items-center justify-between mb-1 text-xs">
-                <span className="font-mono text-ink-muted">{Math.round(test.duration / 60)} min</span>
-                <span className="text-[11px] px-1.5 py-0.5 rounded bg-paper border border-paper-border text-ink-muted">
-                  {test.difficulty}
-                </span>
+      {!isRunning && !finalStats && (
+        <div className="space-y-6">
+          {/* Controls Bar */}
+          <div className="bg-paper-surface border border-paper-border rounded-card p-6 shadow-subtle space-y-6">
+            {/* Duration Selector */}
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-ink-muted mb-2.5">
+                Test Duration
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                {durationOptions.map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setDuration(opt.value)}
+                    className={`py-2.5 px-3 rounded-btn text-xs font-medium border text-center transition-all ${
+                      duration === opt.value
+                        ? 'bg-paper text-ink font-semibold border-accent ring-1 ring-accent'
+                        : 'bg-paper-surface border-paper-border text-ink-muted hover:text-ink hover:border-ink-muted/40'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
               </div>
-              <h2 className="text-sm font-semibold text-ink mb-1">{test.title}</h2>
-              <p className="text-xs text-ink-muted line-clamp-2 leading-relaxed">{test.description}</p>
-            </button>
-          );
-        })}
-      </div>
+            </div>
 
-      {/* Test Active Screen / Ready Card */}
-      <div className="bg-paper-surface border border-paper-border rounded-card p-6 sm:p-8 shadow-subtle">
-        {/* Thin Stat Bar */}
-        <div className="flex items-center justify-between text-xs text-ink-muted font-medium mb-6 pb-3 border-b border-paper-border select-none">
-          <div>
-            <span className="font-mono text-xl sm:text-2xl font-semibold text-ink">{netWpm}</span>
-            <span className="ml-1.5 text-ink-muted">WPM</span>
-          </div>
+            {/* Difficulty Selector */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-paper-border">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-ink-muted mb-2">
+                  Difficulty Level
+                </label>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {difficultyOptions.map((d) => (
+                    <button
+                      key={d}
+                      type="button"
+                      onClick={() => {
+                        setDifficulty(d);
+                        handleSelectPassage(d, passageType);
+                      }}
+                      className={`px-3 py-1.5 rounded-btn text-xs font-medium border transition-colors ${
+                        difficulty === d
+                          ? 'bg-accent-soft text-accent border-accent/40 font-semibold'
+                          : 'bg-paper border-paper-border text-ink-muted hover:text-ink'
+                      }`}
+                    >
+                      {d}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-          <div>
-            <span className="font-mono text-xl sm:text-2xl font-semibold text-ink">{accuracy}%</span>
-            <span className="ml-1.5 text-ink-muted">Accuracy</span>
-          </div>
+              {/* Passage Preview Card */}
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-ink-muted mb-2">
+                  Selected Text Passage
+                </label>
+                <div className="p-3 rounded-card bg-paper border border-paper-border text-xs">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-semibold text-ink">{currentPassage.title}</span>
+                    <span className="text-[10px] text-ink-muted uppercase">{currentPassage.difficulty}</span>
+                  </div>
+                  <p className="text-ink-muted line-clamp-2 leading-relaxed">
+                    {currentPassage.text}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleRestart}
+                    className="mt-2 text-[11px] text-accent hover:underline font-medium inline-block"
+                  >
+                    Shuffle new passage
+                  </button>
+                </div>
+              </div>
+            </div>
 
-          <div>
-            <span className={`font-mono text-xl sm:text-2xl font-semibold ${timeLeft <= 10 && isRunning ? 'text-type-error' : 'text-accent'}`}>
-              {formatTime(timeLeft)}
-            </span>
-            <span className="ml-1.5 text-ink-muted">Remaining</span>
-          </div>
-
-          <div>
-            <span className={`font-mono text-xl sm:text-2xl font-semibold ${errorsCount > 0 ? 'text-type-error' : 'text-ink'}`}>
-              {errorsCount}
-            </span>
-            <span className="ml-1.5 text-ink-muted">Errors</span>
-          </div>
-        </div>
-
-        {/* Text Area */}
-        <div className={`p-6 rounded-card bg-paper border transition-colors mb-6 ${
-          errorFlash ? 'border-type-error' : 'border-paper-border'
-        }`}>
-          <div
-            ref={textDisplayRef}
-            className="font-mono text-xl sm:text-2xl leading-[1.7] max-h-[140px] sm:max-h-[160px] overflow-hidden select-none relative"
-          >
-            <span className="text-ink">{typed}</span>
-            {isRunning && (
-              <span
-                id="test-caret"
-                className={`inline-block w-[2.5px] h-6 sm:h-7 align-middle mx-[0.5px] caret-pulse ${
-                  errorFlash ? 'bg-type-error' : 'bg-type-caret'
-                }`}
-              />
-            )}
-            <span className="text-ink-muted/40">{testText.slice(typed.length)}</span>
-          </div>
-        </div>
-
-        {/* Action Controls */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-          {!isRunning && !finalStats ? (
-            <button
-              type="button"
-              onClick={startTest}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-accent hover:bg-accent-hover text-white text-xs font-medium transition-colors shadow-subtle"
-            >
-              <Play className="w-3.5 h-3.5" />
-              <span>Start {Math.round(selectedTest.duration / 60)}-minute test</span>
-            </button>
-          ) : isRunning ? (
-            <div className="flex items-center gap-3">
-              <span className="text-xs text-ink-muted">Type the text above. Mistakes must be corrected to advance.</span>
+            {/* Start Button */}
+            <div className="pt-4 border-t border-paper-border flex items-center justify-between">
+              <span className="text-xs text-ink-muted">
+                Typing begins on your first keystroke.
+              </span>
               <button
                 type="button"
-                onClick={startTest}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-paper-border text-xs text-ink-muted hover:text-ink hover:bg-paper transition-colors"
+                onClick={handleStartTest}
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-btn bg-accent hover:bg-accent-hover text-white text-sm font-semibold transition-colors shadow-subtle"
               >
-                <RotateCcw className="w-3 h-3" />
-                <span>Restart</span>
+                <Play className="w-4 h-4 fill-current" />
+                <span>Start {Math.round(duration / 60)}-Minute Test</span>
               </button>
             </div>
-          ) : (
-            <div className="flex flex-wrap items-center gap-3">
+          </div>
+        </div>
+      )}
+
+      {/* Active Running Test */}
+      {isRunning && (
+        <div className="py-2">
+          <TypingEngine
+            key={`test-${currentPassage.id}-${duration}`}
+            text={currentPassage.text}
+            title={`${Math.round(duration / 60)}-Minute Speed Test: ${currentPassage.title}`}
+            intro="Type steadily. Net speed subtracts uncorrected errors. Pace yourself for accuracy."
+            targetWpm={40}
+            targetAccuracy={95}
+            mode="test"
+            durationLimitSeconds={duration}
+            onComplete={handleTestComplete}
+            onExit={() => setIsRunning(false)}
+            onFocusChange={onFocusChange}
+          />
+        </div>
+      )}
+
+      {/* Test Results Card */}
+      {finalStats && (
+        <div className="bg-paper-surface border border-paper-border rounded-card p-6 sm:p-8 shadow-subtle max-w-2xl mx-auto animate-fadeIn">
+          <div className="flex items-center justify-between pb-4 mb-6 border-b border-paper-border">
+            <div>
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-accent mb-1 block">
+                Test Completed
+              </span>
+              <h2 className="text-xl sm:text-2xl font-semibold text-ink">
+                {finalStats.testTitle}
+              </h2>
+            </div>
+            <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-accent-soft text-accent border border-accent/20">
+              {calculateSpeedBand(finalStats.netWpm).label}
+            </span>
+          </div>
+
+          {/* Primary Net WPM & Accuracy */}
+          <div className="grid grid-cols-2 gap-4 py-4 border-b border-paper-border mb-6">
+            <div>
+              <div className="text-xs text-ink-muted uppercase tracking-wider mb-1">
+                Net Speed (Standard)
+              </div>
+              <div className="font-mono text-4xl sm:text-5xl font-bold text-ink">
+                {finalStats.netWpm}{' '}
+                <span className="text-sm font-sans font-normal text-ink-muted">WPM</span>
+              </div>
+              <div className="text-[11px] text-ink-muted mt-1">
+                Gross: {finalStats.grossWpm} WPM
+              </div>
+            </div>
+
+            <div className="text-right">
+              <div className="text-xs text-ink-muted uppercase tracking-wider mb-1">
+                Accuracy
+              </div>
+              <div className={`font-mono text-4xl sm:text-5xl font-bold ${
+                finalStats.accuracy >= 95 ? 'text-accent' : 'text-ink'
+              }`}>
+                {finalStats.accuracy}%
+              </div>
+              <div className="text-[11px] text-ink-muted mt-1">
+                {finalStats.errorsCount} uncorrected errors
+              </div>
+            </div>
+          </div>
+
+          {/* Secondary Details */}
+          <div className="grid grid-cols-3 gap-3 mb-6 text-xs text-ink-muted">
+            <div className="p-3 rounded-card bg-paper border border-paper-border">
+              <div className="text-[11px] mb-1">Duration</div>
+              <div className="font-mono text-base font-semibold text-ink">
+                {Math.round(finalStats.duration / 60)} min
+              </div>
+            </div>
+
+            <div className="p-3 rounded-card bg-paper border border-paper-border">
+              <div className="text-[11px] mb-1">Consistency</div>
+              <div className="font-mono text-base font-semibold text-ink">
+                {finalStats.consistency ? `${finalStats.consistency}%` : '—'}
+              </div>
+            </div>
+
+            <div className="p-3 rounded-card bg-paper border border-paper-border">
+              <div className="text-[11px] mb-1">Total Typed</div>
+              <div className="font-mono text-base font-semibold text-ink">
+                {finalStats.totalChars || finalStats.totalCorrect || 0} chars
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-paper-border">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
               <button
                 type="button"
-                onClick={startTest}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-btn bg-accent hover:bg-accent-hover text-white text-xs font-medium transition-colors shadow-subtle"
+                onClick={handleRestart}
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-btn border border-paper-border bg-paper hover:bg-paper-border/60 text-ink text-xs font-medium transition-colors"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                <span>Retake test</span>
+                <span>Take Another Test</span>
               </button>
 
+              <a
+                href="#/practice"
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-btn border border-paper-border bg-paper hover:bg-paper-border/60 text-ink text-xs font-medium transition-colors"
+              >
+                <span>Drill Weak Keys</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
+
+            {finalStats.accuracy >= 80 && (
               <button
                 type="button"
                 onClick={() => setShowCertificate(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-btn border border-paper-border text-ink hover:bg-paper text-xs font-medium transition-colors"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-btn bg-accent hover:bg-accent-hover text-white text-xs font-semibold transition-colors shadow-subtle"
               >
-                <Award className="w-3.5 h-3.5 text-accent" />
-                <span>View Certificate of Completion</span>
+                <Award className="w-4 h-4" />
+                <span>Get Certificate</span>
               </button>
-            </div>
-          )}
-
-          <div className="text-xs text-ink-muted">
-            Strict mode active
+            )}
           </div>
         </div>
-      </div>
+      )}
 
       {/* Certificate Modal */}
       {showCertificate && finalStats && (
-        <Suspense fallback={<div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 text-paper text-sm">Loading certificate...</div>}>
+        <Suspense fallback={null}>
           <CertificateModal
             stats={finalStats}
-            testTitle={selectedTest.title}
+            testTitle={finalStats.testTitle}
             onClose={() => setShowCertificate(false)}
           />
         </Suspense>
