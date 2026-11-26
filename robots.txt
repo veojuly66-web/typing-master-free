@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://veojuly66-web.github.io/typing-master-free/sitemap.xml

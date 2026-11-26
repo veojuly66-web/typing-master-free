@@ -1,7 +1,7 @@
 @echo off
-title Pankaj Typing Pro - Launching...
+title Pankaj Typing - Launching...
 echo ========================================================
-echo         PANKAJ TYPING PRO - DESKTOP EDITION
+echo         PANKAJ TYPING - DESKTOP EDITION
 echo ========================================================
 echo Launching native desktop window...
 
