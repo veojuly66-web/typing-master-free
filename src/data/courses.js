@@ -1,9 +1,10 @@
 export const COURSES = [
   {
     id: 'course-basics',
-    title: 'Touch Typing Basics',
-    description: 'Master the home row, learn proper finger placement, and type without looking at the keyboard.',
+    title: 'Beginner: Home Row & Top Row',
+    description: 'Master proper finger placement on the home row (ASDF JKL;) and learn smooth upward reaches for E, I, R, U, T, and Y.',
     badge: 'Beginner',
+    level: 1,
     icon: 'Keyboard',
     lessons: [
       {
@@ -81,7 +82,17 @@ export const COURSES = [
         targetWpm: 28,
         targetAccuracy: 95,
         content: 'today trust try pretty target duty study safety utility reality easily royalty dirty dairy layer layout totally'
-      },
+      }
+    ]
+  },
+  {
+    id: 'course-elementary',
+    title: 'Elementary: Bottom Row & Shift',
+    description: 'Learn downward finger reaches to C, V, B, N, M, comma, period, and master opposite-hand Shift key coordination.',
+    badge: 'Elementary',
+    level: 2,
+    icon: 'CornerDownRight',
+    lessons: [
       {
         id: 'c1-l9',
         title: 'Introducing Keys C and Comma',
@@ -114,7 +125,7 @@ export const COURSES = [
       {
         id: 'c1-l12',
         title: 'Basics Mastery Assessment',
-        intro: 'Demonstrate touch typing across all home row and top row letters. Aim for at least 95% accuracy.',
+        intro: 'Demonstrate touch typing across all home row, top row, and bottom row letters. Aim for at least 95% accuracy.',
         isReview: true,
         reviewLabel: 'Assessment',
         keysTaught: [],
@@ -126,9 +137,10 @@ export const COURSES = [
   },
   {
     id: 'course-speed',
-    title: 'Speed Building & Flow',
+    title: 'Intermediate: Speed Building & Flow',
     description: 'Build typing velocity through muscle memory drills, high-frequency letter patterns, and steady cadence.',
     badge: 'Intermediate',
+    level: 3,
     icon: 'Zap',
     lessons: [
       {
@@ -197,9 +209,10 @@ export const COURSES = [
   },
   {
     id: 'course-numbers',
-    title: 'Numbers & Symbols',
+    title: 'Advanced: Numbers & Symbols',
     description: 'Learn the top number row, math operators, code brackets, and punctuation without looking down.',
     badge: 'Advanced',
+    level: 4,
     icon: 'Hash',
     lessons: [
       {
@@ -262,9 +275,10 @@ export const COURSES = [
   },
   {
     id: 'course-mastery',
-    title: 'Prose & Literature',
+    title: 'Expert: Real Paragraphs & Literature',
     description: 'Build endurance and precision with complete paragraphs, historical texts, and literature excerpts.',
     badge: 'Expert',
+    level: 5,
     icon: 'Award',
     lessons: [
       {
@@ -302,7 +316,7 @@ export const COURSES = [
       },
       {
         id: 'c4-l4',
-        title: 'Classic Literature Excerpt',
+        title: 'Classic Literature Cadence',
         intro: 'Expressive phrasing and varied cadence from classic literature.',
         isReview: true,
         reviewLabel: 'Literature',
@@ -324,7 +338,7 @@ export const COURSES = [
       },
       {
         id: 'c4-l6',
-        title: 'Endurance Assessment',
+        title: 'Endurance Championship',
         intro: 'A sustained typing challenge. Maintain 50+ WPM with 98% accuracy to complete the course.',
         isReview: true,
         reviewLabel: 'Assessment',
@@ -367,7 +381,7 @@ export const TYPING_TESTS = [
     title: '5-Minute Certification Exam',
     duration: 300,
     difficulty: 'Expert',
-    description: 'A comprehensive 5-minute typing test for precision and endurance, eligible for a Certificate of Completion.',
+    description: 'A comprehensive 5-minute typing test for precision and endurance, eligible for a Certificate of Typing Speed.',
     text: 'Patience and consistency are the cornerstones of all genuine mastery. When beginners start learning to touch type, their fingers often feel clumsy and slow. They are tempted to glance down at the keys to speed up temporarily. However, resisting that urge is the single greatest breakthrough in the entire journey. By forcing your mind to rely solely on muscle memory, neural connections form between the concept of each letter and the precise movement of the corresponding finger. Within weeks, words flow seamlessly through your fingertips without friction.'
   }
 ];
