@@ -1,86 +1,70 @@
-# 🇮🇳 हिंदी टाइपिंग मास्टर प्रो (Hindi Typing Master Pro)
-### 100% नि:शुल्क • प्रीमियम फीचर्स • केवल हिंदी टाइपिंग • नवीनतम टाइपिंग मास्टर डिज़ाइन
+# Pankaj Typing
 
-**हिंदी टाइपिंग मास्टर प्रो** एक आधुनिक, इंटरएक्टिव और पूर्णतः नि:शुल्क वेब एप्लिकेशन है जिसे नवीनतम टाइपिंग मास्टर (Typing Master 11/12) के तर्ज पर विशेष रूप से **केवल हिंदी टाइपिंग** सीखने एवं अभ्यास करने हेतु बनाया गया है।
+A modern, distraction-free touch typing tutor and speed test application built with React, Vite, and Tailwind CSS.
 
----
+Live demo: [https://veojuly66-web.github.io/typing-master-free/](https://veojuly66-web.github.io/typing-master-free/)
 
-## 🌟 प्रमुख विशेषताएँ (Key Features)
+## Features
 
-1. **दो प्रमुख मानक कीबोर्ड लेआउट्स (Dual Official Layouts)**:
-   - **इनस्क्रिप्ट (Inscript / Mangal)**: भारत सरकार एवं यूनिकोड का आधिकारिक मानक लेआउट।
-   - **रेमिंगटन गेल (Remington Gail / Krutidev)**: एसएससी (SSC), उच्च न्यायालय (High Court), पुलिस एवं अन्य सरकारी परीक्षाओं का सर्वाधिक लोकप्रिय लेआउट।
+- **Structured Touch Typing Curriculum**: 30 progressive lessons across four levels (Beginner, Intermediate, Advanced, and Expert), starting from the home row to full punctuation and numbers.
+- **Interactive Visual Keyboard & Finger Guide**: Real-time finger-placement indicators showing which hand and finger to use for every keystroke.
+- **Strict Typing Mode**: Enforces accurate muscle memory by requiring the correct key before the cursor advances.
+- **Realistic Audio Feedback**: Web Audio API synthesizer offering acoustic grand piano notes, mechanical switches, vintage typewriter, or soft click sounds with an instant mute toggle.
+- **Speed Tests & Certificates**: Timed typing assessments (1, 2, 3, or 5 minutes) with a downloadable Certificate of Completion.
+- **Arcade Practice Games**: Engaging mini-games (*Word Bubbles* and *Word Attack*) to build quick reflexes and peripheral letter recognition.
+- **Custom Text Practice**: Practice with any custom text, literature, or programming snippets.
+- **Personal Progress Analytics**: Tracks WPM history, accuracy trends, and problem keys entirely in your browser using `localStorage`. No account required.
 
-2. **स्मार्ट कीबोर्ड एम्युलेटर (Smart Hardware Keyboard Emulation)**:
-   - उपयोगकर्ता को अपने कंप्यूटर में बिना कोई हिंदी फॉन्ट या IME सेटिंग्स बदले सामान्य अंग्रेजी कीबोर्ड पर टाइप करने की सुविधा।
-   - कीबोर्ड की `k`, `j`, `s`, `d` कीज दबाने पर स्वचालित रूप से चुनी हुई हिंदी लेआउट के अनुसार अक्षर टाइप होते हैं।
-   - साथ ही, उन यूज़र्स के लिए **"नेटिव IME मोड"** भी उपलब्ध है जिनके पास पहले से हिंदी कीबोर्ड सक्रिय है।
+## Getting Started
 
-3. **इंटरएक्टिव आभासी कीबोर्ड और हाथ-उंगली गाइड (Hands & Finger Guide)**:
-   - उंगलियों के अनुसार 9 अलग-अलग रंगों में विभाजित कीबोर्ड।
-   - अगला अक्षर दबाने के लिए सही उंगली (तर्जनी, मध्यमा, अनामिका, कनिष्ठिका या अंगूठा) स्क्रीन पर एनिमेटेड रूप से मार्गदर्शित होती है।
-   - शिफ्ट (Shift) की आवश्यकता होने पर शिफ्ट कीज़ स्वतः नीले रंग में चमकती हैं।
+### Prerequisites
 
-4. **संरचित पाठ्यक्रम (Structured Lessons Curriculum)**:
-   - **मॉड्यूल 1**: होम रो (Home Row) कीज़, मात्राएँ और प्राथमिक शब्द।
-   - **मॉड्यूल 2**: अपर रो (Upper Row) स्वर एवं दीर्घ मात्राएँ।
-   - **मॉड्यूल 3**: बॉटम रो (Bottom Row) व्यंजन, अनुस्वार एवं पूर्णविराम।
-   - **मॉड्यूल 4**: शिफ्ट कीज़ (Shift Keys) एवं जटिल संयुक्त वर्ण (आधे अक्षर/हलंत)।
-   - **मॉड्यूल 5**: गति वर्धक 100 अति-प्रचलित शब्द एवं कानूनी/प्रशासनिक शब्दावली।
+- Node.js (v18 or higher recommended)
+- npm (v9 or higher)
 
-5. **आधिकारिक परीक्षा स्पीड टेस्ट (Exam Standard Speed Tests)**:
-   - 1 मिनट, 2 मिनट, 5 मिनट एवं 10 मिनट के आधिकारिक परीक्षा स्तर के गद्यांश (SSC / High Court Model Passages)।
-   - सकल गति (Gross WPM), शुद्ध गति (Net WPM), सटीकता (Accuracy %) और गलतियों की रीयल-टाइम गणना।
+### Installation
 
-6. **ऑडियो प्रभाव (Realistic Web Audio Synthesizer)**:
-   - मैकेनिकल कीबोर्ड (Blue switch click) ध्वनि।
-   - स्पेसबार थंप और गलती होने पर एरर बजर।
-   - अभ्यास पूर्ण होने पर विजयी संगीत (Fanfare chime)।
-   - शून्य बाह्य ऑडियो फाइल (Zero external dependency)।
-
-7. **आधिकारिक प्रमाण पत्र (Downloadable Certificate of Proficiency)**:
-   - टेस्ट पूरा करने पर छात्र के नाम, शुद्ध गति, सटीकता और दिनांक के साथ उच्च-रिज़ॉल्यूशन आधिकारिक डिप्लोमा प्रमाण पत्र जनरेट होता है, जिसे एक क्लिक में PNG के रूप में डाउनलोड किया जा सकता है।
-
-8. **शब्द वर्षा गेम (Word Rain Typing Game)**:
-   - गिरते हुए हिंदी शब्दों को नष्ट करने वाला मनोरंजक टाइपिंग गेम।
-
-9. **कस्टम अभ्यास (Custom Text Practice)**:
-   - अपनी पसंद का कोई भी हिंदी निबंध, समाचार या कहानी पेस्ट करके अभ्यास करने की सुविधा।
-
----
-
-## 🚀 तुरंत कैसे चलाएं (How to Run Locally)
-
-यह प्रोजेक्ट बिना किसी जटिल सेटअप के किसी भी वेब ब्राउज़र में तुरंत चलता है:
-
-### विकल्प 1: पाइथन सर्वर द्वारा (अनुशंसित)
 ```bash
-cd /Users/pankaj/.gemini/antigravity/scratch/hindi-typing-master
-python3 -m http.server 3000
-```
-ब्राउज़र में खोलें: `http://localhost:3000`
+# Clone the repository
+git clone https://github.com/veojuly66-web/typing-master-free.git
+cd typing-master-free
 
-### विकल्प 2: Node.js / npx serve द्वारा
+# Install dependencies
+npm install
+```
+
+### Development
+
+Run the local development server:
+
 ```bash
-cd /Users/pankaj/.gemini/antigravity/scratch/hindi-typing-master
-npm start
+npm run dev
 ```
 
-### विकल्प 3: सीधा ब्राउज़र में
-`index.html` फाइल पर डबल-क्लिक करके सीधे अपने Chrome / Safari / Edge ब्राउज़र में खोल सकते हैं।
+The application will be accessible at `http://localhost:5173/`.
 
----
+### Production Build
 
-## 📂 फ़ाइल संरचना (Project Structure)
+Create an optimized static build in the `dist` folder:
 
+```bash
+npm run build
 ```
-hindi-typing-master/
-├── index.html            # मुख्य यूआई एवं लेआउट
-├── styles.css            # आधुनिक डार्क/लाइट ग्लासमोर्फिज्म सीएसएस
-├── app.js                # टाइपिंग इंजन, एम्युलेटर और गेम कंट्रोलर
-├── keyboard-layouts.js   # इनस्क्रिप्ट एवं रेमिंगटन गेल कीबोर्ड मैपिंग
-├── lessons-data.js       # हिंदी पाठ, परीक्षा गद्यांश एवं शब्दावली
-├── sound-effects.js      # वेब ऑडियो एपीआई मैकेनिकल साउंड्स
-├── package.json          # एनपीएम स्क्रिप्ट्स
-└── README.md             # संपूर्ण मार्गदर्शिका
+
+Preview the production build locally:
+
+```bash
+npm run preview
 ```
+
+## Deployment
+
+This repository is configured for automated deployment to GitHub Pages using GitHub Actions. Any push to the `main` branch automatically runs `.github/workflows/deploy.yml`, which compiles the project and publishes the `./dist` directory.
+
+## Privacy
+
+Pankaj Typing runs entirely in the browser. All typing metrics, personal bests, and completed lessons are saved strictly in your device's `localStorage`. No personal data or keystroke information is transmitted to any external server.
+
+## License
+
+MIT
