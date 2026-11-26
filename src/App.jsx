@@ -1,19 +1,88 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Home from './components/Home';
 import CourseBrowser from './components/CourseBrowser';
 import TypingExercise from './components/TypingExercise';
 import LessonResultModal from './components/LessonResultModal';
 import TypingTest from './components/TypingTest';
-import GamesHub from './components/games/GamesHub';
 import CustomPractice from './components/CustomPractice';
 import StatsDashboard from './components/StatsDashboard';
+import About from './components/About';
+import Privacy from './components/Privacy';
+import Contact from './components/Contact';
 import { COURSES } from './data/courses';
-import { Crown, Sparkles, Heart } from 'lucide-react';
+
+// Lazy-load games to shrink the main bundle
+const GamesHub = lazy(() => import('./components/games/GamesHub'));
+
+function parseRouteFromHash() {
+  const hash = window.location.hash.replace(/^#\/?/, '').trim();
+  if (!hash || hash === '') return 'home';
+  if (hash.startsWith('lessons')) return 'lessons';
+  if (hash.startsWith('test')) return 'test';
+  if (hash.startsWith('games')) return 'games';
+  if (hash.startsWith('practice')) return 'practice';
+  if (hash.startsWith('progress')) return 'progress';
+  if (hash.startsWith('about')) return 'about';
+  if (hash.startsWith('privacy')) return 'privacy';
+  if (hash.startsWith('contact')) return 'contact';
+  return 'home';
+}
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('courses');
+  const [route, setRoute] = useState(parseRouteFromHash);
   const [currentLesson, setCurrentLesson] = useState(null);
   const [exerciseResult, setExerciseResult] = useState(null);
+
+  // Theme state (default light, optional dark, respect system preference and localStorage)
+  const [isDark, setIsDark] = useState(() => {
+    try {
+      const saved = localStorage.getItem('tm_theme');
+      if (saved) return saved === 'dark';
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } catch (e) {
+      return false;
+    }
+  });
+
+  // Apply dark class to html document
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDark) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    try {
+      localStorage.setItem('tm_theme', isDark ? 'dark' : 'light');
+    } catch (e) {
+      console.error(e);
+    }
+  }, [isDark]);
+
+  const toggleTheme = () => {
+    setIsDark(prev => !prev);
+  };
+
+  // Hash change routing listener
+  useEffect(() => {
+    const handleHashChange = () => {
+      const newRoute = parseRouteFromHash();
+      setRoute(newRoute);
+      // If navigating to another page while exercise is active, exit exercise
+      if (newRoute !== 'lessons') {
+        setCurrentLesson(null);
+        setExerciseResult(null);
+      }
+      window.scrollTo(0, 0);
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  // Lessons progress from localStorage
   const [completedLessons, setCompletedLessons] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('tm_completed_lessons') || '{}');
@@ -22,11 +91,9 @@ export default function App() {
     }
   });
 
-  // Save progress
   const saveLessonProgress = (lessonId, stats) => {
     setCompletedLessons(prev => {
       const existing = prev[lessonId];
-      // Keep best score
       const best = existing ? {
         netWpm: Math.max(existing.netWpm, stats.netWpm),
         grossWpm: Math.max(existing.grossWpm, stats.grossWpm),
@@ -52,7 +119,9 @@ export default function App() {
   const handleStartLesson = (lesson) => {
     setCurrentLesson(lesson);
     setExerciseResult(null);
-    setActiveTab('exercise');
+    if (route !== 'lessons') {
+      window.location.hash = '#/lessons';
+    }
   };
 
   const handleExerciseComplete = (stats) => {
@@ -69,7 +138,6 @@ export default function App() {
   const handleExitExercise = () => {
     setCurrentLesson(null);
     setExerciseResult(null);
-    setActiveTab('courses');
   };
 
   // Find next lesson
@@ -79,8 +147,8 @@ export default function App() {
 
   const handleNextLesson = () => {
     if (hasNextLesson) {
-      const nextLesson = allLessons[currentLessonIndex + 1];
-      setCurrentLesson(nextLesson);
+      const next = allLessons[currentLessonIndex + 1];
+      setCurrentLesson(next);
       setExerciseResult(null);
     } else {
       handleExitExercise();
@@ -88,91 +156,92 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col font-['Plus_Jakarta_Sans',sans-serif]">
-      {/* Top Navigation */}
+    <div className="min-h-screen flex flex-col bg-paper text-ink transition-colors duration-150">
+      {/* Top Navbar */}
       <Navbar
-        activeTab={activeTab === 'exercise' ? 'courses' : activeTab}
-        setActiveTab={(tab) => {
-          if (activeTab === 'exercise') {
-            setCurrentLesson(null);
-            setExerciseResult(null);
-          }
-          setActiveTab(tab);
-        }}
+        currentRoute={route}
+        isDark={isDark}
+        onToggleTheme={toggleTheme}
       />
 
       {/* Main Content Area */}
       <main className="flex-1 pb-16">
-        {activeTab === 'courses' && (
-          <CourseBrowser
+        {route === 'home' && (
+          <Home
             completedLessons={completedLessons}
-            onStartLesson={handleStartLesson}
+            onNavigate={(newRoute) => {
+              window.location.hash = `#/${newRoute}`;
+            }}
           />
         )}
 
-        {activeTab === 'exercise' && currentLesson && (
-          <div className="py-6">
-            <TypingExercise
-              key={currentLesson.id + (exerciseResult ? '-retry' : '')}
-              text={currentLesson.content}
-              title={currentLesson.title}
-              intro={currentLesson.intro}
-              targetWpm={currentLesson.targetWpm}
-              targetAccuracy={currentLesson.targetAccuracy}
-              onComplete={handleExerciseComplete}
-              onExit={handleExitExercise}
-            />
+        {route === 'lessons' && (
+          <>
+            {currentLesson ? (
+              <div className="py-6">
+                <TypingExercise
+                  key={currentLesson.id + (exerciseResult ? '-retry' : '')}
+                  text={currentLesson.content}
+                  title={currentLesson.title}
+                  intro={currentLesson.intro}
+                  targetWpm={currentLesson.targetWpm}
+                  targetAccuracy={currentLesson.targetAccuracy}
+                  onComplete={handleExerciseComplete}
+                  onExit={handleExitExercise}
+                />
 
-            {exerciseResult && (
-              <LessonResultModal
-                stats={exerciseResult}
-                lessonTitle={currentLesson.title}
-                onNext={hasNextLesson ? handleNextLesson : null}
-                onRetry={handleRetryLesson}
-                onCourseList={handleExitExercise}
-                hasNextLesson={hasNextLesson}
+                {exerciseResult && (
+                  <LessonResultModal
+                    stats={exerciseResult}
+                    lessonTitle={currentLesson.title}
+                    onNext={hasNextLesson ? handleNextLesson : null}
+                    onRetry={handleRetryLesson}
+                    onCourseList={handleExitExercise}
+                    hasNextLesson={hasNextLesson}
+                  />
+                )}
+              </div>
+            ) : (
+              <CourseBrowser
+                completedLessons={completedLessons}
+                onStartLesson={handleStartLesson}
               />
             )}
-          </div>
+          </>
         )}
 
-        {activeTab === 'tests' && (
-          <TypingTest onBack={() => setActiveTab('courses')} />
+        {route === 'test' && (
+          <TypingTest onBack={() => { window.location.hash = '#/lessons'; }} />
         )}
 
-        {activeTab === 'games' && (
-          <GamesHub />
+        {route === 'games' && (
+          <Suspense fallback={
+            <div className="max-w-content mx-auto py-16 text-center text-xs text-ink-muted">
+              Loading arcade games...
+            </div>
+          }>
+            <GamesHub />
+          </Suspense>
         )}
 
-        {activeTab === 'custom' && (
+        {route === 'practice' && (
           <CustomPractice onStartCustom={handleStartLesson} />
         )}
 
-        {activeTab === 'stats' && (
+        {route === 'progress' && (
           <StatsDashboard
             completedLessons={completedLessons}
             onSelectLesson={handleStartLesson}
           />
         )}
+
+        {route === 'about' && <About />}
+        {route === 'privacy' && <Privacy />}
+        {route === 'contact' && <Contact />}
       </main>
 
-      {/* Modern Footer */}
-      <footer className="bg-slate-950 border-t border-slate-800 py-8 px-4 text-center text-xs text-slate-500">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-300">Pankaj Typing Pro</span>
-            <span>•</span>
-            <span className="text-amber-400 font-medium">100% Free Lifetime Touch Typing Academy</span>
-          </div>
-
-          <div className="flex items-center gap-6 text-slate-400">
-            <span>Home Row Standard</span>
-            <span>Audio Synthesizer SFX</span>
-            <span>Official Certificates</span>
-            <span>Arcade Games</span>
-          </div>
-        </div>
-      </footer>
+      {/* Real 3-column Footer */}
+      <Footer />
     </div>
   );
 }
