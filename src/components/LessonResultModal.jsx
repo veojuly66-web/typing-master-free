@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { Trophy, CheckCircle, RotateCcw, ArrowRight, Award, AlertTriangle, Zap, Target } from 'lucide-react';
+import { Check, RotateCcw, ArrowRight, X } from 'lucide-react';
 
 export default function LessonResultModal({
   stats,
@@ -15,134 +15,130 @@ export default function LessonResultModal({
   useEffect(() => {
     if (passed) {
       confetti({
-        particleCount: 80,
-        spread: 70,
+        particleCount: 50,
+        spread: 60,
         origin: { y: 0.6 }
       });
     }
   }, [passed]);
 
-  // Extract top problem keys
-  const problemKeyEntries = Object.entries(mistakeKeys).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const problemKeys = Object.entries(mistakeKeys)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
-      <div className="bg-slate-900 border border-slate-700/80 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-        {/* Top Glow Accent */}
-        <div className={`absolute top-0 left-0 right-0 h-2 bg-gradient-to-r ${
-          passed ? 'from-emerald-400 via-teal-500 to-blue-500' : 'from-amber-400 to-rose-500'
-        }`} />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 backdrop-blur-sm animate-fadeIn">
+      <div className="bg-paper-surface border border-paper-border rounded-card max-w-lg w-full p-6 sm:p-8 shadow-xl relative">
+        {/* Close Button */}
+        <button
+          type="button"
+          onClick={onCourseList}
+          aria-label="Close result modal"
+          className="absolute top-4 right-4 text-ink-muted hover:text-ink transition-colors"
+        >
+          <X className="w-4 h-4" />
+        </button>
 
-        {/* Modal Header */}
-        <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-3 shadow-lg ring-4 ring-slate-800">
+        {/* Status Heading */}
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-1">
             {passed ? (
-              <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/40">
-                <Trophy className="w-8 h-8 animate-bounce-short" />
-              </div>
-            ) : (
-              <div className="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/40">
-                <AlertTriangle className="w-8 h-8" />
-              </div>
-            )}
+              <span className="w-5 h-5 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                <Check className="w-3.5 h-3.5" />
+              </span>
+            ) : null}
+            <h3 className="text-xl font-semibold text-ink tracking-tight">
+              {passed ? 'Lesson complete' : 'Keep practicing'}
+            </h3>
           </div>
-
-          <h3 className="text-2xl font-black text-white tracking-tight">
-            {passed ? 'Lesson Completed!' : 'Keep Practicing!'}
-          </h3>
-          <p className="text-sm text-slate-400 mt-1">
-            {passed 
-              ? 'Great rhythm! Your muscle memory is getting sharper.' 
-              : 'Speed will come naturally with practice. Focus on accuracy first.'}
+          <p className="text-xs text-ink-muted">
+            {lessonTitle} · {passed ? 'Target reached with good form.' : 'Repeat this drill to build steady rhythm.'}
           </p>
-          <div className="text-xs text-slate-500 mt-0.5 font-medium">{lessonTitle}</div>
         </div>
 
-        {/* Big Metrics Grid */}
-        <div className="grid grid-cols-3 gap-3 mb-6">
-          {/* Net Speed */}
-          <div className="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 text-center">
-            <div className="flex items-center justify-center gap-1 text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">
-              <Zap className="w-3.5 h-3.5 text-blue-400" />
-              <span>Net Speed</span>
+        {/* Main Metric: Big Net WPM */}
+        <div className="py-4 border-y border-paper-border mb-6 flex items-baseline justify-between">
+          <div>
+            <div className="text-xs text-ink-muted uppercase tracking-wider mb-1">Net typing speed</div>
+            <div className="font-mono text-4xl sm:text-5xl font-semibold text-ink">
+              {netWpm} <span className="text-sm font-sans font-normal text-ink-muted">WPM</span>
             </div>
-            <div className="text-3xl font-black text-blue-400 font-mono">
-              {netWpm}
-            </div>
-            <div className="text-[11px] text-slate-500 mt-0.5">WPM</div>
           </div>
 
-          {/* Accuracy */}
-          <div className="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 text-center">
-            <div className="flex items-center justify-center gap-1 text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">
-              <Target className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Accuracy</span>
-            </div>
-            <div className={`text-3xl font-black font-mono ${
-              accuracy >= 95 ? 'text-emerald-400' : 'text-amber-400'
-            }`}>
+          <div className="text-right">
+            <div className="text-xs text-ink-muted uppercase tracking-wider mb-1">Accuracy</div>
+            <div className={`font-mono text-3xl font-semibold ${accuracy >= 95 ? 'text-accent' : 'text-ink'}`}>
               {accuracy}%
             </div>
-            <div className="text-[11px] text-slate-500 mt-0.5">{errorsCount} errors</div>
-          </div>
-
-          {/* Time */}
-          <div className="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 text-center">
-            <div className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">
-              Time
-            </div>
-            <div className="text-3xl font-black text-purple-400 font-mono">
-              {timeSeconds}s
-            </div>
-            <div className="text-[11px] text-slate-500 mt-0.5">Gross {grossWpm} WPM</div>
           </div>
         </div>
 
-        {/* Problem Keys Analysis */}
-        {problemKeyEntries.length > 0 && (
-          <div className="mb-6 p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20">
-            <div className="text-xs font-bold text-rose-300 mb-2 flex items-center gap-1.5">
-              <span>Difficult Keys in this Lesson:</span>
+        {/* Secondary Metrics Grid */}
+        <div className="grid grid-cols-3 gap-3 mb-6 text-xs text-ink-muted">
+          <div className="p-3 rounded-card bg-paper border border-paper-border">
+            <div className="text-[11px] mb-1">Gross speed</div>
+            <div className="font-mono text-base font-semibold text-ink">{grossWpm} WPM</div>
+          </div>
+
+          <div className="p-3 rounded-card bg-paper border border-paper-border">
+            <div className="text-[11px] mb-1">Time elapsed</div>
+            <div className="font-mono text-base font-semibold text-ink">{timeSeconds}s</div>
+          </div>
+
+          <div className="p-3 rounded-card bg-paper border border-paper-border">
+            <div className="text-[11px] mb-1">Errors</div>
+            <div className={`font-mono text-base font-semibold ${errorsCount > 0 ? 'text-type-error' : 'text-ink'}`}>
+              {errorsCount}
             </div>
+          </div>
+        </div>
+
+        {/* Problem Keys (if any) */}
+        {problemKeys.length > 0 && (
+          <div className="mb-6 p-3 rounded-card bg-paper border border-paper-border">
+            <div className="text-[11px] text-ink-muted mb-2">Most missed keys:</div>
             <div className="flex items-center gap-2 flex-wrap">
-              {problemKeyEntries.map(([key, count]) => (
+              {problemKeys.map(([k, count]) => (
                 <span
-                  key={key}
-                  className="px-2.5 py-1 rounded-lg bg-slate-900 border border-rose-500/40 text-rose-300 font-mono text-xs font-bold flex items-center gap-1.5"
+                  key={k}
+                  className="px-2 py-0.5 rounded-btn bg-paper-surface border border-paper-border font-mono text-xs text-ink inline-flex items-center gap-1.5"
                 >
-                  <span className="text-white">{key === ' ' ? 'Space' : key}</span>
-                  <span className="text-[10px] text-rose-400/80">({count}x missed)</span>
+                  <span>{k === ' ' ? 'Space' : k}</span>
+                  <span className="text-[10px] text-ink-muted">({count}×)</span>
                 </span>
               ))}
             </div>
           </div>
         )}
 
-        {/* Buttons Action Group */}
-        <div className="flex flex-col sm:flex-row items-center gap-3">
+        {/* Buttons */}
+        <div className="flex flex-col sm:flex-row items-center gap-2 pt-2">
           <button
+            type="button"
             onClick={onRetry}
-            className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-sm font-semibold transition-colors"
+            className="w-full sm:w-auto flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-btn border border-paper-border text-ink hover:bg-paper text-xs font-medium transition-colors"
           >
-            <RotateCcw className="w-4 h-4" />
-            <span>Try Again</span>
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Try again</span>
           </button>
 
           {hasNextLesson && onNext && (
             <button
+              type="button"
               onClick={onNext}
-              className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-500/25 text-sm font-bold transition-all"
+              className="w-full sm:w-auto flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-btn bg-accent hover:bg-accent-hover text-white text-xs font-medium transition-colors shadow-subtle"
             >
-              <span>Next Lesson</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Next lesson</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           )}
 
           <button
+            type="button"
             onClick={onCourseList}
-            className="w-full sm:w-auto px-4 py-3 rounded-xl bg-slate-800/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60 text-sm font-medium transition-colors"
+            className="w-full sm:w-auto px-4 py-2.5 rounded-btn text-ink-muted hover:text-ink text-xs transition-colors"
           >
-            Course Menu
+            Course list
           </button>
         </div>
       </div>
