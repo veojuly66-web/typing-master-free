@@ -1,255 +1,290 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { soundManager } from '../utils/audio';
-import { Keyboard, BookOpen, Zap, Gamepad2, Edit3, BarChart2, Volume2, VolumeX, Crown, Settings, Monitor, Download, X, CheckCircle, HardDrive } from 'lucide-react';
+import { Volume2, VolumeX, Sun, Moon, Menu, X, Monitor, Sliders } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab }) {
+export default function Navbar({ currentRoute, isDark, onToggleTheme }) {
+  const [soundEnabled, setSoundEnabled] = useState(soundManager.enabled);
   const [soundPack, setSoundPack] = useState(soundManager.soundPack);
-  const [isSoundEnabled, setIsSoundEnabled] = useState(soundManager.enabled);
-  const [showSoundSettings, setShowSoundSettings] = useState(false);
+  const [showSoundMenu, setShowSoundMenu] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showWindowsModal, setShowWindowsModal] = useState(false);
 
   const navItems = [
-    { id: 'courses', label: 'Courses', icon: BookOpen },
-    { id: 'tests', label: 'Speed Tests', icon: Zap },
-    { id: 'games', label: 'Arcade Games', icon: Gamepad2 },
-    { id: 'custom', label: 'Custom Text', icon: Edit3 },
-    { id: 'stats', label: 'Dashboard', icon: BarChart2 },
+    { href: '#/lessons', label: 'Lessons', id: 'lessons' },
+    { href: '#/test', label: 'Speed Test', id: 'test' },
+    { href: '#/games', label: 'Games', id: 'games' },
+    { href: '#/practice', label: 'Practice', id: 'practice' },
+    { href: '#/progress', label: 'Progress', id: 'progress' },
   ];
 
   const handleToggleSound = () => {
     soundManager.enabled = !soundManager.enabled;
     soundManager.saveSettings();
-    setIsSoundEnabled(soundManager.enabled);
+    setSoundEnabled(soundManager.enabled);
   };
 
-  const handleChangeSoundPack = (pack) => {
+  const handleSelectSoundPack = (pack) => {
     soundManager.soundPack = pack;
+    soundManager.enabled = true;
     soundManager.saveSettings();
     setSoundPack(pack);
+    setSoundEnabled(true);
     soundManager.playKeypress('a');
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-xl border-b border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
-        {/* Brand Logo */}
-        <div 
-          onClick={() => setActiveTab('courses')}
-          className="flex items-center gap-3 cursor-pointer select-none group"
-        >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/25 group-hover:scale-105 transition-transform">
-            <Keyboard className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-black text-lg text-white tracking-tight">
-                Pankaj<span className="text-blue-400">Typing</span>
-              </span>
-              <span className="px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[9px] font-black uppercase tracking-wider shadow-sm">
-                PRO 100% FREE
-              </span>
+    <>
+      <header className="sticky top-0 z-40 bg-paper-surface/95 backdrop-blur-md border-b border-paper-border h-16">
+        <div className="max-w-content mx-auto px-4 h-full flex items-center justify-between gap-4">
+          {/* Logo & Wordmark */}
+          <a
+            href="#/"
+            className="flex items-center gap-2.5 group select-none shrink-0"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <div className="w-8 h-8 rounded-card bg-accent text-white flex items-center justify-center font-bold text-sm shadow-subtle group-hover:bg-accent-hover transition-colors">
+              P
             </div>
-            <div className="text-[10px] text-slate-400 font-medium">Touch Typing Professional Academy</div>
+            <span className="font-semibold text-ink text-base tracking-tight">
+              Pankaj Typing
+            </span>
+          </a>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-1" aria-label="Main Navigation">
+            {navItems.map((item) => {
+              const isActive = currentRoute === item.id;
+              return (
+                <a
+                  key={item.id}
+                  href={item.href}
+                  className={`px-3 py-1.5 rounded-btn text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'bg-paper text-ink font-semibold'
+                      : 'text-ink-muted hover:text-ink hover:bg-paper/60'
+                  }`}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
+          </nav>
+
+          {/* Right Action Controls */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* Sound Toggle & Sound Pack Menu */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={handleToggleSound}
+                aria-label={soundEnabled ? 'Key sounds: On. Click to mute.' : 'Key sounds: Off. Click to unmute.'}
+                title={soundEnabled ? `Key sounds: On (${soundPack})` : 'Key sounds: Off'}
+                className="p-2 rounded-btn border border-paper-border text-ink hover:bg-paper transition-colors"
+              >
+                {soundEnabled ? (
+                  <Volume2 className="w-4 h-4 text-accent" />
+                ) : (
+                  <VolumeX className="w-4 h-4 text-ink-muted" />
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowSoundMenu(!showSoundMenu)}
+                aria-label="Sound options"
+                title="Select keyboard sound effect"
+                className="hidden sm:inline-flex p-1.5 text-ink-muted hover:text-ink text-xs transition-colors align-middle"
+              >
+                <Sliders className="w-3.5 h-3.5" />
+              </button>
+
+              {/* Sound Options Popover */}
+              {showSoundMenu && (
+                <div className="absolute right-0 mt-2 w-52 bg-paper-surface border border-paper-border rounded-card p-2 shadow-lg z-50 text-xs">
+                  <div className="flex items-center justify-between pb-2 mb-2 border-b border-paper-border font-medium text-ink">
+                    <span>Key Sound Pack</span>
+                    <button
+                      onClick={() => setShowSoundMenu(false)}
+                      className="text-ink-muted hover:text-ink"
+                      aria-label="Close sound menu"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <div className="space-y-1">
+                    {[
+                      { id: 'piano', label: 'Grand Piano (Melodic)' },
+                      { id: 'mechanical', label: 'Mechanical Switch' },
+                      { id: 'typewriter', label: 'Vintage Typewriter' },
+                      { id: 'soft', label: 'Soft Gentle Click' }
+                    ].map((pack) => (
+                      <button
+                        key={pack.id}
+                        type="button"
+                        onClick={() => {
+                          handleSelectSoundPack(pack.id);
+                          setShowSoundMenu(false);
+                        }}
+                        className={`w-full text-left px-2.5 py-1.5 rounded-btn font-medium transition-colors ${
+                          soundPack === pack.id && soundEnabled
+                            ? 'bg-accent-soft text-accent'
+                            : 'text-ink-muted hover:text-ink hover:bg-paper'
+                        }`}
+                      >
+                        {pack.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Dark / Light Theme Toggle */}
+            <button
+              type="button"
+              onClick={onToggleTheme}
+              aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+              title={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+              className="p-2 rounded-btn border border-paper-border text-ink hover:bg-paper transition-colors"
+            >
+              {isDark ? <Sun className="w-4 h-4 text-accent" /> : <Moon className="w-4 h-4 text-ink-muted" />}
+            </button>
+
+            {/* Quiet Windows App Modal Trigger */}
+            <button
+              type="button"
+              onClick={() => setShowWindowsModal(true)}
+              aria-label="Download Windows offline application"
+              title="Use offline on Windows"
+              className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-paper-border text-xs text-ink-muted hover:text-ink hover:bg-paper transition-colors"
+            >
+              <Monitor className="w-3.5 h-3.5" />
+              <span>Windows</span>
+            </button>
+
+            {/* Mobile Hamburger Button */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              className="md:hidden p-2 rounded-btn border border-paper-border text-ink hover:bg-paper transition-colors"
+            >
+              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </button>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <nav className="hidden md:flex items-center gap-1 bg-slate-950/70 p-1.5 rounded-2xl border border-slate-800">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                  isActive
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
-        </nav>
-
-        {/* Right Settings & Sound */}
-        <div className="flex items-center gap-2 relative">
-          {/* Sound Profile Button */}
-          <div className="relative">
-            <button
-              onClick={() => setShowSoundSettings(!showSoundSettings)}
-              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-medium transition-colors flex items-center gap-1.5"
-              title="Typing Sound Settings"
-            >
-              {isSoundEnabled ? <Volume2 className="w-4 h-4 text-emerald-400" /> : <VolumeX className="w-4 h-4 text-slate-500" />}
-              <span className="hidden sm:inline text-slate-400 capitalize">{soundPack}</span>
-            </button>
-
-            {/* Sound Dropdown Popover */}
-            {showSoundSettings && (
-              <div className="absolute right-0 mt-2 w-56 bg-slate-900 border border-slate-800 rounded-2xl p-3 shadow-2xl z-50">
-                <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-800 text-xs">
-                  <span className="font-bold text-white">Audio Settings</span>
-                  <button
-                    onClick={handleToggleSound}
-                    className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                      isSoundEnabled ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
+        {/* Mobile Slide-down Sheet */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-paper-surface border-b border-paper-border px-4 py-3 shadow-lg animate-fadeIn">
+            <nav className="flex flex-col space-y-1" aria-label="Mobile Navigation">
+              {navItems.map((item) => {
+                const isActive = currentRoute === item.id;
+                return (
+                  <a
+                    key={item.id}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`px-3 py-2 rounded-btn text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'bg-paper text-accent font-semibold'
+                        : 'text-ink-muted hover:text-ink hover:bg-paper'
                     }`}
                   >
-                    {isSoundEnabled ? 'Audio ON' : 'Audio OFF'}
-                  </button>
-                </div>
+                    {item.label}
+                  </a>
+                );
+              })}
 
-                <div className="text-[11px] text-slate-400 mb-2 font-medium">Switch Keyboard Sound:</div>
-                <div className="flex flex-col gap-1">
-                  {[
-                    { id: 'piano', label: 'Grand Piano (Musical)' },
-                    { id: 'mechanical', label: 'Mechanical Switch (Thock)' },
-                    { id: 'typewriter', label: 'Vintage Typewriter' },
-                    { id: 'soft', label: 'Soft Gentle Click' }
-                  ].map((p) => (
-                    <button
-                      key={p.id}
-                      onClick={() => handleChangeSoundPack(p.id)}
-                      className={`px-2.5 py-1.5 rounded-lg text-left text-xs font-medium transition-colors ${
-                        soundPack === p.id 
-                          ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30' 
-                          : 'text-slate-400 hover:bg-slate-800'
-                      }`}
-                    >
-                      {p.label}
-                    </button>
-                  ))}
-                </div>
+              <div className="pt-2 mt-2 border-t border-paper-border flex flex-col space-y-1 text-xs text-ink-muted">
+                <a
+                  href="#/about"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3 py-1.5 hover:text-ink"
+                >
+                  About Pankaj Typing
+                </a>
+                <a
+                  href="#/privacy"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3 py-1.5 hover:text-ink"
+                >
+                  Privacy Policy
+                </a>
+                <a
+                  href="#/contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3 py-1.5 hover:text-ink"
+                >
+                  Contact
+                </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setShowWindowsModal(true);
+                  }}
+                  className="text-left px-3 py-1.5 hover:text-ink flex items-center gap-1.5"
+                >
+                  <Monitor className="w-3.5 h-3.5" />
+                  <span>Download for Windows</span>
+                </button>
               </div>
-            )}
+            </nav>
           </div>
+        )}
+      </header>
 
-          {/* Windows App Download Button */}
-          <button
-            onClick={() => setShowWindowsModal(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 text-xs font-bold transition-all shadow-sm"
-            title="Download or Install on Windows"
-          >
-            <Monitor className="w-3.5 h-3.5 text-blue-400" />
-            <span className="hidden sm:inline">Windows App</span>
-          </button>
-
-          {/* Premium Badge */}
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold">
-            <Crown className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden sm:inline">PRO Unlocked</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Nav Tabs */}
-      <div className="flex md:hidden overflow-x-auto px-4 py-2 bg-slate-950/80 border-t border-slate-800/80 gap-2">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activeTab === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-                isActive
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-400 hover:text-slate-200 bg-slate-900'
-              }`}
-            >
-              <Icon className="w-3.5 h-3.5" />
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Windows App Download & Install Modal */}
+      {/* Windows App Modal */}
       {showWindowsModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
-          <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative text-left">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-paper-surface border border-paper-border rounded-card max-w-md w-full p-6 shadow-xl relative">
             <button
               onClick={() => setShowWindowsModal(false)}
-              className="absolute top-5 right-5 p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+              aria-label="Close modal"
+              className="absolute top-4 right-4 text-ink-muted hover:text-ink"
             >
               <X className="w-4 h-4" />
             </button>
 
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-blue-600/20 border border-blue-500/40 text-blue-400 flex items-center justify-center shadow-lg">
-                <Monitor className="w-6 h-6" />
+              <div className="w-10 h-10 rounded-card bg-accent-soft text-accent flex items-center justify-center">
+                <Monitor className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-xl font-black text-white tracking-tight">Pankaj Typing for Windows</h3>
-                <p className="text-xs text-slate-400">Install or download native desktop app for Windows 10 & 11</p>
+                <h3 className="text-base font-semibold text-ink">Windows Offline Edition</h3>
+                <p className="text-xs text-ink-muted">Practice typing without internet</p>
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 my-4 text-xs">
-              {/* Option 1: Native 1-Click App Install (PWA) */}
-              <div className="p-4 rounded-2xl bg-slate-950/70 border border-blue-500/30">
-                <div className="flex items-center gap-2 mb-1.5 font-bold text-white text-sm">
-                  <span className="w-2 h-2 rounded-full bg-blue-400 animate-ping" />
-                  <span>Option 1: 1-Click Desktop Install (Recommended)</span>
-                </div>
-                <p className="text-slate-400 leading-relaxed mb-3">
-                  Windows Edge ya Chrome me address bar ke top-right corner me <strong>App Install icon (+)</strong> par click karein. Yeh aapke Windows Desktop aur Taskbar par official app icon bana dega!
-                </p>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-500/20 text-blue-300 font-semibold text-[11px] border border-blue-500/30">
-                  <CheckCircle className="w-3.5 h-3.5" />
-                  <span>Works 100% Offline on Windows</span>
-                </div>
-              </div>
+            <p className="text-xs text-ink-muted leading-relaxed mb-4">
+              You can run Pankaj Typing as a standalone desktop application on Windows 10 & 11 or install it as a lightweight Progressive Web App (PWA).
+            </p>
 
-              {/* Option 2: Offline Portable ZIP with Batch Launcher */}
-              <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
-                <div className="flex items-center justify-between mb-1">
-                  <div className="font-bold text-white text-sm flex items-center gap-1.5">
-                    <HardDrive className="w-4 h-4 text-emerald-400" />
-                    <span>Option 2: Offline Portable ZIP Package</span>
-                  </div>
-                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 font-bold">90 KB</span>
-                </div>
-                <p className="text-slate-400 leading-relaxed mb-3">
-                  Download karke extract karein aur <code className="text-slate-200 bg-slate-800 px-1 py-0.5 rounded font-mono">Pankaj-Typing-Windows.bat</code> double click karein. Bina internet ke native window me chalega!
-                </p>
-                <a
-                  href="./pankaj-typing-windows-offline.zip"
-                  download="pankaj-typing-windows-offline.zip"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-md shadow-emerald-500/20 transition-all"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Download Offline Windows ZIP</span>
-                </a>
-              </div>
-
-              {/* Option 3: Full Windows .EXE Installer & Portable Executable */}
-              <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
-                <div className="font-bold text-white text-sm mb-1 flex items-center gap-1.5">
-                  <Monitor className="w-4 h-4 text-purple-400" />
-                  <span>Option 3: Full Windows .EXE Installer</span>
-                </div>
-                <p className="text-slate-400 leading-relaxed">
-                  Aapke project ke <code className="text-slate-200 bg-slate-800 px-1 py-0.5 rounded font-mono">release/</code> folder me official Windows Setup Installer (<code className="text-purple-300 font-mono">.exe</code>) aur Portable (<code className="text-purple-300 font-mono">.exe</code>) ready hai.
-                </p>
-              </div>
-            </div>
-
-            <div className="pt-2 text-center">
-              <button
-                onClick={() => setShowWindowsModal(false)}
-                className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition-colors"
+            <div className="space-y-3">
+              <a
+                href="./pankaj-typing-windows-offline.zip"
+                download="pankaj-typing-windows-offline.zip"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-btn bg-accent hover:bg-accent-hover text-white text-xs font-medium transition-colors"
               >
-                Close
-              </button>
+                <span>Download Offline ZIP package</span>
+              </a>
+
+              <a
+                href="./Pankaj-Typing-Windows.bat"
+                download="Pankaj-Typing-Windows.bat"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-btn bg-paper hover:bg-paper-border/40 text-ink border border-paper-border text-xs font-medium transition-colors"
+              >
+                <span>Download Windows Quick-Launch script (.bat)</span>
+              </a>
             </div>
+
+            <p className="text-[11px] text-ink-muted mt-4 text-center">
+              Or in Google Chrome/Edge, click the install icon in the address bar to install as an app.
+            </p>
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }
