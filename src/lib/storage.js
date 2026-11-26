@@ -99,6 +99,15 @@ export const Storage = {
     return safeGet(`${SCHEMA_VERSION}_lessons`, {});
   },
 
+  getCompletedLessons() {
+    return this.getLessons();
+  },
+
+  saveLessonProgress(lessonId, stats) {
+    this.saveLessonResult(lessonId, stats);
+    return this.getLessons();
+  },
+
   saveLessonResult(lessonId, stats) {
     const lessons = this.getLessons();
     const existing = lessons[lessonId];
@@ -250,6 +259,20 @@ export const Storage = {
       achievements: this.getAchievements(),
       userName: this.getUserName()
     }, null, 2);
+  },
+
+  exportBackupJSON() {
+    const dataStr = this.exportData();
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const dateStr = new Date().toISOString().split('T')[0];
+    link.href = url;
+    link.download = `pankaj-typing-backup-${dateStr}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
   },
 
   importData(jsonString) {
