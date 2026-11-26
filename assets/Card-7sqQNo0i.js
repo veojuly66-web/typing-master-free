@@ -1,0 +1,1 @@
+import{j as a}from"./index-BPeDiR7e.js";import"./vendor-icons-B361Jdq_.js";function m({children:r,className:o="",hover:e=!1,as:s="div",...t}){return a.jsx(s,{className:`bg-surface border border-border rounded-card p-5 sm:p-6 shadow-subtle ${e?"hover:border-text-muted/40 transition-colors":""} ${o}`,...t,children:r})}export{m as C};
