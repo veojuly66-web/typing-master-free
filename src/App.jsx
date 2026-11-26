@@ -45,6 +45,11 @@ function parseRouteFromHash() {
   const raw = rawWithQuery.split('?')[0];
   if (!raw) return { page: 'home' };
 
+  // Handle Supabase implicit OAuth / Magic Link hash callbacks gracefully
+  if (raw.startsWith('access_token=') || raw.startsWith('refresh_token=') || raw.startsWith('error=')) {
+    return { page: 'account' };
+  }
+
   const [base, param] = raw.split('/');
 
   switch (base) {
