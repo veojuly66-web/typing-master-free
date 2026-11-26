@@ -1,5 +1,5 @@
 {
-  "name": "pankaj-typing-pro",
+  "name": "pankaj-typing",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -32,7 +32,7 @@
   },
   "build": {
     "appId": "com.pankaj.typing",
-    "productName": "Pankaj Typing Pro",
+    "productName": "Pankaj Typing",
     "directories": {
       "output": "release"
     },
@@ -53,7 +53,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Pankaj Typing Pro"
+      "shortcutName": "Pankaj Typing"
     }
   }
 }

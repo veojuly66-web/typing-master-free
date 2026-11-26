@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { soundManager } from '../../utils/audio';
-import { Heart, Trophy, Play, RotateCcw, Sparkles, Zap } from 'lucide-react';
+import { Heart, Trophy, Play, RotateCcw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const WORD_BANK = [
-  'cat', 'dog', 'sun', 'sky', 'sea', 'run', 'fly', 'glow', 'fire', 'star',
-  'blue', 'gold', 'wave', 'tree', 'wind', 'fast', 'jump', 'code', 'type', 'flow',
-  'speed', 'spark', 'laser', 'cloud', 'light', 'water', 'dream', 'space', 'magic', 'swift',
-  'energy', 'master', 'rocket', 'galaxy', 'planet', 'crystal', 'quantum', 'velocity'
+  'cat', 'dog', 'sun', 'sky', 'sea', 'run', 'fly', 'tree', 'wind', 'fast',
+  'jump', 'code', 'type', 'flow', 'speed', 'spark', 'light', 'water', 'dream',
+  'swift', 'forest', 'rhythm', 'branch', 'pebble', 'whisper', 'silver', 'bright'
 ];
 
 export default function WordBubblesGame({ onBack }) {
@@ -26,7 +25,6 @@ export default function WordBubblesGame({ onBack }) {
   const lastSpawnRef = useRef(0);
   const nextIdRef = useRef(1);
 
-  // Start game
   const startGame = () => {
     setGameState('playing');
     setScore(0);
@@ -38,7 +36,6 @@ export default function WordBubblesGame({ onBack }) {
     setTimeout(() => inputRef.current?.focus(), 50);
   };
 
-  // Game loop
   useEffect(() => {
     if (gameState !== 'playing') return;
 
@@ -48,44 +45,41 @@ export default function WordBubblesGame({ onBack }) {
       const now = Date.now();
       const spawnInterval = Math.max(1200, 2600 - level * 200);
 
-      // Spawn new bubble
       if (now - lastSpawnRef.current > spawnInterval) {
         lastSpawnRef.current = now;
         const word = WORD_BANK[Math.floor(Math.random() * WORD_BANK.length)];
         const newBubble = {
           id: nextIdRef.current++,
           word,
-          x: Math.floor(10 + Math.random() * 80), // 10% to 90% horizontal
-          y: 0, // starts at top (0%) and floats down to 90%
-          speed: 0.18 + (level * 0.04) + (Math.random() * 0.08),
-          color: ['from-blue-500 to-indigo-600', 'from-emerald-500 to-teal-600', 'from-purple-500 to-pink-600', 'from-amber-500 to-orange-600'][Math.floor(Math.random() * 4)]
+          x: Math.floor(12 + Math.random() * 76),
+          y: 0,
+          speed: 0.16 + (level * 0.04) + (Math.random() * 0.06)
         };
         setBubbles(prev => [...prev, newBubble]);
       }
 
-      // Move bubbles down
       setBubbles(prev => {
         const next = [];
         let lostLife = false;
 
         for (const b of prev) {
-          const nextY = b.y + b.speed;
-          if (nextY >= 90) {
-            // Hit bottom boundary
+          const newY = b.y + b.speed;
+          if (newY >= 88) {
             lostLife = true;
-            soundManager.playError();
           } else {
-            next.push({ ...b, y: nextY });
+            next.push({ ...b, y: newY });
           }
         }
 
         if (lostLife) {
+          soundManager.playError();
           setLives(l => {
-            const updated = l - 1;
-            if (updated <= 0) {
+            const nextL = l - 1;
+            if (nextL <= 0) {
               endGame();
+              return 0;
             }
-            return Math.max(0, updated);
+            return nextL;
           });
         }
 
@@ -112,13 +106,12 @@ export default function WordBubblesGame({ onBack }) {
       if (currentScore > highScore) {
         setHighScore(currentScore);
         localStorage.setItem('tm_bubbles_high', currentScore.toString());
-        confetti({ particleCount: 70, spread: 60 });
+        confetti({ particleCount: 50, spread: 60 });
       }
       return currentScore;
     });
   };
 
-  // Handle typing inside game
   const handleKeyDown = (e) => {
     if (gameState !== 'playing') return;
     if (e.ctrlKey || e.metaKey || e.altKey) return;
@@ -132,11 +125,9 @@ export default function WordBubblesGame({ onBack }) {
       const nextInput = (currentInput + e.key).toLowerCase().trim();
       setCurrentInput(nextInput);
 
-      // Check if matches any active bubble!
       const matchedIdx = bubbles.findIndex(b => b.word.toLowerCase() === nextInput);
 
       if (matchedIdx !== -1) {
-        // POP!
         soundManager.playBubblePop();
         const matched = bubbles[matchedIdx];
         setBubbles(prev => prev.filter(b => b.id !== matched.id));
@@ -145,7 +136,6 @@ export default function WordBubblesGame({ onBack }) {
         setScore(prev => {
           const added = 100 + matched.word.length * 20;
           const newScore = prev + added;
-          // Level up every 600 points
           if (Math.floor(newScore / 600) > Math.floor(prev / 600)) {
             setLevel(lvl => lvl + 1);
             soundManager.playSuccess();
@@ -157,8 +147,8 @@ export default function WordBubblesGame({ onBack }) {
   };
 
   return (
-    <div 
-      className="max-w-4xl mx-auto py-6 px-4 select-none"
+    <div
+      className="max-w-4xl mx-auto py-4 select-none"
       onClick={() => inputRef.current?.focus()}
     >
       <input
@@ -169,37 +159,30 @@ export default function WordBubblesGame({ onBack }) {
         autoFocus
       />
 
-      {/* Game Header */}
-      <div className="flex items-center justify-between bg-slate-900/90 rounded-2xl border border-slate-800 p-4 mb-4 shadow-xl">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center border border-blue-500/30">
-            <Sparkles className="w-5 h-5" />
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-white tracking-tight">Word Bubbles</h2>
-            <p className="text-xs text-slate-400">Type words to pop bubbles before they touch the ground!</p>
-          </div>
+      {/* Header Bar */}
+      <div className="flex items-center justify-between bg-paper-surface border border-paper-border rounded-card p-4 mb-4 shadow-subtle">
+        <div>
+          <h2 className="text-base font-semibold text-ink">Word Bubbles</h2>
+          <p className="text-xs text-ink-muted">Type the falling words before they reach the ground</p>
         </div>
 
-        {/* Stats */}
-        <div className="flex items-center gap-6">
-          <div className="text-center">
-            <div className="text-[10px] uppercase font-bold text-slate-400">Level</div>
-            <div className="text-lg font-mono font-bold text-amber-400">{level}</div>
+        <div className="flex items-center gap-6 text-xs">
+          <div>
+            <span className="text-ink-muted">Level:</span>{' '}
+            <strong className="font-mono text-ink text-sm">{level}</strong>
           </div>
 
-          <div className="text-center">
-            <div className="text-[10px] uppercase font-bold text-slate-400">Score</div>
-            <div className="text-lg font-mono font-bold text-white">{score}</div>
+          <div>
+            <span className="text-ink-muted">Score:</span>{' '}
+            <strong className="font-mono text-accent text-sm">{score}</strong>
           </div>
 
-          {/* Lives */}
           <div className="flex items-center gap-1">
             {[1, 2, 3].map(i => (
               <Heart
                 key={i}
-                className={`w-5 h-5 transition-all ${
-                  i <= lives ? 'fill-rose-500 text-rose-500 scale-100' : 'text-slate-600 scale-90'
+                className={`w-4 h-4 transition-all ${
+                  i <= lives ? 'fill-type-error text-type-error' : 'text-paper-border'
                 }`}
               />
             ))}
@@ -207,25 +190,25 @@ export default function WordBubblesGame({ onBack }) {
         </div>
       </div>
 
-      {/* Main Game Screen */}
-      <div className="relative h-[480px] bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950/40 rounded-3xl border-2 border-slate-800 overflow-hidden shadow-2xl">
-        {/* Warning Bottom Danger Line */}
-        <div className="absolute bottom-6 left-0 right-0 h-1 bg-gradient-to-r from-rose-500/20 via-rose-500/70 to-rose-500/20 animate-pulse" />
-        <div className="absolute bottom-2 left-0 right-0 text-center text-[11px] font-bold uppercase tracking-widest text-rose-500/60 pointer-events-none">
-          Danger Zone
+      {/* Game Stage */}
+      <div className="relative h-[460px] bg-paper-surface rounded-card border border-paper-border overflow-hidden shadow-subtle">
+        {/* Ground Line */}
+        <div className="absolute bottom-8 left-0 right-0 h-[1px] bg-paper-border" />
+        <div className="absolute bottom-2 left-0 right-0 text-center text-[11px] text-ink-muted">
+          Base line
         </div>
 
-        {/* Falling Bubbles */}
+        {/* Falling Words */}
         {bubbles.map(b => {
           const isPartialMatch = currentInput.length > 0 && b.word.toLowerCase().startsWith(currentInput);
 
           return (
             <div
               key={b.id}
-              className={`absolute transform -translate-x-1/2 flex items-center justify-center px-4 py-2 rounded-full font-mono text-sm font-bold shadow-lg transition-transform ${
-                isPartialMatch 
-                  ? 'bg-amber-400 text-slate-950 ring-4 ring-amber-300 scale-110' 
-                  : `bg-gradient-to-r ${b.color} text-white ring-2 ring-white/30`
+              className={`absolute transform -translate-x-1/2 flex items-center justify-center px-3 py-1 rounded-full font-mono text-xs font-medium border shadow-subtle transition-transform ${
+                isPartialMatch
+                  ? 'bg-accent text-white border-accent scale-105'
+                  : 'bg-paper text-ink border-paper-border'
               }`}
               style={{
                 left: `${b.x}%`,
@@ -237,68 +220,65 @@ export default function WordBubblesGame({ onBack }) {
           );
         })}
 
-        {/* Live Input Indicator at bottom center */}
+        {/* Current typed string */}
         {gameState === 'playing' && (
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 px-6 py-2 rounded-2xl bg-slate-900/90 border border-blue-500/50 shadow-xl flex items-center gap-2">
-            <span className="text-xs uppercase text-slate-400 font-semibold">Typing:</span>
-            <span className="font-mono text-lg font-black text-blue-400 tracking-wider">
+          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-card bg-paper border border-paper-border flex items-center gap-2 text-xs">
+            <span className="text-ink-muted">Input:</span>
+            <span className="font-mono font-semibold text-ink text-sm">
               {currentInput || '...'}
             </span>
           </div>
         )}
 
-        {/* Start / Menu Overlay */}
+        {/* Menu Screen */}
         {gameState === 'menu' && (
-          <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
-            <div className="w-16 h-16 rounded-3xl bg-blue-600/20 text-blue-400 border border-blue-500/40 flex items-center justify-center mb-4 shadow-xl">
-              <Sparkles className="w-8 h-8" />
-            </div>
-            <h3 className="text-3xl font-black text-white tracking-tight mb-2">Word Bubbles</h3>
-            <p className="text-sm text-slate-400 max-w-md mb-6 leading-relaxed">
-              Test your reaction speed! Words in bubbles fall down from the sky. Type them quickly to pop them and earn combo points.
+          <div className="absolute inset-0 bg-paper-surface/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
+            <h3 className="text-2xl font-semibold text-ink mb-2">Word Bubbles</h3>
+            <p className="text-xs sm:text-sm text-ink-muted max-w-sm mb-6 leading-relaxed">
+              Type the descending words before they cross the base line. Each successful word awards points and increases velocity.
             </p>
             {highScore > 0 && (
-              <div className="mb-6 px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1.5">
-                <Trophy className="w-3.5 h-3.5" />
-                <span>High Score: {highScore} pts</span>
+              <div className="mb-6 px-3 py-1 rounded-btn bg-paper border border-paper-border text-xs text-ink-muted flex items-center gap-1.5 font-mono">
+                <Trophy className="w-3.5 h-3.5 text-accent" />
+                <span>Best: {highScore} pts</span>
               </div>
             )}
             <button
+              type="button"
               onClick={startGame}
-              className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-blue-500/30 transition-all transform hover:scale-105"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-btn bg-accent hover:bg-accent-hover text-white font-medium text-xs transition-colors shadow-subtle"
             >
-              <Play className="w-4 h-4 fill-white" />
-              <span>Start Game</span>
+              <Play className="w-3.5 h-3.5 fill-white" />
+              <span>Start game</span>
             </button>
           </div>
         )}
 
-        {/* Game Over Overlay */}
+        {/* Game Over Screen */}
         {gameState === 'gameover' && (
-          <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
-            <h3 className="text-3xl font-black text-rose-400 tracking-tight mb-1">Game Over</h3>
-            <p className="text-sm text-slate-400 mb-6">You popped bubbles like a champion!</p>
+          <div className="absolute inset-0 bg-paper-surface/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
+            <h3 className="text-2xl font-semibold text-ink mb-1">Game Over</h3>
+            <p className="text-xs text-ink-muted mb-6">Clean practice builds faster fingers.</p>
 
-            <div className="grid grid-cols-2 gap-4 max-w-xs w-full mb-6">
-              <div className="bg-slate-900 border border-slate-800 p-3 rounded-2xl">
-                <div className="text-[10px] uppercase font-bold text-slate-400">Final Score</div>
-                <div className="text-2xl font-mono font-black text-white">{score}</div>
+            <div className="grid grid-cols-2 gap-3 max-w-xs w-full mb-6 text-xs">
+              <div className="bg-paper border border-paper-border p-3 rounded-card">
+                <div className="text-ink-muted mb-0.5">Score</div>
+                <div className="text-xl font-mono font-semibold text-ink">{score}</div>
               </div>
-              <div className="bg-slate-900 border border-slate-800 p-3 rounded-2xl">
-                <div className="text-[10px] uppercase font-bold text-slate-400">Best Score</div>
-                <div className="text-2xl font-mono font-black text-amber-400">{highScore}</div>
+              <div className="bg-paper border border-paper-border p-3 rounded-card">
+                <div className="text-ink-muted mb-0.5">High Score</div>
+                <div className="text-xl font-mono font-semibold text-accent">{highScore}</div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <button
-                onClick={startGame}
-                className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-lg transition-all"
-              >
-                <RotateCcw className="w-4 h-4" />
-                <span>Play Again</span>
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={startGame}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-accent hover:bg-accent-hover text-white font-medium text-xs transition-colors shadow-subtle"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Play again</span>
+            </button>
           </div>
         )}
       </div>

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { soundManager } from '../../utils/audio';
-import { Shield, Trophy, Play, RotateCcw, Crosshair, Zap } from 'lucide-react';
+import { Trophy, Play, RotateCcw, Shield } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const ATTACK_WORDS = [
-  'void', 'beam', 'warp', 'core', 'nova', 'ship', 'star', 'fire', 'bolt', 'flux',
-  'pulse', 'alien', 'space', 'laser', 'shield', 'plasma', 'rocket', 'galaxy',
-  'comet', 'orbit', 'cyber', 'matrix', 'vector', 'blaster', 'nebula', 'gravity'
+  'void', 'beam', 'core', 'ship', 'star', 'bolt', 'flux',
+  'pulse', 'laser', 'shield', 'orbit', 'matrix', 'vector', 'blaster', 'gravity',
+  'quantum', 'system', 'binary', 'signal', 'packet', 'router', 'server'
 ];
 
 export default function WordAttackGame({ onBack }) {
@@ -45,7 +45,6 @@ export default function WordAttackGame({ onBack }) {
       const now = Date.now();
       const spawnInterval = Math.max(1000, 2800 - wave * 250);
 
-      // Spawn enemy
       if (now - lastSpawnRef.current > spawnInterval) {
         lastSpawnRef.current = now;
         const word = ATTACK_WORDS[Math.floor(Math.random() * ATTACK_WORDS.length)];
@@ -54,34 +53,33 @@ export default function WordAttackGame({ onBack }) {
           word,
           x: Math.floor(10 + Math.random() * 80),
           y: 0,
-          speed: 0.22 + (wave * 0.05)
+          speed: 0.18 + (wave * 0.04)
         };
         setEnemies(prev => [...prev, newEnemy]);
       }
 
-      // Move enemies down
       setEnemies(prev => {
         const next = [];
-        let hitDamage = 0;
+        let hit = false;
 
-        for (const e of prev) {
-          const nextY = e.y + e.speed;
-          if (nextY >= 88) {
-            // Hit shield!
-            hitDamage += 25;
-            soundManager.playError();
+        for (const en of prev) {
+          const newY = en.y + en.speed;
+          if (newY >= 86) {
+            hit = true;
           } else {
-            next.push({ ...e, y: nextY });
+            next.push({ ...en, y: newY });
           }
         }
 
-        if (hitDamage > 0) {
+        if (hit) {
+          soundManager.playError();
           setShield(s => {
-            const updated = s - hitDamage;
-            if (updated <= 0) {
+            const nextS = Math.max(0, s - 25);
+            if (nextS <= 0) {
               endGame();
+              return 0;
             }
-            return Math.max(0, updated);
+            return nextS;
           });
         }
 
@@ -108,7 +106,7 @@ export default function WordAttackGame({ onBack }) {
       if (currentScore > highScore) {
         setHighScore(currentScore);
         localStorage.setItem('tm_attack_high', currentScore.toString());
-        confetti({ particleCount: 70, spread: 60 });
+        confetti({ particleCount: 50, spread: 60 });
       }
       return currentScore;
     });
@@ -149,8 +147,8 @@ export default function WordAttackGame({ onBack }) {
   };
 
   return (
-    <div 
-      className="max-w-4xl mx-auto py-6 px-4 select-none"
+    <div
+      className="max-w-4xl mx-auto py-4 select-none"
       onClick={() => inputRef.current?.focus()}
     >
       <input
@@ -162,36 +160,29 @@ export default function WordAttackGame({ onBack }) {
       />
 
       {/* Header */}
-      <div className="flex items-center justify-between bg-slate-900/90 rounded-2xl border border-slate-800 p-4 mb-4 shadow-xl">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center border border-purple-500/30">
-            <Crosshair className="w-5 h-5" />
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-white tracking-tight">Word Attack: Defender</h2>
-            <p className="text-xs text-slate-400">Neutralize descending drones before they penetrate your shield!</p>
-          </div>
+      <div className="flex items-center justify-between bg-paper-surface border border-paper-border rounded-card p-4 mb-4 shadow-subtle">
+        <div>
+          <h2 className="text-base font-semibold text-ink">Word Attack: Defender</h2>
+          <p className="text-xs text-ink-muted">Type fast to neutralize descending targets</p>
         </div>
 
-        {/* Stats */}
-        <div className="flex items-center gap-6">
-          <div className="text-center">
-            <div className="text-[10px] uppercase font-bold text-slate-400">Wave</div>
-            <div className="text-lg font-mono font-bold text-purple-400">{wave}</div>
+        <div className="flex items-center gap-6 text-xs">
+          <div>
+            <span className="text-ink-muted">Wave:</span>{' '}
+            <strong className="font-mono text-ink text-sm">{wave}</strong>
           </div>
 
-          <div className="text-center">
-            <div className="text-[10px] uppercase font-bold text-slate-400">Score</div>
-            <div className="text-lg font-mono font-bold text-white">{score}</div>
+          <div>
+            <span className="text-ink-muted">Score:</span>{' '}
+            <strong className="font-mono text-accent text-sm">{score}</strong>
           </div>
 
-          {/* Shield Health */}
           <div className="flex items-center gap-2">
-            <Shield className={`w-5 h-5 ${shield > 40 ? 'text-cyan-400' : 'text-rose-500 animate-pulse'}`} />
-            <div className="w-24 bg-slate-800 rounded-full h-2.5 overflow-hidden border border-slate-700">
-              <div 
+            <Shield className={`w-4 h-4 ${shield > 25 ? 'text-accent' : 'text-type-error'}`} />
+            <div className="w-20 bg-paper border border-paper-border rounded-full h-2 overflow-hidden">
+              <div
                 className={`h-full transition-all duration-200 ${
-                  shield > 50 ? 'bg-cyan-400' : shield > 25 ? 'bg-amber-400' : 'bg-rose-500'
+                  shield > 40 ? 'bg-accent' : 'bg-type-error'
                 }`}
                 style={{ width: `${shield}%` }}
               />
@@ -201,13 +192,13 @@ export default function WordAttackGame({ onBack }) {
       </div>
 
       {/* Game Stage */}
-      <div className="relative h-[480px] bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 rounded-3xl border-2 border-slate-800 overflow-hidden shadow-2xl">
-        {/* Starfield grid effect */}
-        <div className="absolute inset-0 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:24px_24px] opacity-15" />
-
+      <div className="relative h-[460px] bg-paper-surface rounded-card border border-paper-border overflow-hidden shadow-subtle">
         {/* Shield line at base */}
-        <div className="absolute bottom-12 left-0 right-0 h-1 bg-cyan-500/60 shadow-[0_0_15px_#06b6d4]" />
-        
+        <div className="absolute bottom-8 left-0 right-0 h-[1px] bg-accent/40" />
+        <div className="absolute bottom-2 left-0 right-0 text-center text-[11px] text-ink-muted">
+          Defense perimeter
+        </div>
+
         {/* Enemies */}
         {enemies.map(en => {
           const isMatched = currentInput.length > 0 && en.word.toLowerCase().startsWith(currentInput);
@@ -215,81 +206,79 @@ export default function WordAttackGame({ onBack }) {
           return (
             <div
               key={en.id}
-              className={`absolute transform -translate-x-1/2 flex items-center justify-center px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold border transition-all ${
-                isMatched 
-                  ? 'bg-rose-600 text-white border-rose-300 shadow-lg shadow-rose-500/50 scale-110 ring-2 ring-rose-400' 
-                  : 'bg-slate-900/90 text-cyan-300 border-cyan-500/40 shadow-md shadow-cyan-950'
+              className={`absolute transform -translate-x-1/2 flex items-center justify-center px-3 py-1 rounded-btn font-mono text-xs border transition-all ${
+                isMatched
+                  ? 'bg-accent text-white border-accent scale-105'
+                  : 'bg-paper text-ink border-paper-border'
               }`}
               style={{
                 left: `${en.x}%`,
                 top: `${en.y}%`,
               }}
             >
-              <div className="w-2 h-2 rounded-full bg-rose-500 mr-2 animate-ping" />
               <span>{en.word}</span>
             </div>
           );
         })}
 
-        {/* Typing Bar */}
+        {/* Current Input */}
         {gameState === 'playing' && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-6 py-2 rounded-2xl bg-slate-900/90 border border-cyan-500/50 shadow-xl flex items-center gap-2">
-            <span className="text-xs uppercase text-slate-400 font-semibold">Laser Target:</span>
-            <span className="font-mono text-lg font-black text-cyan-400 tracking-wider">
+          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-card bg-paper border border-paper-border flex items-center gap-2 text-xs">
+            <span className="text-ink-muted">Target:</span>
+            <span className="font-mono font-semibold text-ink text-sm">
               {currentInput || '...'}
             </span>
           </div>
         )}
 
-        {/* Menu Overlay */}
+        {/* Menu Screen */}
         {gameState === 'menu' && (
-          <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
-            <div className="w-16 h-16 rounded-3xl bg-cyan-600/20 text-cyan-400 border border-cyan-500/40 flex items-center justify-center mb-4 shadow-xl">
-              <Crosshair className="w-8 h-8" />
-            </div>
-            <h3 className="text-3xl font-black text-white tracking-tight mb-2">Word Attack</h3>
-            <p className="text-sm text-slate-400 max-w-md mb-6 leading-relaxed">
-              Defend the perimeter against alien invaders. Type words to fire laser cannons and protect your energy shield.
+          <div className="absolute inset-0 bg-paper-surface/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
+            <h3 className="text-2xl font-semibold text-ink mb-2">Word Attack</h3>
+            <p className="text-xs sm:text-sm text-ink-muted max-w-sm mb-6 leading-relaxed">
+              Maintain focus under pressure. Targets advance toward your defense perimeter. Type each word to clear it before impact.
             </p>
             {highScore > 0 && (
-              <div className="mb-6 px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1.5">
-                <Trophy className="w-3.5 h-3.5" />
-                <span>Record: {highScore} pts</span>
+              <div className="mb-6 px-3 py-1 rounded-btn bg-paper border border-paper-border text-xs text-ink-muted flex items-center gap-1.5 font-mono">
+                <Trophy className="w-3.5 h-3.5 text-accent" />
+                <span>Best: {highScore} pts</span>
               </div>
             )}
             <button
+              type="button"
               onClick={startGame}
-              className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-sm shadow-xl shadow-cyan-500/30 transition-all transform hover:scale-105"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-btn bg-accent hover:bg-accent-hover text-white font-medium text-xs transition-colors shadow-subtle"
             >
-              <Play className="w-4 h-4 fill-white" />
-              <span>Deploy Defense</span>
+              <Play className="w-3.5 h-3.5 fill-white" />
+              <span>Start defense</span>
             </button>
           </div>
         )}
 
-        {/* Game Over */}
+        {/* Game Over Screen */}
         {gameState === 'gameover' && (
-          <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
-            <h3 className="text-3xl font-black text-rose-400 tracking-tight mb-1">Shield Breached</h3>
-            <p className="text-sm text-slate-400 mb-6">Excellent defense! You repelled many waves.</p>
+          <div className="absolute inset-0 bg-paper-surface/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
+            <h3 className="text-2xl font-semibold text-ink mb-1">Defense Compromised</h3>
+            <p className="text-xs text-ink-muted mb-6">Each round trains your finger reflexes.</p>
 
-            <div className="grid grid-cols-2 gap-4 max-w-xs w-full mb-6">
-              <div className="bg-slate-900 border border-slate-800 p-3 rounded-2xl">
-                <div className="text-[10px] uppercase font-bold text-slate-400">Score</div>
-                <div className="text-2xl font-mono font-black text-white">{score}</div>
+            <div className="grid grid-cols-2 gap-3 max-w-xs w-full mb-6 text-xs">
+              <div className="bg-paper border border-paper-border p-3 rounded-card">
+                <div className="text-ink-muted mb-0.5">Score</div>
+                <div className="text-xl font-mono font-semibold text-ink">{score}</div>
               </div>
-              <div className="bg-slate-900 border border-slate-800 p-3 rounded-2xl">
-                <div className="text-[10px] uppercase font-bold text-slate-400">Wave Reached</div>
-                <div className="text-2xl font-mono font-black text-cyan-400">{wave}</div>
+              <div className="bg-paper border border-paper-border p-3 rounded-card">
+                <div className="text-ink-muted mb-0.5">High Score</div>
+                <div className="text-xl font-mono font-semibold text-accent">{highScore}</div>
               </div>
             </div>
 
             <button
+              type="button"
               onClick={startGame}
-              className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-sm shadow-lg transition-all"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-accent hover:bg-accent-hover text-white font-medium text-xs transition-colors shadow-subtle"
             >
-              <RotateCcw className="w-4 h-4" />
-              <span>Retry Defense</span>
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Try again</span>
             </button>
           </div>
         )}

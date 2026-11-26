@@ -7,13 +7,13 @@ function createWindow() {
     height: 840,
     minWidth: 960,
     minHeight: 640,
-    title: 'Pankaj Typing Pro',
+    title: 'Pankaj Typing',
     icon: path.join(__dirname, '../public/icon.png'),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true
     },
-    backgroundColor: '#0f172a',
+    backgroundColor: '#FAFAF7',
     autoHideMenuBar: true
   });
 
