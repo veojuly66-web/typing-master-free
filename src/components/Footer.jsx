@@ -1,115 +1,142 @@
 import React from 'react';
+import { BRAND } from '../config/brand';
 
-export default function Footer({ onFocusChange }) {
+export default function Footer() {
   return (
-    <footer className="border-t border-paper-border bg-paper-surface mt-auto transition-opacity duration-200">
+    <footer className="border-t border-border bg-surface mt-auto transition-opacity duration-200">
       <div className="max-w-content mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
-          {/* Col 1: Brand & Description */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10 text-xs">
+          {/* Col 1: Brand & Contact */}
           <div className="space-y-3">
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2">
               <span className="w-7 h-7 rounded-md bg-accent text-white flex items-center justify-center font-bold text-sm select-none">
                 P
               </span>
-              <span className="font-semibold text-ink text-base tracking-tight">
-                Pankaj Typing
+              <span className="font-semibold text-text text-base tracking-tight">
+                {BRAND.name}
               </span>
             </div>
-            <p className="text-xs text-ink-muted leading-relaxed max-w-xs">
-              A calm, focused touch typing tutor. Master the keyboard with progressive drills, 40+ speed tests, and real-time accuracy analytics. Free forever, no registration needed.
+            <p className="text-text-muted leading-relaxed max-w-xs">
+              {BRAND.description}
             </p>
-            <div className="text-[11px] text-ink-muted">
-              Built for students, professionals, and keyboard enthusiasts.
+            <div className="text-2xs text-text-muted pt-1">
+              <strong>Support:</strong> {BRAND.contact.email}<br />
+              <strong>Helpline:</strong> {BRAND.contact.phone}
             </div>
           </div>
 
-          {/* Col 2: Learn */}
+          {/* Col 2: Product & Learn */}
           <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-ink mb-3.5">
-              Learn & Practice
+            <div className="text-2xs font-semibold uppercase tracking-wider text-text mb-3.5">
+              Practice & Courses
             </div>
-            <ul className="space-y-2.5 text-xs text-ink-muted">
+            <ul className="space-y-2 text-text-muted">
               <li>
-                <a href="#/lessons" className="hover:text-ink transition-colors">
-                  Touch Typing Lessons
+                <a href="#/lessons" className="hover:text-text transition-colors">
+                  English Touch Typing (5 Levels)
                 </a>
               </li>
               <li>
-                <a href="#/placement" className="hover:text-ink transition-colors">
-                  1-Minute Placement Diagnostic
+                <a href="#/lessons" className="hover:text-text transition-colors">
+                  Hindi Inscript Keyboard Course
                 </a>
               </li>
               <li>
-                <a href="#/practice" className="hover:text-ink transition-colors">
-                  Adaptive Weak-Key Practice
+                <a href="#/lessons" className="hover:text-text transition-colors">
+                  Hindi Remington Gail (Krutidev)
                 </a>
               </li>
               <li>
-                <a href="#/practice" className="hover:text-ink transition-colors">
-                  Custom Text & Code Drills
+                <a href="#/placement" className="hover:text-text transition-colors">
+                  1-Minute Diagnostic Placement
+                </a>
+              </li>
+              <li>
+                <a href="#/practice" className="hover:text-text transition-colors">
+                  Keybr-style Weak-Key Practice
+                </a>
+              </li>
+              <li>
+                <a href="#/games" className="hover:text-text transition-colors">
+                  Arcade Games (Speed Race & Bubbles)
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Col 3: Tools & Games */}
+          {/* Col 3: Exams & Tools */}
           <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-ink mb-3.5">
-              Tools & Games
+            <div className="text-2xs font-semibold uppercase tracking-wider text-text mb-3.5">
+              Exam Simulators
             </div>
-            <ul className="space-y-2.5 text-xs text-ink-muted">
+            <ul className="space-y-2 text-text-muted">
               <li>
-                <a href="#/test" className="hover:text-ink transition-colors">
-                  Timed Typing Speed Tests
+                <a href="#/exams/ssc-typing-test" className="hover:text-text transition-colors">
+                  SSC CHSL & CGL Typing Test
                 </a>
               </li>
               <li>
-                <a href="#/games" className="hover:text-ink transition-colors">
-                  Arcade Typing Games
+                <a href="#/exams/high-court-typing-test" className="hover:text-text transition-colors">
+                  High Court ARO / Clerk Exam
                 </a>
               </li>
               <li>
-                <a href="#/progress" className="hover:text-ink transition-colors">
-                  Keyboard Heatmap & Stats
+                <a href="#/exams/cpct-typing-test" className="hover:text-text transition-colors">
+                  MP CPCT Hindi & English Test
                 </a>
               </li>
               <li>
-                <a href="#/certificate" className="hover:text-ink transition-colors">
-                  Certificate of Typing Speed
+                <a href="#/exams/hindi-typing-test" className="hover:text-text transition-colors">
+                  Hindi Remington Exam Console
+                </a>
+              </li>
+              <li>
+                <a href="#/test" className="hover:text-text transition-colors">
+                  1 to 10-Minute Speed Tests
+                </a>
+              </li>
+              <li>
+                <a href="#/pricing" className="hover:text-text transition-colors">
+                  Plans & Exam Pack (₹249)
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: About & Legal */}
+          {/* Col 4: Legal & Razorpay Compliance */}
           <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-ink mb-3.5">
-              Information
+            <div className="text-2xs font-semibold uppercase tracking-wider text-text mb-3.5">
+              Company & Legal
             </div>
-            <ul className="space-y-2.5 text-xs text-ink-muted">
+            <ul className="space-y-2 text-text-muted">
               <li>
-                <a href="#/about" className="hover:text-ink transition-colors">
+                <a href="#/about" className="hover:text-text transition-colors">
                   About Pankaj Typing
                 </a>
               </li>
               <li>
-                <a href="#/settings" className="hover:text-ink transition-colors">
-                  Settings & Preferences
+                <a href="#/contact" className="hover:text-text transition-colors">
+                  Contact Support
                 </a>
               </li>
               <li>
-                <a href="#/privacy" className="hover:text-ink transition-colors">
+                <a href="#/privacy" className="hover:text-text transition-colors">
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#/terms" className="hover:text-ink transition-colors">
-                  Terms of Service
+                <a href="#/terms" className="hover:text-text transition-colors">
+                  Terms & Conditions
                 </a>
               </li>
               <li>
-                <a href="#/contact" className="hover:text-ink transition-colors">
-                  Contact Support
+                <a href="#/refund-policy" className="hover:text-text transition-colors font-medium text-accent">
+                  Refund & Cancellation Policy
+                </a>
+              </li>
+              <li>
+                <a href="#/shipping-policy" className="hover:text-text transition-colors">
+                  Shipping & Delivery (Digital)
                 </a>
               </li>
             </ul>
@@ -117,18 +144,16 @@ export default function Footer({ onFocusChange }) {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-6 border-t border-paper-border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ink-muted">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span>© 2026 Pankaj Typing.</span>
-            <span>·</span>
-            <span>Made in Himachal Pradesh, India.</span>
+        <div className="pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3 text-2xs text-text-muted">
+          <div>
+            © 2026 {BRAND.legalEntity}. Made in Himachal Pradesh, India.
           </div>
-          <div className="flex items-center gap-4 text-[11px]">
-            <span>100% client-side</span>
+          <div className="flex items-center gap-4">
+            <span>Razorpay Secured</span>
             <span>·</span>
-            <span>Works offline</span>
+            <span>Supabase Cloud Sync</span>
             <span>·</span>
-            <span>No data collection</span>
+            <span>Offline First PWA</span>
           </div>
         </div>
       </div>

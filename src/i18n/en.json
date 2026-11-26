@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "courses": "Courses",
+    "exams": "Exam Simulator",
+    "speedTest": "Speed Test",
+    "practice": "Smart Practice",
+    "progress": "Progress",
+    "pricing": "Pricing",
+    "login": "Sign In",
+    "account": "Account",
+    "admin": "Admin",
+    "dashboard": "Dashboard",
+    "startFree": "Start Free"
+  },
+  "hero": {
+    "tagline": "Typing practice that gets you exam-ready — in English and Hindi",
+    "subtitle": "Step-by-step touch-typing courses, realistic government exam simulators (SSC, High Court, CPCT), and adaptive weak-key training. Start free.",
+    "ctaStart": "Start Free",
+    "ctaTest": "Take a Free Speed Test",
+    "resume": "Resume Learning",
+    "todayGoal": "Today's goal"
+  },
+  "plans": {
+    "free": "Free",
+    "trial": "Pro Trial",
+    "pro": "Pro",
+    "unlock": "Unlock with Pro",
+    "upgrade": "Upgrade to Pro",
+    "trialBanner": "You have {days} days left in your free Pro trial."
+  },
+  "typing": {
+    "wpm": "WPM",
+    "netWpm": "Net WPM",
+    "grossWpm": "Gross WPM",
+    "accuracy": "Accuracy",
+    "time": "Time",
+    "errors": "Errors",
+    "kph": "Keystrokes / Hour",
+    "consistency": "Consistency",
+    "restart": "Restart",
+    "next": "Next Drill",
+    "capsLock": "Caps Lock is ON",
+    "paused": "Typing paused (click to resume)",
+    "stopOnError": "Stop on error (Fix before advancing)",
+    "allowBackspace": "Allow backspace",
+    "noBackspace": "Exam mode (No backspace)",
+    "inputMethod": "Layout",
+    "language": "Language"
+  },
+  "exam": {
+    "simulator": "Government Exam Simulator",
+    "qualifyingSpeed": "Qualifying Speed",
+    "qualified": "QUALIFIED",
+    "notQualified": "NOT QUALIFIED",
+    "totalWords": "Total Words",
+    "correctWords": "Correct Words",
+    "fullMistakes": "Full Mistakes",
+    "halfMistakes": "Half Mistakes",
+    "errorRate": "Error Rate",
+    "scorecard": "Exam Scorecard"
+  },
+  "footer": {
+    "copyright": "© 2026 Pankaj Typing. Made in Himachal Pradesh, India.",
+    "offlineNote": "Cloud synced with Supabase · Offline first."
+  }
+}

@@ -344,18 +344,134 @@ export const PASSAGES = [
     type: 'paragraphs',
     duration: 180,
     text: 'Excellence in software development demands disciplined craftsmanship. Programmers should write code intended for humans to read, and only incidentally for computers to execute. Clear identifier names, concise functions, comprehensive automated regression tests, and fearless refactoring preserve codebase velocity, reducing technical debt as product scope expands over years.'
+  },
+
+  // Hindi Passages for Government Exams & Practice
+  {
+    id: 'pass-hi-01',
+    title: 'प्रभात वेला (Morning Sun)',
+    difficulty: 'Easy',
+    language: 'hindi',
+    type: 'sentences',
+    duration: 60,
+    text: 'प्रातःकाल का सूर्य पूर्व दिशा से सुनहरी किरणें बिखेरता हुआ उदित होता है। चारों ओर शीतल मंद सुगंधित समीर बह रही है। हरी-भरी शाखाओं पर बैठे पक्षी मधुर स्वर में कलरव कर रहे हैं। प्रकृति का यह मनोहारी रूप मानव मन में नई उमंग और सकारात्मक ऊर्जा का संचार करता है।'
+  },
+  {
+    id: 'pass-hi-02',
+    title: 'समय का सदुपयोग',
+    difficulty: 'Easy',
+    language: 'hindi',
+    type: 'sentences',
+    duration: 60,
+    text: 'संसार में समय से अधिक मूल्यवान कोई वस्तु नहीं है। बीता हुआ धन, स्वास्थ्य और विद्या पुनः प्राप्त किए जा सकते हैं, परंतु बीता हुआ क्षण कभी लौटकर नहीं आता। जो व्यक्ति समय के प्रत्येक पल का सदुपयोग करता है, सफलता उसके चरण चूमती है।'
+  },
+  {
+    id: 'pass-hi-03',
+    title: 'पुस्तकों का महत्व',
+    difficulty: 'Easy',
+    language: 'hindi',
+    type: 'sentences',
+    duration: 60,
+    text: 'पुस्तकें मनुष्य की सच्ची और निष्कपट मित्र होती हैं। जब संसार के सभी संबंधी साथ छोड़ देते हैं, तब पुस्तकें ही हमें मार्गदर्शन देती हैं। अच्छी पुस्तकें पढ़ने से हमारे ज्ञान में वृद्धि होती है और चरित्र का निर्माण होता है।'
+  },
+  {
+    id: 'pass-hi-04',
+    title: 'परिश्रम की महत्ता',
+    difficulty: 'Easy',
+    language: 'hindi',
+    type: 'sentences',
+    duration: 60,
+    text: 'उद्यम के बिना कोई भी कार्य सिद्ध नहीं होता। सोए हुए सिंह के मुख में हिरण स्वयं प्रवेश नहीं करते। निरंतर अभ्यास और निष्ठापूर्वक किया गया श्रम मनुष्य को साधारण से असाधारण बना देता है।'
+  },
+  {
+    id: 'pass-hi-05',
+    title: 'भारतीय संस्कृति एवं दर्शन',
+    difficulty: 'Medium',
+    language: 'hindi',
+    type: 'paragraphs',
+    duration: 120,
+    text: 'भारतीय संस्कृति विश्व की प्राचीनतम और समृद्धतम संस्कृतियों में से एक है। इसकी सबसे बड़ी विशेषता इसकी अनेकता में एकता है। यहाँ विभिन्न धर्मों, भाषाओं और जातियों के लोग परस्पर प्रेम और सद्भाव के साथ निवास करते हैं। वसुधैव कुटुंबकम् का पावन संदेश भारतीय विचार का मूल आधार है।'
+  },
+  {
+    id: 'pass-hi-06',
+    title: 'डिजिटल भारत और युवा शक्ति',
+    difficulty: 'Medium',
+    language: 'hindi',
+    type: 'paragraphs',
+    duration: 120,
+    text: 'इक्कीसवीं सदी सूचना प्रौद्योगिकी और डिजिटल क्रांति का युग है। भारत में इंटरनेट और कंप्यूटर के व्यापक प्रसार ने शिक्षा, बैंकिंग और प्रशासन के क्षेत्र में युगांतरकारी परिवर्तन किए हैं। आज गाँव-गाँव तक सरकारी सेवाएं ऑनलाइन उपलब्ध हैं। युवाओं का तकनीकी कौशल ही राष्ट्र के आर्थिक विकास का प्रमुख संवाहक है।'
+  },
+  {
+    id: 'pass-hi-07',
+    title: 'पंचायती राज एवं स्थानीय स्वशासन',
+    difficulty: 'Medium',
+    language: 'hindi',
+    type: 'paragraphs',
+    duration: 120,
+    text: 'महात्मा गांधी का दृढ़ विश्वास था कि भारत की आत्मा उसके गाँवों में बसती है। संविधान के तिहत्तरवें संशोधन द्वारा पंचायती राज संस्थाओं को संवैधानिक दर्जा प्रदान किया गया। स्थानीय स्तर पर निर्णय लेने और विकास योजनाओं के क्रियान्वयन में जनभागीदारी से लोकतंत्र की जड़ें सुदृढ़ हुई हैं।'
+  },
+  {
+    id: 'pass-hi-08',
+    title: 'पर्यावरण संरक्षण एवं जलवायु संकट',
+    difficulty: 'Medium',
+    language: 'hindi',
+    type: 'paragraphs',
+    duration: 120,
+    text: 'वर्तमान समय में प्रदूषण और ग्लोबल वार्मिंग संपूर्ण मानवता के लिए गंभीर चुनौती बन चुके हैं। अनियंत्रित औद्योगीकरण और वनों के अंधाधुंध कटान ने पारिस्थितिक संतुलन को बिगाड़ दिया है। यदि समय रहते सौर ऊर्जा और हरित जीवनशैली को नहीं अपनाया गया, तो भावी पीढ़ियों के लिए पृथ्वी का अस्तित्व संकट में पड़ जाएगा।'
+  },
+  {
+    id: 'pass-hi-09',
+    title: 'उच्च न्यायालय न्यायिक आदेश (Judicial Order)',
+    difficulty: 'Hard',
+    language: 'hindi',
+    type: 'paragraphs',
+    duration: 180,
+    text: 'प्रकरण के तथ्यों एवं पत्रावली पर उपलब्ध दस्तावेजी साक्ष्यों के सम्यक अनुशीलन से यह दर्शित होता है कि प्रार्थी द्वारा प्रस्तुत पुनरीक्षण याचिका में कोई वैधानिक त्रुटि परिलक्षित नहीं होती। अधीनस्थ न्यायालय द्वारा पारित आक्षेपित आदेश विधि के मान्य सिद्धांतों के प्रतिकूल होने के कारण अपास्त किए जाने योग्य है। तदनुसार आक्षेपित आदेश निरस्त करते हुए प्रकरण को नए सिरे से विधि अनुसार निस्तारित करने हेतु प्रतिप्रेषित किया जाता है।'
+  },
+  {
+    id: 'pass-hi-10',
+    title: 'सचिवालय शासकीय परिपत्र (Secretariat Memo)',
+    difficulty: 'Hard',
+    language: 'hindi',
+    type: 'paragraphs',
+    duration: 180,
+    text: 'शासकीय सेवा में दक्षता, पारदर्शिता और समयबद्धता सुनिश्चित करने के उद्देश्य से यह निर्देशित किया जाता है कि सभी कार्यालयाध्यक्ष अपने अधीनस्थ कर्मचारियों की उपस्थिति बायोमेट्रिक प्रणाली के माध्यम से दर्ज कराएं। अकारण विलंब अथवा अनुपस्थिति की दशा में संबंधित कर्मचारी के विरुद्ध सेवा नियमावली के सुसंगत प्रावधानों के अधीन अनुशासनात्मक कार्रवाई संस्थित की जाएगी।'
+  },
+  {
+    id: 'pass-hi-11',
+    title: 'भारतीय संविधान की उद्देशिका एवं मूल कर्तव्य',
+    difficulty: 'Hard',
+    language: 'hindi',
+    type: 'paragraphs',
+    duration: 180,
+    text: 'हम, भारत के लोग, भारत को एक संपूर्ण प्रभुत्व-संपन्न, समाजवादी, पंथनिरपेक्ष, लोकतंत्रात्मक गणराज्य बनाने के लिए तथा उसके समस्त नागरिकों को सामाजिक, आर्थिक और राजनीतिक न्याय, विचार, अभिव्यक्ति, विश्वास, धर्म और उपासना की स्वतंत्रता सुनिश्चित कराने हेतु संकल्पित हैं। संविधान के अनुच्छेद 51-क में प्रत्येक नागरिक का यह कर्तव्य निर्धारित है कि वह राष्ट्रध्वज और राष्ट्रगान का आदर करे।'
+  },
+  {
+    id: 'pass-hi-12',
+    title: 'अर्थव्यवस्था एवं वित्तीय समावेशन',
+    difficulty: 'Hard',
+    language: 'hindi',
+    type: 'numbers & punctuation',
+    duration: 180,
+    text: 'वित्तीय वर्ष 2025-26 के तृतीय त्रैमासिक आंकड़ों के अनुसार सकल घरेलू उत्पाद (GDP) में 7.2% की वृद्धि दर दर्ज की गई। प्रत्यक्ष विदेशी निवेश (FDI) के प्रवाह में 15.4% की अभूतपूर्व बढ़ोतरी हुई। मुद्रास्फीति की दर 4.5% के संतोषजनक स्तर पर नियंत्रित रही, जिससे केंद्रीय रिज़र्व बैंक (RBI) द्वारा रेपो दर में 25 आधार अंकों की कटौती का मार्ग प्रशस्त हुआ।'
   }
 ];
 
 export function getRandomPassage(filters = {}) {
   let filtered = PASSAGES;
-  if (filters.difficulty) {
+  if (filters.language) {
+    filtered = filtered.filter(p => (p.language || 'english').toLowerCase() === filters.language.toLowerCase());
+  }
+  if (filters.difficulty && filters.difficulty !== 'All') {
     filtered = filtered.filter(p => p.difficulty.toLowerCase() === filters.difficulty.toLowerCase());
   }
-  if (filters.type) {
+  if (filters.type && filters.type !== 'All') {
     filtered = filtered.filter(p => p.type.toLowerCase() === filters.type.toLowerCase());
   }
-  if (filtered.length === 0) filtered = PASSAGES;
+  if (filtered.length === 0) {
+    filtered = PASSAGES.filter(p => !filters.language || (p.language || 'english').toLowerCase() === filters.language.toLowerCase());
+    if (filtered.length === 0) filtered = PASSAGES;
+  }
   const idx = Math.floor(Math.random() * filtered.length);
   return filtered[idx];
 }

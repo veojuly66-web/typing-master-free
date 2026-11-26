@@ -161,16 +161,21 @@ export default function VirtualKeyboard({
                   key={kIdx}
                   className={`relative flex flex-col items-center justify-center font-mono rounded-btn border transition-all duration-75 select-none ${
                     k.width || 'w-10'
-                  } h-10 text-xs ${keyStyle} ${
+                  } h-11 text-xs ${keyStyle} ${
                     k.isSpecial ? 'font-sans text-2xs font-medium text-text-muted' : 'font-medium'
                   }`}
                 >
+                  {k.sub && (
+                    <span className="absolute top-0.5 left-1 text-[8px] font-sans opacity-50">
+                      {k.sub}
+                    </span>
+                  )}
                   {k.shiftKey && (
-                    <span className={`text-[9px] leading-none mb-0.5 opacity-60 ${target && k.shiftKey === targetChar ? 'font-bold text-white' : ''}`}>
+                    <span className={`text-[10px] leading-none mb-0.5 opacity-60 font-hindi ${target && k.shiftKey === targetChar ? 'font-bold text-white' : ''}`}>
                       {k.shiftKey}
                     </span>
                   )}
-                  <span className={`leading-none uppercase ${target && k.key.toLowerCase() === targetChar?.toLowerCase() ? 'font-bold text-white' : ''}`}>
+                  <span className={`leading-none ${layout !== 'us' && layout !== 'uk' ? 'font-hindi text-sm' : 'uppercase'} ${target && k.key.toLowerCase() === targetChar?.toLowerCase() ? 'font-bold text-white' : ''}`}>
                     {k.key}
                   </span>
 

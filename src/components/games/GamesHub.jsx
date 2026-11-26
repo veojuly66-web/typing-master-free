@@ -3,10 +3,22 @@ import WordBubblesGame from './WordBubblesGame';
 import WordAttackGame from './WordAttackGame';
 import SpeedRaceGame from './SpeedRaceGame';
 import { Card, Button, Badge } from '../ui';
-import { ArrowLeft, Play } from 'lucide-react';
+import { useAuth } from '../../lib/auth';
+import ProLock from '../ui/ProLock';
+import { ArrowLeft, Play, Lock, Sparkles, X } from 'lucide-react';
 
 export default function GamesHub() {
   const [activeGame, setActiveGame] = useState(null); // 'bubbles' | 'attack' | 'race' | null
+  const { isProUser } = useAuth();
+  const [proModalGame, setProModalGame] = useState(null);
+
+  const handleLaunchGame = (gameId, isPro = false) => {
+    if (isPro && !isProUser) {
+      setProModalGame(gameId);
+      return;
+    }
+    setActiveGame(gameId);
+  };
 
   if (activeGame === 'bubbles') {
     return (
@@ -63,17 +75,27 @@ export default function GamesHub() {
     <div className="max-w-content mx-auto py-8 md:py-12 px-4">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-semibold text-text tracking-tight mb-2">
-          Typing Games
-        </h1>
-        <p className="text-sm sm:text-base text-text-muted max-w-2xl">
-          Sharpen reaction time, peripheral letter recognition, and word-burst speed through interactive typing practice.
-        </p>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-semibold text-text tracking-tight mb-2">
+              Typing Arcade Games
+            </h1>
+            <p className="text-sm sm:text-base text-text-muted max-w-2xl">
+              Sharpen reaction time, peripheral letter recognition, and word-burst speed through interactive typing practice.
+            </p>
+          </div>
+
+          <div className="shrink-0">
+            <span className="text-xs px-2.5 py-1 rounded bg-surface-2 border border-border text-text-muted font-medium inline-flex items-center gap-1.5">
+              <span>Word Bubbles (Free) · Defense &amp; Race (Pro)</span>
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* 3 Game Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Game 1: Word Bubbles */}
+        {/* Game 1: Word Bubbles (FREE) */}
         <Card className="flex flex-col justify-between" hover>
           <div>
             <div className="h-32 rounded-btn bg-surface-2 border border-border flex flex-col items-center justify-center p-4 mb-4 select-none relative">
@@ -105,15 +127,15 @@ export default function GamesHub() {
 
           <div className="pt-4 mt-4 border-t border-border flex items-center justify-between">
             <span className="text-2xs text-text-muted">Difficulty: Progressive</span>
-            <Button size="sm" variant="primary" onClick={() => setActiveGame('bubbles')}>
+            <Button size="sm" variant="primary" onClick={() => handleLaunchGame('bubbles', false)}>
               <Play className="w-3.5 h-3.5" />
-              <span>Play</span>
+              <span>Play Free</span>
             </Button>
           </div>
         </Card>
 
-        {/* Game 2: Word Attack */}
-        <Card className="flex flex-col justify-between" hover>
+        {/* Game 2: Word Attack (PRO) */}
+        <Card className="flex flex-col justify-between relative" hover>
           <div>
             <div className="h-32 rounded-btn bg-surface-2 border border-border flex flex-col items-center justify-center p-4 mb-4 select-none relative">
               <div className="flex gap-2 mb-2">
@@ -129,9 +151,17 @@ export default function GamesHub() {
 
             <div className="flex items-center justify-between mb-2">
               <Badge variant="default">Action Defense</Badge>
-              <span className="text-2xs text-text-muted font-mono">
-                Best: {localStorage.getItem('tm_attack_high') || 0}
-              </span>
+              <div className="flex items-center gap-1.5">
+                {!isProUser && (
+                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-pro-soft text-pro border border-pro/20">
+                    <Lock className="w-2.5 h-2.5" />
+                    PRO
+                  </span>
+                )}
+                <span className="text-2xs text-text-muted font-mono">
+                  Best: {localStorage.getItem('tm_attack_high') || 0}
+                </span>
+              </div>
             </div>
 
             <h2 className="text-base font-semibold text-text mb-1">
@@ -144,15 +174,29 @@ export default function GamesHub() {
 
           <div className="pt-4 mt-4 border-t border-border flex items-center justify-between">
             <span className="text-2xs text-text-muted">Difficulty: Challenging</span>
-            <Button size="sm" variant="primary" onClick={() => setActiveGame('attack')}>
-              <Play className="w-3.5 h-3.5" />
-              <span>Play</span>
+            <Button
+              size="sm"
+              variant={!isProUser ? "secondary" : "primary"}
+              onClick={() => handleLaunchGame('attack', true)}
+              className={!isProUser ? "!border-pro/30 !text-pro" : ""}
+            >
+              {!isProUser ? (
+                <>
+                  <Lock className="w-3.5 h-3.5 text-pro" />
+                  <span>Unlock Pro</span>
+                </>
+              ) : (
+                <>
+                  <Play className="w-3.5 h-3.5" />
+                  <span>Play</span>
+                </>
+              )}
             </Button>
           </div>
         </Card>
 
-        {/* Game 3: Speed Race */}
-        <Card className="flex flex-col justify-between" hover>
+        {/* Game 3: Speed Race (PRO) */}
+        <Card className="flex flex-col justify-between relative" hover>
           <div>
             <div className="h-32 rounded-btn bg-surface-2 border border-border flex flex-col items-center justify-center p-4 mb-4 select-none relative">
               <div className="flex flex-col gap-1.5 w-full px-4">
@@ -164,10 +208,18 @@ export default function GamesHub() {
             </div>
 
             <div className="flex items-center justify-between mb-2">
-              <Badge variant="accent">New</Badge>
-              <span className="text-2xs text-text-muted font-mono">
-                Multi-Lane
-              </span>
+              <Badge variant="accent">Multi-Lane</Badge>
+              <div className="flex items-center gap-1.5">
+                {!isProUser && (
+                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-pro-soft text-pro border border-pro/20">
+                    <Lock className="w-2.5 h-2.5" />
+                    PRO
+                  </span>
+                )}
+                <span className="text-2xs text-text-muted font-mono">
+                  3 Competitors
+                </span>
+              </div>
             </div>
 
             <h2 className="text-base font-semibold text-text mb-1">
@@ -180,13 +232,52 @@ export default function GamesHub() {
 
           <div className="pt-4 mt-4 border-t border-border flex items-center justify-between">
             <span className="text-2xs text-text-muted">Difficulty: Competitive</span>
-            <Button size="sm" variant="primary" onClick={() => setActiveGame('race')}>
-              <Play className="w-3.5 h-3.5" />
-              <span>Play</span>
+            <Button
+              size="sm"
+              variant={!isProUser ? "secondary" : "primary"}
+              onClick={() => handleLaunchGame('race', true)}
+              className={!isProUser ? "!border-pro/30 !text-pro" : ""}
+            >
+              {!isProUser ? (
+                <>
+                  <Lock className="w-3.5 h-3.5 text-pro" />
+                  <span>Unlock Pro</span>
+                </>
+              ) : (
+                <>
+                  <Play className="w-3.5 h-3.5" />
+                  <span>Play</span>
+                </>
+              )}
             </Button>
           </div>
         </Card>
       </div>
+
+      {/* Pro Modal for Games */}
+      {proModalGame && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="relative max-w-md w-full bg-surface border border-border rounded-card p-6 shadow-xl">
+            <button
+              type="button"
+              onClick={() => setProModalGame(null)}
+              className="absolute top-4 right-4 p-1 rounded-btn hover:bg-surface-2 text-text-muted hover:text-text transition-colors"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <ProLock
+              title="Unlock All Arcade Games with Pro"
+              description="Word Attack and Speed Race are exclusive to Pro subscribers. Upgrade or start your 7-day free trial to get unlimited access to all games, Hindi lessons, and exam simulators."
+              onUnlock={() => {
+                setProModalGame(null);
+                window.location.hash = '#/pricing';
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

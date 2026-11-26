@@ -9,6 +9,10 @@ import TypingTest from './components/TypingTest';
 import NotFound from './components/NotFound';
 import { COURSES } from './data/courses';
 import { Storage } from './lib/storage';
+import { AuthProvider, useAuth } from './lib/auth';
+import { I18nProvider } from './i18n';
+import { BRAND } from './config/brand';
+import ProLock from './components/ui/ProLock';
 
 // Lazy-load sub-routes to shrink the main bundle
 const PlacementTest = lazy(() => import('./components/PlacementTest'));
@@ -22,8 +26,22 @@ const Privacy = lazy(() => import('./components/Privacy'));
 const Terms = lazy(() => import('./components/Terms'));
 const Contact = lazy(() => import('./components/Contact'));
 
+// SaaS & Exam Additions
+const Pricing = lazy(() => import('./components/Pricing'));
+const ExamSimulator = lazy(() => import('./components/exams/ExamSimulator'));
+const ExamHub = lazy(() => import('./components/exams/ExamHub'));
+const ExamDetailPage = lazy(() => import('./components/exams/ExamDetailPage'));
+const Login = lazy(() => import('./components/auth/Login'));
+const Account = lazy(() => import('./components/auth/Account'));
+const Checkout = lazy(() => import('./components/checkout/Checkout'));
+const AdminPanel = lazy(() => import('./components/admin/AdminPanel'));
+const CertificateVerify = lazy(() => import('./components/CertificateVerify'));
+const RefundPolicy = lazy(() => import('./components/RefundPolicy'));
+const ShippingPolicy = lazy(() => import('./components/ShippingPolicy'));
+
 function parseRouteFromHash() {
-  const raw = window.location.hash.replace(/^#\/?/, '').trim();
+  const rawWithQuery = window.location.hash.replace(/^#\/?/, '').trim();
+  const raw = rawWithQuery.split('?')[0];
   if (!raw) return { page: 'home' };
 
   const [base, param] = raw.split('/');
@@ -44,6 +62,26 @@ function parseRouteFromHash() {
       return { page: 'practice' };
     case 'progress':
       return { page: 'progress' };
+    case 'pricing':
+      return { page: 'pricing' };
+    case 'exams':
+      return param ? { page: 'exam-detail', slug: param } : { page: 'exams' };
+    case 'exam-simulator':
+      return { page: 'exams' };
+    case 'login':
+      return { page: 'login' };
+    case 'account':
+      return { page: 'account' };
+    case 'checkout':
+      return { page: 'checkout' };
+    case 'admin':
+      return { page: 'admin' };
+    case 'verify':
+      return { page: 'verify', certId: param || null };
+    case 'refund-policy':
+      return { page: 'refund-policy' };
+    case 'shipping-policy':
+      return { page: 'shipping-policy' };
     case 'settings':
       return { page: 'settings' };
     case 'about':
@@ -62,29 +100,40 @@ function parseRouteFromHash() {
 }
 
 const PAGE_TITLES = {
-  home: 'Pankaj Typing — Free Touch Typing Lessons & Speed Test',
-  lessons: 'Lessons — Pankaj Typing',
-  placement: 'Placement Diagnostic — Pankaj Typing',
-  test: 'Speed Test — Pankaj Typing',
-  games: 'Arcade Games — Pankaj Typing',
-  practice: 'Adaptive Practice — Pankaj Typing',
-  progress: 'Your Progress & Stats — Pankaj Typing',
-  settings: 'Settings — Pankaj Typing',
-  about: 'About — Pankaj Typing',
-  privacy: 'Privacy Policy — Pankaj Typing',
-  terms: 'Terms of Service — Pankaj Typing',
-  contact: 'Contact Support — Pankaj Typing',
-  certificate: 'Certificate of Typing Speed — Pankaj Typing',
-  notfound: 'Page Not Found — Pankaj Typing',
+  home: `${BRAND.name} — ${BRAND.tagline}`,
+  lessons: `Courses & Lessons — ${BRAND.name}`,
+  placement: `Placement Diagnostic — ${BRAND.name}`,
+  test: `Typing Speed Test — ${BRAND.name}`,
+  games: `Arcade Typing Games — ${BRAND.name}`,
+  practice: `Adaptive Practice Studio — ${BRAND.name}`,
+  progress: `Progress & Analytics — ${BRAND.name}`,
+  pricing: `Plans & Pricing — ${BRAND.name}`,
+  exams: `Government Exam Simulator — ${BRAND.name}`,
+  'exam-detail': `Exam Guide & Syllabus — ${BRAND.name}`,
+  login: `Sign In — ${BRAND.name}`,
+  account: `My Account — ${BRAND.name}`,
+  checkout: `Checkout & Activation — ${BRAND.name}`,
+  admin: `Admin Console — ${BRAND.name}`,
+  verify: `Certificate Verification — ${BRAND.name}`,
+  'refund-policy': `Refund & Cancellation Policy — ${BRAND.name}`,
+  'shipping-policy': `Shipping & Digital Delivery — ${BRAND.name}`,
+  settings: `Settings — ${BRAND.name}`,
+  about: `About Us — ${BRAND.name}`,
+  privacy: `Privacy Policy — ${BRAND.name}`,
+  terms: `Terms & Conditions — ${BRAND.name}`,
+  contact: `Contact Support — ${BRAND.name}`,
+  certificate: `Certificate of Typing Speed — ${BRAND.name}`,
+  notfound: `Page Not Found — ${BRAND.name}`,
 };
 
-export default function App() {
+function MainApp() {
+  const { isProUser } = useAuth();
   const [routeInfo, setRouteInfo] = useState(parseRouteFromHash);
   const [currentLesson, setCurrentLesson] = useState(null);
   const [exerciseResult, setExerciseResult] = useState(null);
   const [isTypingFocused, setIsTypingFocused] = useState(false);
 
-  // Theme state (default light, optional dark, respect system preference and localStorage)
+  // Theme state
   const [isDark, setIsDark] = useState(() => {
     try {
       const saved = localStorage.getItem('tm_theme');
@@ -95,7 +144,6 @@ export default function App() {
     }
   });
 
-  // Apply dark class to html document
   useEffect(() => {
     const root = document.documentElement;
     if (isDark) {
@@ -105,23 +153,20 @@ export default function App() {
     }
     try {
       localStorage.setItem('tm_theme', isDark ? 'dark' : 'light');
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) {}
   }, [isDark]);
 
   const toggleTheme = () => {
     setIsDark(prev => !prev);
   };
 
-  // Hash change routing listener & document title updater
+  // Hash listener & title updater
   useEffect(() => {
     const handleHashChange = () => {
       const info = parseRouteFromHash();
       setRouteInfo(info);
       document.title = PAGE_TITLES[info.page] || PAGE_TITLES.home;
 
-      // Handle direct lesson route: #/lessons/:id
       if (info.page === 'lessons' && info.lessonId) {
         const found = COURSES.flatMap(c => c.lessons).find(l => l.id === info.lessonId);
         if (found) {
@@ -137,13 +182,12 @@ export default function App() {
     };
 
     window.addEventListener('hashchange', handleHashChange);
-    // Initial title
     document.title = PAGE_TITLES[routeInfo.page] || PAGE_TITLES.home;
 
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  // Mousemove or Escape resets typing focus mode
+  // Mousemove or Escape resets typing focus
   useEffect(() => {
     const handleActivity = (e) => {
       if (e.type === 'keydown' && e.key === 'Escape') {
@@ -160,7 +204,6 @@ export default function App() {
     };
   }, []);
 
-  // Lessons progress from Storage
   const [completedLessons, setCompletedLessons] = useState(() => Storage.getCompletedLessons());
 
   const saveLessonProgress = (lessonId, stats) => {
@@ -191,7 +234,6 @@ export default function App() {
     window.location.hash = '#/lessons';
   };
 
-  // Find next lesson
   const allLessons = COURSES.flatMap(c => c.lessons);
   const currentLessonIndex = currentLesson ? allLessons.findIndex(l => l.id === currentLesson.id) : -1;
   const hasNextLesson = currentLessonIndex !== -1 && currentLessonIndex < allLessons.length - 1;
@@ -208,8 +250,8 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-paper text-ink transition-colors duration-150">
-      {/* Top Navbar with focus fade */}
+    <div className="min-h-screen flex flex-col bg-bg text-text transition-colors duration-150 font-sans">
+      {/* Top Navbar */}
       <div className={isTypingFocused ? 'opacity-20 transition-opacity duration-300 pointer-events-none hover:opacity-100 hover:pointer-events-auto' : 'transition-opacity duration-300'}>
         <Navbar
           currentRoute={routeInfo.page}
@@ -218,7 +260,7 @@ export default function App() {
         />
       </div>
 
-      {/* Main Content Area */}
+      {/* Main Content View */}
       <main className="flex-1 pb-16">
         {routeInfo.page === 'home' && (
           <Home
@@ -232,30 +274,50 @@ export default function App() {
         {routeInfo.page === 'lessons' && (
           <>
             {currentLesson ? (
-              <div className="py-6">
-                <TypingExercise
-                  key={currentLesson.id + (exerciseResult ? '-retry' : '')}
-                  text={currentLesson.content}
-                  title={currentLesson.title}
-                  intro={currentLesson.intro}
-                  targetWpm={currentLesson.targetWpm}
-                  targetAccuracy={currentLesson.targetAccuracy}
-                  onComplete={handleExerciseComplete}
-                  onExit={handleExitExercise}
-                  onFocusChange={setIsTypingFocused}
-                />
-
-                {exerciseResult && (
-                  <LessonResultModal
-                    stats={exerciseResult}
-                    lessonTitle={currentLesson.title}
-                    onNext={hasNextLesson ? handleNextLesson : null}
-                    onRetry={handleRetryLesson}
-                    onCourseList={handleExitExercise}
-                    hasNextLesson={hasNextLesson}
+              currentLesson.isPro && !isProUser ? (
+                <div className="max-w-md mx-auto py-12 px-4">
+                  <ProLock
+                    title={`"${currentLesson.title}" is a Pro Drill`}
+                    description="This lesson requires an active Pro subscription or 7-day free trial. Unlock all 76 English & Hindi lessons today."
+                    onUnlock={() => { window.location.hash = '#/pricing'; }}
                   />
-                )}
-              </div>
+                  <div className="text-center mt-4">
+                    <button
+                      type="button"
+                      onClick={handleExitExercise}
+                      className="text-xs text-text-muted hover:text-text font-medium underline underline-offset-2"
+                    >
+                      ← Return to all lessons
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="py-6">
+                  <TypingExercise
+                    key={currentLesson.id + (exerciseResult ? '-retry' : '')}
+                    text={currentLesson.content}
+                    title={currentLesson.title}
+                    intro={currentLesson.intro}
+                    targetWpm={currentLesson.targetWpm}
+                    targetAccuracy={currentLesson.targetAccuracy}
+                    layout={currentLesson.track === 'inscript' ? 'inscript' : currentLesson.track === 'remington' ? 'remington-gail' : 'us'}
+                    onComplete={handleExerciseComplete}
+                    onExit={handleExitExercise}
+                    onFocusChange={setIsTypingFocused}
+                  />
+
+                  {exerciseResult && (
+                    <LessonResultModal
+                      stats={exerciseResult}
+                      lessonTitle={currentLesson.title}
+                      onNext={hasNextLesson ? handleNextLesson : null}
+                      onRetry={handleRetryLesson}
+                      onCourseList={handleExitExercise}
+                      hasNextLesson={hasNextLesson}
+                    />
+                  )}
+                </div>
+              )
             ) : (
               <CourseBrowser
                 completedLessons={completedLessons}
@@ -265,8 +327,20 @@ export default function App() {
           </>
         )}
 
+        {routeInfo.page === 'exams' && (
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading exam simulator...</div>}>
+            <ExamSimulator />
+          </Suspense>
+        )}
+
+        {routeInfo.page === 'exam-detail' && (
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading exam guide...</div>}>
+            <ExamDetailPage slug={routeInfo.slug} />
+          </Suspense>
+        )}
+
         {routeInfo.page === 'placement' && (
-          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-ink-muted">Loading placement diagnostic...</div>}>
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading placement diagnostic...</div>}>
             <PlacementTest
               onStartLevel={(lessonId) => {
                 const target = COURSES.flatMap(c => c.lessons).find(l => l.id === lessonId) || COURSES[0].lessons[0];
@@ -284,14 +358,62 @@ export default function App() {
           />
         )}
 
+        {routeInfo.page === 'pricing' && (
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading pricing plans...</div>}>
+            <Pricing />
+          </Suspense>
+        )}
+
+        {routeInfo.page === 'login' && (
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading login...</div>}>
+            <Login />
+          </Suspense>
+        )}
+
+        {routeInfo.page === 'account' && (
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading account...</div>}>
+            <Account />
+          </Suspense>
+        )}
+
+        {routeInfo.page === 'checkout' && (
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading checkout...</div>}>
+            <Checkout />
+          </Suspense>
+        )}
+
+        {routeInfo.page === 'admin' && (
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading admin desk...</div>}>
+            <AdminPanel />
+          </Suspense>
+        )}
+
+        {routeInfo.page === 'verify' && (
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading verification...</div>}>
+            <CertificateVerify certId={routeInfo.certId} />
+          </Suspense>
+        )}
+
+        {routeInfo.page === 'refund-policy' && (
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading policy...</div>}>
+            <RefundPolicy />
+          </Suspense>
+        )}
+
+        {routeInfo.page === 'shipping-policy' && (
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading policy...</div>}>
+            <ShippingPolicy />
+          </Suspense>
+        )}
+
         {routeInfo.page === 'games' && (
-          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-ink-muted">Loading arcade games...</div>}>
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading arcade games...</div>}>
             <GamesHub initialGameId={routeInfo.gameId} />
           </Suspense>
         )}
 
         {routeInfo.page === 'practice' && (
-          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-ink-muted">Loading adaptive practice studio...</div>}>
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading adaptive practice studio...</div>}>
             <AdaptivePractice
               onStartDrill={(drill) => {
                 handleStartLesson(drill);
@@ -302,7 +424,7 @@ export default function App() {
         )}
 
         {routeInfo.page === 'progress' && (
-          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-ink-muted">Loading your progress & analytics...</div>}>
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading your progress & analytics...</div>}>
             <ProgressDashboard
               onSelectLesson={handleStartLesson}
             />
@@ -310,13 +432,13 @@ export default function App() {
         )}
 
         {routeInfo.page === 'settings' && (
-          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-ink-muted">Loading settings...</div>}>
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading settings...</div>}>
             <Settings />
           </Suspense>
         )}
 
         {routeInfo.page === 'certificate' && (
-          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-ink-muted">Loading certificate...</div>}>
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading certificate...</div>}>
             <CertificateModal
               stats={{ netWpm: 52, grossWpm: 55, accuracy: 98, duration: 60 }}
               testTitle="1-Minute Benchmark Speed Test"
@@ -326,25 +448,25 @@ export default function App() {
         )}
 
         {routeInfo.page === 'about' && (
-          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-ink-muted">Loading...</div>}>
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading...</div>}>
             <About />
           </Suspense>
         )}
 
         {routeInfo.page === 'privacy' && (
-          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-ink-muted">Loading...</div>}>
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading...</div>}>
             <Privacy />
           </Suspense>
         )}
 
         {routeInfo.page === 'terms' && (
-          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-ink-muted">Loading...</div>}>
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading...</div>}>
             <Terms />
           </Suspense>
         )}
 
         {routeInfo.page === 'contact' && (
-          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-ink-muted">Loading...</div>}>
+          <Suspense fallback={<div className="max-w-content mx-auto py-16 text-center text-xs text-text-muted">Loading...</div>}>
             <Contact />
           </Suspense>
         )}
@@ -352,10 +474,20 @@ export default function App() {
         {routeInfo.page === 'notfound' && <NotFound />}
       </main>
 
-      {/* 4-column Footer with focus fade */}
+      {/* 4-column Footer */}
       <div className={isTypingFocused ? 'opacity-20 transition-opacity duration-300 pointer-events-none hover:opacity-100 hover:pointer-events-auto' : 'transition-opacity duration-300'}>
         <Footer />
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <I18nProvider>
+        <MainApp />
+      </I18nProvider>
+    </AuthProvider>
   );
 }

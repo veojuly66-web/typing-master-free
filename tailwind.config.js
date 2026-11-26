@@ -23,6 +23,10 @@ export default {
           hover: 'var(--accent-hover)',
           soft: 'var(--accent-soft)',
         },
+        pro: {
+          DEFAULT: 'var(--pro)',
+          soft: 'var(--pro-soft)',
+        },
         error: 'var(--error)',
         warning: 'var(--warning)',
 
@@ -49,6 +53,7 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        hindi: ['"Noto Sans Devanagari"', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
         serif: ['"Source Serif 4"', 'Georgia', 'serif'],
       },

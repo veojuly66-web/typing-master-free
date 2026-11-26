@@ -7,6 +7,7 @@ export default function TypingExercise({
   intro = '',
   targetWpm = 30,
   targetAccuracy = 95,
+  layout = 'us',
   onComplete,
   onExit,
   onFocusChange
@@ -18,6 +19,7 @@ export default function TypingExercise({
       intro={intro}
       targetWpm={targetWpm}
       targetAccuracy={targetAccuracy}
+      layout={layout}
       mode="lesson"
       onComplete={onComplete}
       onExit={onExit}
