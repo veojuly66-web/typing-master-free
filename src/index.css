@@ -2,39 +2,95 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg: #FAFAF7;
+  --surface: #FFFFFF;
+  --border: #E7E5DF;
+  --text: #1C1B19;
+  --text-muted: #6B6862;
+  --accent: #1F6F54;
+  --accent-hover: #185A44;
+  --accent-soft: #E8F2ED;
+  --color-correct: #1F6F54;
+  --color-error: #C2410C;
+  --color-caret: #1C1B19;
+}
+
+.dark {
+  --bg: #141413;
+  --surface: #1D1D1B;
+  --border: #2E2D2A;
+  --text: #EDEBE6;
+  --text-muted: #9C988F;
+  --accent: #4FB38A;
+  --accent-hover: #68C59F;
+  --accent-soft: #1E332A;
+  --color-correct: #4FB38A;
+  --color-error: #EA580C;
+  --color-caret: #EDEBE6;
+}
+
 @layer base {
   body {
-    @apply bg-slate-900 text-slate-100 antialiased;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background-color: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  /* Accessible visible focus ring */
+  *:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 }
 
-/* Custom scrollbar */
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Caret blinking */
+@keyframes caretBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.caret-pulse {
+  animation: caretBlink 1s ease-in-out infinite;
+}
+
+/* Custom quiet scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: var(--border);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.98); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.2s ease-out forwards;
+  background: var(--text-muted);
 }
 
 @media print {

@@ -8,44 +8,40 @@ export default {
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
+        ink: {
+          DEFAULT: 'var(--text)',
+          muted: 'var(--text-muted)',
         },
-        tm: {
-          dark: '#0f172a',
-          card: '#1e293b',
-          border: '#334155',
-          accent: '#06b6d4',
-          gold: '#f59e0b',
-          correct: '#10b981',
-          error: '#ef4444',
-          pinky: '#f43f5e',
-          ring: '#f97316',
-          middle: '#10b981',
-          indexL: '#3b82f6',
-          indexR: '#8b5cf6',
-          thumb: '#64748b'
+        paper: {
+          DEFAULT: 'var(--bg)',
+          surface: 'var(--surface)',
+          border: 'var(--border)',
+        },
+        accent: {
+          DEFAULT: 'var(--accent)',
+          hover: 'var(--accent-hover)',
+          soft: 'var(--accent-soft)',
+        },
+        type: {
+          correct: 'var(--color-correct)',
+          error: 'var(--color-error)',
+          caret: 'var(--color-caret)',
         }
       },
-      animation: {
-        'bounce-short': 'bounce 0.5s ease-in-out 1',
-        'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'float': 'float 3s ease-in-out infinite',
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        serif: ['"Source Serif 4"', 'Georgia', 'serif'],
       },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-6px)' },
-        }
+      borderRadius: {
+        card: '8px',
+        btn: '6px',
+      },
+      boxShadow: {
+        subtle: '0 1px 2px rgba(0, 0, 0, 0.06)',
+      },
+      maxWidth: {
+        content: '1120px',
       }
     },
   },

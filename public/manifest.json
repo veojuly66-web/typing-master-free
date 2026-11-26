@@ -1,17 +1,22 @@
 {
-  "name": "Pankaj Typing Pro",
+  "name": "Pankaj Typing",
   "short_name": "Pankaj Typing",
-  "description": "The Ultimate 100% Free Lifetime Touch-Typing Tutor with Piano Sound and Strict Mode",
+  "description": "Free touch typing lessons, 1-minute speed test, and typing games.",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#2563eb",
+  "background_color": "#FAFAF7",
+  "theme_color": "#1F6F54",
   "icons": [
     {
       "src": "./icon.png",
       "sizes": "256x256",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "./apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ]
 }
